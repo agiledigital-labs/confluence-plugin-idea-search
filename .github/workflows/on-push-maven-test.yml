@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java CI with Maven
+name: on-push-maven-test
 
 on: push
 
@@ -29,5 +29,5 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-    - name: Build with Maven
-      run: mvn -s ./settings.xml -B package --file pom.xml
+    - name: Test with Maven
+      run: mvn -s ./settings.xml -B test --file pom.xml
