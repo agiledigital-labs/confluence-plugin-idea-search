@@ -51,7 +51,7 @@ jobs:
         node-version: 12
     - name: Install dependencies
       run: yarn install
-    - name: Prepare release
-      run: npx semantic-release --prepare --skip-maven-deploy
-    - name: Build with Maven
-      run: mvn -s ./settings.xml -B package --file pom.xml
+    - name: Prepare release - semantic
+      run: |
+        npx semantic-release --skip-maven-deploy
+        mvn -s ./settings.xml -B package --file pom.xml

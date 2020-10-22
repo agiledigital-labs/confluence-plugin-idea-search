@@ -8,12 +8,22 @@
   "release": {
     "branches": [
       "main",
-      {"name": "alpha", "prerelease": true},
+      {
+        "name": "alpha",
+        "prerelease": true
+      },
       "chore/ADE-489/add-cicd"
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
-      ["@semantic-release/git", {"assets": ["target/**/*"]}],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "target/**/*"
+          ]
+        }
+      ],
       "maven-semantic-release"
     ]
   }
