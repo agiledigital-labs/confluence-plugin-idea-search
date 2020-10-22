@@ -1,8 +1,8 @@
-package ut. com.atlassian.tutorial;
+package ut.au.com.agiledigital;
 
 import org.junit.Test;
-import com.riseserver.tutorial.api.MyPluginComponent;
-import com.riseserver.tutorial.impl.MyPluginComponentImpl;
+import au.com.agiledigital.api.MyPluginComponent;
+import au.com.agiledigital.impl.MyPluginComponentImpl;
 
 import static org.junit.Assert.assertEquals;
 

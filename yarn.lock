@@ -23,6 +23,19 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
+"@conveyal/maven-semantic-release@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@conveyal/maven-semantic-release/-/maven-semantic-release-4.5.0.tgz#9082530b74e12bcbb3040e5751fc73c8eed6e51b"
+  integrity sha512-auildJrw4jlnHikmp8eTlWrewRH27imyEGXBja5m4MVsnRjV859vi24+wYfkVj/w8GGNZnWQpqRdJuhp6Be6oQ==
+  dependencies:
+    "@semantic-release/error" "^2.2.0"
+    aggregate-error "^1.0.0"
+    execa "^0.10.0"
+    fs-extra "^5.0.0"
+    got "^8.0.1"
+    semver "^5.5.0"
+    xml2js-es6-promise "^1.1.1"
+
 "@iarna/cli@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@iarna/cli/-/cli-1.2.0.tgz#0f7af5e851afe895104583c4ca07377a8094d641"
@@ -2674,19 +2687,6 @@ marked@^1.0.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/marked/-/marked-1.2.2.tgz#5d77ffb789c4cb0ae828bfe76250f7140b123f70"
   integrity sha512-5jjKHVl/FPo0Z6ocP3zYhKiJLzkwJAw4CZoLjv57FkvbUuwOX4LIBBGGcXjAY6ATcd1q9B8UTj5T9Umauj0QYQ==
-
-maven-semantic-release@^4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/maven-semantic-release/-/maven-semantic-release-4.6.2.tgz#e018ffd45deffa235fd516b03d302e58124f50c0"
-  integrity sha512-YVvfxP6TJOHkDFbVTO8ksfAa5wlZ3u/Ya5CMti6bupFRAADXP5mLzMzQI9Nwe96AyM1Qpqam3lQuc4tJhLQC+g==
-  dependencies:
-    "@semantic-release/error" "^2.2.0"
-    aggregate-error "^1.0.0"
-    execa "^0.10.0"
-    fs-extra "^5.0.0"
-    got "^8.0.1"
-    semver "^5.5.0"
-    xml2js-es6-promise "^1.1.1"
 
 meant@^1.0.2:
   version "1.0.2"
