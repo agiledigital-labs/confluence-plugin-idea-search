@@ -1,4 +1,4 @@
-package com.riseserver.tutorial.api;
+package au.com.agiledigital.api;
 
 public interface MyPluginComponent
 {

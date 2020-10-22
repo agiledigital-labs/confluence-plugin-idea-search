@@ -1,4 +1,4 @@
-    <atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
@@ -8,28 +8,17 @@
     </plugin-info>
 
     <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="myConfluenceMacro"/>
+    <resource type="i18n" name="i18n" location="ideaSearch"/>
     
     <!-- add our web resources -->
-    <web-resource key="myConfluenceMacro-resources" name="myConfluenceMacro Web Resources">
+    <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         
-        <resource type="download" name="myConfluenceMacro.css" location="/css/myConfluenceMacro.css"/>
-        <resource type="download" name="myConfluenceMacro.js" location="/js/myConfluenceMacro.js"/>
+        <resource type="download" name="ideaSearch.css" location="/css/ideaSearch.css"/>
+        <resource type="download" name="ideaSearch.js" location="/js/ideaSearch.js"/>
         <resource type="download" name="images/" location="/images"/>
 
-        <context>myConfluenceMacro</context>
+        <context>ideaSearch</context>
     </web-resource>
-    <xhtml-macro name="helloworld" class="com.riseserver.tutorial.macro.helloworld" key='helloworld-macro'>
-    <description key="helloworld.macro.desc"/>
-    <category name="formatting"/>
-    <parameters>
-        <parameter name="Name" type="string" />
-        <parameter name="Color" type="enum">
-            <value name="red"/>
-            <value name="green"/>
-            <value name="blue"/>
-        </parameter>
-    </parameters>
-</xhtml-macro>
+    
 </atlassian-plugin>

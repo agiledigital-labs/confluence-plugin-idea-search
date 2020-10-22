@@ -1,9 +1,9 @@
-package it. com.atlassian.tutorial;
+package it.au.com.agiledigital;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
-import com.riseserver.tutorial.api.MyPluginComponent;
+import au.com.agiledigital.api.MyPluginComponent;
 import com.atlassian.sal.api.ApplicationProperties;
 
 import static org.junit.Assert.assertEquals;
