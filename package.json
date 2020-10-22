@@ -1,15 +1,16 @@
 {
   "dependencies": {
+    "@conveyal/maven-semantic-release": "^4.5.0",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/git": "^9.0.0",
-    "maven-semantic-release": "^4.6.2",
+    "@semantic-release/github": "^7.1.1",
     "semantic-release": "^17.2.1"
   },
   "release": {
     "branches": [
       "main",
       {
-        "name": "alpha",
+        "name": "qa",
         "prerelease": true
       },
       "chore/ADE-489/add-cicd"
@@ -17,14 +18,15 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       [
-        "@semantic-release/git",
+        "@semantic-release/github",
         {
           "assets": [
-            "target/**/*"
+            "target/*.obr",
+            "target/*.jar"
           ]
         }
       ],
-      "maven-semantic-release"
+      "@conveyal/maven-semantic-release"
     ]
   }
 }
