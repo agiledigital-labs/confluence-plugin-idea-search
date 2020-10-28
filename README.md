@@ -15,6 +15,15 @@ Either add the addon throught he Atlassian Market place (link to come) or by dir
 - Clone the repository, install the Atlassian SDK,
 - In the root directory run atlas-run
 
+## Developer tooling
+
+The following tools are required/recommended to develop with this repository
+
+- **Atlassian sdk**: https://developer.atlassian.com/server/framework/atlassian-sdk/
+- **Yarn**: https://classic.yarnpkg.com/en/docs/install
+- **Prettier**: https://prettier.io/docs/en/install.html
+- **Nvm**: https://github.com/nvm-sh/nvm#installing-and-updating
+
 # Contributing
 
 PR are welcomed
