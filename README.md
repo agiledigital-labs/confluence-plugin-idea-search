@@ -65,4 +65,5 @@ Please do the following before creating a PR;
 * We will review and provide feedback as soon as we can, it is easier if you help us along
 
 # Supported versions
-We are supporting versions from 7.6.2 onwards at this stage
+We are supporting versions from 7.6.2 onwards at this stage, if there are any issues please raise an issue on this repo
+
