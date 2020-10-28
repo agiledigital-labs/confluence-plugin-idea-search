@@ -5,17 +5,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>au.com.agiledigital</groupId>
-    <artifactId>ideaSearch</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <groupId> com.riseserver.tutorial</groupId>
+    <artifactId>myConfluenceMacro</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
 
     <organization>
-        <name>Agile Digital</name>
-        <url>https://agiledigital.com.au/</url>
+        <name>Example Company</name>
+        <url>http://www.example.com/</url>
     </organization>
 
-    <name>ideaSearch</name>
-    <description>This is the au.com.agiledigital:ideaSearch plugin for Atlassian Confluence.</description>
+    <name>myConfluenceMacro</name>
+    <description>This is the  com.atlassian.tutorial:myConfluenceMacro plugin for Atlassian Confluence.</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
@@ -76,7 +76,8 @@
                     <productVersion>${confluence.version}</productVersion>
                     <productDataVersion>${confluence.data.version}</productDataVersion>
                     <enableQuickReload>true</enableQuickReload>
-
+                    <extractDependencies>false</extractDependencies>
+                    <includeExclude>-com.atlassian.plugin.spring.scanner.annotation.*</includeExclude>
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>
@@ -84,7 +85,7 @@
 
                         <!-- Add package to export here -->
                         <Export-Package>
-                            au.com.agiledigital.api,
+                             com.atlassian.tutorial.api,
                         </Export-Package>
 
                         <!-- Add package import here -->

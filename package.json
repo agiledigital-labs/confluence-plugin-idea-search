@@ -8,20 +8,25 @@
   },
   "release": {
     "branches": [
-      "main"
+      "main",
+      {
+        "name": "qa",
+        "prerelease": true
+      },
+      "chore/ADE-489/add-cicd"
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
-      "@conveyal/maven-semantic-release",
-        [
-          "@semantic-release/github",
-          {
-            "assets": [
-              "target/*.obr",
-              "target/*.jar"
-            ]
-          }
-        ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            "target/*.obr",
+            "target/*.jar"
+          ]
+        }
+      ],
+      "@conveyal/maven-semantic-release"
     ]
   }
 }

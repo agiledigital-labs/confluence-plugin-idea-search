@@ -19,7 +19,7 @@ jobs:
     - name: Set env to dev
       if: endsWith(github.ref, '/develop')
       run: |
-        echo "ENVIRONMENT=develop" >> $GITHUB_ENV
+        echo "ENVIRONMENT=dev" >> $GITHUB_ENV
         
     - name: Set env to ga
       if: endsWith(github.ref, '/qa')
@@ -28,18 +28,23 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        repository:  agiledigital-labs/argo-apps
-        ref: ${{ env.ENVIRONMENT }}
+        repository: agiledigital-labs/argo-apps
 
     - name: Edit yaml file 
-      run: docker run --rm -v "${PWD}":/workdir mikefarah/yq yq w --inplace  overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'commonLabels.commitHash' $GITHUB_SHA
+      run: docker run --rm -v "$GITHUB_WORKSPACE":/workdir mikefarah/yq yq w --inplace  /workdir/overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'commonLabels.commitHash' "$GITHUB_SHA"
 
 
     - name: Commit changes
-      run: git commit -m "chore(ci): commit made by run $GITHUB_RUN_ID in workflow $GITHUB_WORKFLOW  in $GITHUB_REPOSITORY"
-
-    - name: Push changes
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}   
-        GH_USER: ${{ secrets.GH_USER }}  
-      run: git push
+      run: |
+        git add --all
+        git config --global user.email "CI@agiledigital.com.au"
+        git config --global user.name "commit bot"
+        git commit -m "chore(ci) commit made by run $GITHUB_RUN_ID in workflow $GITHUB_WORKFLOW  in $GITHUB_REPOSITORY"
+        git config -l | grep 'http\..*\.extraheader' | cut -d= -f1 |  xargs -L1 git config --unset-all
+
+        git remote add ade-labs https://token:$GH_TOKEN@github.com/agiledigital-labs/argo-apps.git
+
+    - name: Push changes
+      run: git push ade-labs qa
