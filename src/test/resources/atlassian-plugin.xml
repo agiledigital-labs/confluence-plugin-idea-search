@@ -15,7 +15,7 @@
     <!-- from our base plugin -->
     <component-import
     key="myComponent"
-    interface="au.com.agiledigital.api.MyPluginComponent"
+    interface="au.com.agiledigital.ideaSearch.api.MyPluginComponent"
   />
 
     <!-- from the product container -->
