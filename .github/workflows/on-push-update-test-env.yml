@@ -19,25 +19,27 @@ jobs:
     - name: Set env to dev
       if: endsWith(github.ref, '/develop')
       run: |
-        echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-        echo "BRANCH=develop" >> $GITHUB_ENV
+        echo "ENVIRONMENT=develop" >> $GITHUB_ENV
         
-    - name: Set env to dev
-      if: endsWith(github.ref, 'add-cicd')
-      run: |
-        echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-        echo "BRANCH=develop" >> $GITHUB_ENV
-
     - name: Set env to ga
       if: endsWith(github.ref, '/qa')
       run: |
         echo "ENVIRONMENT=qa" >> $GITHUB_ENV
-        echo "BRANCH=qa" >> $GITHUB_ENV
 
     - uses: actions/checkout@v2
       with:
         repository:  agiledigital-labs/argo-apps
         ref: ${{ env.ENVIRONMENT }}
 
-    - name: Test with Maven
-      run: ls -la
+    - name: Edit yaml file 
+      run: docker run --rm -v "${PWD}":/workdir mikefarah/yq yq w --inplace  overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'commonLabels.commitHash' $GITHUB_SHA
+
+
+    - name: Commit changes
+      run: git commit -m "chore(ci): commit made by run $GITHUB_RUN_ID in workflow $GITHUB_WORKFLOW  in $GITHUB_REPOSITORY"
+
+    - name: Push changes
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}   
+        GH_USER: ${{ secrets.GH_USER }}  
+      run: git push
