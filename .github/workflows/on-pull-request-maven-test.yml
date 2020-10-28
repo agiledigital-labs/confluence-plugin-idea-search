@@ -6,17 +6,6 @@ name: on-push-maven-test
 on: [pull_request]
 
 jobs:
-  send-slack:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Post to slack webhook
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-          -d '{"blocks":[{"type":"section","block_id":"section1","text":{"type":"mrkdwn","text":"A new PR was made, start the review:"}},{"type":"section","block_id":"section2","text":{"type":"mrkdwn","text":"<https://github.com/agiledigital-labs/confluence-plugin-idea-search/pull/${{ github.event.number }}|Github Pull Request ${{ github.event.number }}>\n :thinking_face: :Microscope:"}}]}' \
-          $SLACK_WEBHOOK
   test:
     runs-on: ubuntu-latest
 
