@@ -66,6 +66,10 @@ where type is either;
 For example:
 `feat/ADE-101/add-idea-blueprint`
 
+### Branch Flow
+
+Your Branch => develop => qa => master
+
 ## Making a PR
 
 Please do the following before creating a PR;
