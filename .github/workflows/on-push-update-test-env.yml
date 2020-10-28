@@ -31,7 +31,7 @@ jobs:
         repository: agiledigital-labs/argo-apps
 
     - name: Edit yaml file 
-      run: docker run --rm -v "$GITHUB_WORKSPACE":/workdir mikefarah/yq yq w --inplace  /workdir/overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'commonLabels.commitHash' "$GITHUB_SHA"
+      run: docker run --rm -v "$GITHUB_WORKSPACE":/workdir mikefarah/yq yq w --inplace  /workdir/overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'configMapGenerator[0].literals[2]' "COMMIT_HASH=$GITHUB_SHA"
 
 
     - name: Commit changes
