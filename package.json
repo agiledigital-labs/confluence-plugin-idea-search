@@ -16,8 +16,7 @@
       {
         "name": "qa",
         "prerelease": true
-      },
-      "chore/ADE-489/add-cicd"
+      }
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
