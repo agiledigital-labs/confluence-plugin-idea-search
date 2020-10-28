@@ -1,6 +1,6 @@
 # Confluence Plugin Idea Search
-Provides a blue print for idea capture, search, and display.
 
+Provides a blue print for idea capture, search, and display.
 
 # Requirements
 
@@ -10,11 +10,10 @@ The plugin is built using the Atlassian SDK, for installation instructions see [
 
 Either add the addon throught he Atlassian Market place (link to come) or by directly installing the .jar file from [one of the releases](https://github.com/agiledigital-labs/confluence-plugin-idea-search/releases)
 
-
 # Developing
 
-* Clone the repository, install the Atlassian SDK, 
-* In the root directory run atlas-run
+- Clone the repository, install the Atlassian SDK,
+- In the root directory run atlas-run
 
 # Contributing
 
@@ -26,18 +25,19 @@ This repository is using [semantic release](https://semantic-release.gitbook.io/
 
 ## Branching strategy
 
-Branches should be attached either to an issue in this repository or a ticket on the jira, 
+Branches should be attached either to an issue in this repository or a ticket on the jira,
 
 ### A branch attached to an issue
 
 Please name the branch `type`/issueNumber/`description`
 
 where type is either;
-* feat
-* fix
-* chore
-* docs
-* etc from the semvar naming strategy
+
+- feat
+- fix
+- chore
+- docs
+- etc from the semvar naming strategy
 
 For example:
 `feat/issue3/add-idea-blueprint`
@@ -47,11 +47,12 @@ For example:
 Please name the branch `type`/ticketNumber/`description`
 
 where type is either;
-* feat
-* fix
-* chore
-* docs
-* etc from the semvar naming strategy
+
+- feat
+- fix
+- chore
+- docs
+- etc from the semvar naming strategy
 
 For example:
 `feat/ADE-101/add-idea-blueprint`
@@ -59,11 +60,12 @@ For example:
 ## Making a PR
 
 Please do the following before creating a PR;
-* have an issue or a jira ticket,
-* write a descriptive PR title
-* Add the @agiledigital-labs/atlassian-plugin team as a reviewer
-* We will review and provide feedback as soon as we can, it is easier if you help us along
+
+- have an issue or a jira ticket,
+- write a descriptive PR title
+- Add the @agiledigital-labs/atlassian-plugin team as a reviewer
+- We will review and provide feedback as soon as we can, it is easier if you help us along
 
 # Supported versions
-We are supporting versions from 7.6.2 onwards at this stage, if there are any issues please raise an issue on this repo
 
+We are supporting versions from 7.6.2 onwards at this stage, if there are any issues please raise an issue on this repo

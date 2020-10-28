@@ -1,28 +1,33 @@
 package it.au.com.agiledigital;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
-import au.com.agiledigital.api.MyPluginComponent;
-import com.atlassian.sal.api.ApplicationProperties;
-
 import static org.junit.Assert.assertEquals;
 
+import au.com.agiledigital.api.MyPluginComponent;
+import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
+import com.atlassian.sal.api.ApplicationProperties;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @RunWith(AtlassianPluginsTestRunner.class)
-public class MyComponentWiredTest
-{
-    private final ApplicationProperties applicationProperties;
-    private final MyPluginComponent myPluginComponent;
+public class MyComponentWiredTest {
 
-    public MyComponentWiredTest(ApplicationProperties applicationProperties,MyPluginComponent myPluginComponent)
-    {
-        this.applicationProperties = applicationProperties;
-        this.myPluginComponent = myPluginComponent;
-    }
+  private final ApplicationProperties applicationProperties;
+  private final MyPluginComponent myPluginComponent;
 
-    @Test
-    public void testMyName()
-    {
-        assertEquals("names do not match!", "myComponent:" + applicationProperties.getDisplayName(),myPluginComponent.getName());
-    }
+  public MyComponentWiredTest(
+    ApplicationProperties applicationProperties,
+    MyPluginComponent myPluginComponent
+  ) {
+    this.applicationProperties = applicationProperties;
+    this.myPluginComponent = myPluginComponent;
+  }
+
+  @Test
+  public void testMyName() {
+    assertEquals(
+      "names do not match!",
+      "myComponent:" + applicationProperties.getDisplayName(),
+      myPluginComponent.getName()
+    );
+  }
 }

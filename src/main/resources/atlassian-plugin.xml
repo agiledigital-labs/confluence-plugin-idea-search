@@ -1,22 +1,37 @@
-<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+<atlassian-plugin
+  key="${atlassian.plugin.key}"
+  name="${project.name}"
+  plugins-version="2"
+>
     <plugin-info>
         <description>${project.description}</description>
         <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <vendor
+      name="${project.organization.name}"
+      url="${project.organization.url}"
+    />
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
     </plugin-info>
 
     <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="ideaSearch"/>
+    <resource type="i18n" name="i18n" location="ideaSearch" />
     
     <!-- add our web resources -->
     <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         
-        <resource type="download" name="ideaSearch.css" location="/css/ideaSearch.css"/>
-        <resource type="download" name="ideaSearch.js" location="/js/ideaSearch.js"/>
-        <resource type="download" name="images/" location="/images"/>
+        <resource
+      type="download"
+      name="ideaSearch.css"
+      location="/css/ideaSearch.css"
+    />
+        <resource
+      type="download"
+      name="ideaSearch.js"
+      location="/js/ideaSearch.js"
+    />
+        <resource type="download" name="images/" location="/images" />
 
         <context>ideaSearch</context>
     </web-resource>
