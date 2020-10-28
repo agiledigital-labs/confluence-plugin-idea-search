@@ -62,3 +62,4 @@ Please do the following before creating a PR;
 * have an issue or a jira ticket,
 * write a descriptive PR title
 * Add the @agiledigital-labs/atlassian-plugin team as a reviewer
+* We will review and provide feedback as soon as we can, it is easier if you help us along
