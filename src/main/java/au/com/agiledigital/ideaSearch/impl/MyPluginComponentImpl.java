@@ -1,6 +1,6 @@
-package au.com.agiledigital.impl;
+package au.com.agiledigital.ideaSearch.impl;
 
-import au.com.agiledigital.api.MyPluginComponent;
+import au.com.agiledigital.ideaSearch.api.MyPluginComponent;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.ApplicationProperties;

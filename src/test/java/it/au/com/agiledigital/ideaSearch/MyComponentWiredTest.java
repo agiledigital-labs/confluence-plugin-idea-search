@@ -1,8 +1,8 @@
-package it.au.com.agiledigital;
+package it.au.com.agiledigital.ideaSearch;
 
 import static org.junit.Assert.assertEquals;
 
-import au.com.agiledigital.api.MyPluginComponent;
+import au.com.agiledigital.ideaSearch.api.MyPluginComponent;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
 import com.atlassian.sal.api.ApplicationProperties;
 import org.junit.Test;

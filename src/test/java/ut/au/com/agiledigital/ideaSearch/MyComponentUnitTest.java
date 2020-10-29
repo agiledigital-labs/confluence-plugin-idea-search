@@ -1,9 +1,9 @@
-package ut.au.com.agiledigital;
+package ut.au.com.agiledigital.ideaSearch;
 
 import static org.junit.Assert.assertEquals;
 
-import au.com.agiledigital.api.MyPluginComponent;
-import au.com.agiledigital.impl.MyPluginComponentImpl;
+import au.com.agiledigital.ideaSearch.api.MyPluginComponent;
+import au.com.agiledigital.ideaSearch.impl.MyPluginComponentImpl;
 import org.junit.Test;
 
 public class MyComponentUnitTest {
