@@ -3,37 +3,109 @@
   name="${project.name}"
   plugins-version="2"
 >
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor
       name="${project.organization.name}"
       url="${project.organization.url}"
     />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-    </plugin-info>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
 
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="ideaSearch" />
-    
-    <!-- add our web resources -->
-    <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="ideaSearch" />
+
+  <!-- add our web resources -->
+   <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">-->
+     <dependency>com.atlassian.auiplugin:ajs</dependency>
+     <dependency>
+       com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
+     </dependency>
+
+     <transformation extension="soy">
+       <transformer key="soyTransformer">
+         <functions>com.atlassian.confluence.plugins.soy:soy-core-functions
+         </functions>
+       </transformer>
+     </transformation>
+
+     <resource
       type="download"
       name="ideaSearch.css"
       location="/css/ideaSearch.css"
     />
-        <resource
+     <resource
       type="download"
       name="ideaSearch.js"
       location="/js/ideaSearch.js"
     />
-        <resource type="download" name="images/" location="/images" />
+     <resource
+      type="download"
+      name="ideaSearch.soy.js"
+      location="/soy/ideaSearch.soy"
+    />
+     <resource type="download" name="images/" location="/images" />
 
-        <context>ideaSearch</context>
-    </web-resource>
-    
+     <context>create-content</context>
+  </web-resource>
+
+  <web-resource key="ideaSearch-page-resources" name="ideaSearch Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource
+      type="download"
+      name="ideaSearch.css"
+      location="/css/ideaSearch.css"
+    />
+
+    <context>ideaSearch</context>
+  </web-resource>
+
+  <blueprint
+    key="my-blueprint"
+    content-template-key="ideaSearch-template"
+    index-key="my-index"
+    i18n-name-key="ideaSearch.blueprint.name"
+  >
+    <dialog-wizard key="ideaSearch-wizard">
+      <dialog-page
+        id="page1Id"
+        template-key="MyPlugin.Blueprints.Simple.page1Form"
+        title-key="ideaSearch.blueprint.wizard.page1.title"
+        description-header-key="ideaSearch.blueprint.wizard.page1.desc.header"
+        description-content-key="ideaSearch.blueprint.wizard.page1.desc.content"
+        last="true"
+      />
+    </dialog-wizard>
+  </blueprint>
+
+  <!-- Add to the Create Menu -->
+  <web-item
+    key="create-by-sample-template"
+    i18n-name-key="ideaSearch.create-link.title"
+    section="system.create.dialog/content"
+  >
+    <description key="ideaSearch.create-link.description" />
+    <resource name="icon" type="download" location="/images/myblueprint.png" />
+    <param name="blueprintKey" value="my-blueprint" />
+  </web-item>
+
+
+  <!-- Template for Blueprint -->
+  <content-template
+    key="ideaSearch-template"
+    i18n-name-key="ideaSearch.blueprint.title"
+  >
+
+    <resource
+      name="template"
+      type="download"
+      location="/templates/blueprint.xml"
+    />
+    <context-provider
+      class="au.com.agiledigital.idea_search.BlueprintContextProvider"
+    />
+  </content-template>
+
 </atlassian-plugin>
