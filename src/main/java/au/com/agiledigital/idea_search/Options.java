@@ -9,11 +9,11 @@ public class Options {
   /**
    * Sets the flag for default value
    *
-   * @param aDefault Is a default value
+   * @param isDefault Is a default value
    * @return Options object with the applied flag
    */
-  public Options withDefault(boolean aDefault) {
-    isDefault = aDefault;
+  public Options withDefault(boolean isDefault) {
+    this.isDefault = isDefault;
 
     return this;
   }
@@ -46,13 +46,13 @@ public class Options {
   public String toString() {
     return (
       "Options{" +
-      "isDefault=" +
-      isDefault +
-      ", isUser=" +
-      isUser +
-      ", isStatus=" +
-      isStatus +
-      '}'
+        "isDefault=" +
+        isDefault +
+        ", isUser=" +
+        isUser +
+        ", isStatus=" +
+        isStatus +
+        '}'
     );
   }
 }

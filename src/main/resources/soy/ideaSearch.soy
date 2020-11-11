@@ -1,47 +1,48 @@
-{namespace MyPlugin.Blueprints.Simple}
+{namespace IdeaSearch.Blueprints.FedexIdea}
 
 /**
 *  A form that accepts a person's name
 */
 {template .page1Form}
-    <form action="#" method="post" class="aui">
-        <fieldset>
-            <div class="field-group">
-                <label for="videatitle">{getText('ideaSearch.blueprint.form.label.idea.title')}</label>
-                <input id="videatitle" class="text" type="text"
-                       name="vIdeaTitle">*
-            </div>
-        </fieldset>
-        <fieldset>
-            <div class="field-group">
-                <label for="videadescription">{getText('ideaSearch.blueprint.form.label.idea.description')}</label>
-                <input id="videadescription" class="text" type="text"
-                       name="vIdeaDescription"/>
-            </div>
-        </fieldset>
-        <fieldset>
-            <div class="field-group">
-                <label for="videaowner">{getText('ideaSearch.blueprint.form.label.idea.owner')}</label>
-                <input id="videaowner" class="text" type="text"
-                       name="vIdeaOwner"/>
-            </div>
-        </fieldset>
-        <fieldset>
-            <div class="field-group">
-                <label for="videastatus">{getText('ideaSearch.blueprint.form.label.idea.status')}</label>
-                <select id="videastatus" name="vIdeaStatus">
-                    <option value="new">New</option>
-                    <option value="inProgress">In progress</option>
-                    <option value="completed">Completed</option>
-                </select>
-            </div>
-        </fieldset>
-        <fieldset>
-            <div class="field-group">
-                <label for="videateam">{getText('ideaSearch.blueprint.form.label.idea.team')}</label>
-                <input id="videateam" class="text" type="text"
-                       name="vIdeaTeam"/>
-            </div>
-        </fieldset>
-    </form>
+  <form action="#" method="post" class="aui">
+    <fieldset>
+      <div class="field-group">
+        <label for="videatitle">{getText('ideaSearch.blueprint.form.label.idea.title')}</label>
+        <input id="videatitle" class="text" type="text"
+               name="vIdeaTitle">*
+      </div>
+    </fieldset>
+    <fieldset>
+      <div class="field-group">
+        <label
+            for="videadescription">{getText('ideaSearch.blueprint.form.label.idea.description')}</label>
+        <input id="videadescription" class="text" type="text"
+               name="vIdeaDescription"/>
+      </div>
+    </fieldset>
+    <fieldset>
+      <div class="field-group">
+        <label for="videaowner">{getText('ideaSearch.blueprint.form.label.idea.owner')}</label>
+        <input id="videaowner" class="text" type="text"
+               name="vIdeaOwner"/>
+      </div>
+    </fieldset>
+    <fieldset>
+      <div class="field-group">
+        <label for="videastatus">{getText('ideaSearch.blueprint.form.label.idea.status')}</label>
+        <select id="videastatus" name="vIdeaStatus">
+          <option value="new">New</option>
+          <option value="inProgress">In progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+    </fieldset>
+    <fieldset>
+      <div class="field-group">
+        <label for="videateam">{getText('ideaSearch.blueprint.form.label.idea.team')}</label>
+        <input id="videateam" class="text" type="text"
+               name="vIdeaTeam"/>
+      </div>
+    </fieldset>
+  </form>
 {/template}

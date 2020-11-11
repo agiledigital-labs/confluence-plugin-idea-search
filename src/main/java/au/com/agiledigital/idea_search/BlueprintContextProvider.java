@@ -31,8 +31,7 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
   private final String templatePath = "vm/";
 
   /**
-   * Renders a value based on a template using the options object as the
-   * determiner.
+   * Renders a value based on a template using the options object as the determiner.
    *
    * @param property The value to be rendered with the associated options
    * @return the rendered value as xhtml
@@ -65,9 +64,8 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
   }
 
   /**
-   * Determines if a value in a map is a lossy false (null or string with a
-   * length of 0). If the evaluated value is true the left function will
-   * run, if false the right function will run.
+   * Determines if a value in a map is a lossy false (null or string with a length of 0). If the
+   * evaluated value is true the left function will run, if false the right function will run.
    *
    * @param map   the map containing the keys and values
    * @param key   key to evaluate
@@ -116,8 +114,8 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
   }
 
   /**
-   * Transformer of the blueprint context. This takes the parameters from the
-   * wizard and transforms them to meet the requirements of the application
+   * Transformer of the blueprint context. This takes the parameters from the wizard and transforms
+   * them to meet the requirements of the application
    *
    * @param blueprintContext Context provided by Confluence
    * @return Update context
@@ -130,6 +128,7 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
 
     blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());
 
+    // Goes through map and adds in default values and transforms pre-existing values
     contextMap
       .entrySet()
       .forEach(
@@ -137,6 +136,7 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
           ifElseComputeLossyFalse(
             contextMap,
             entry.getKey(),
+            // Default value transformer
             k ->
               defaults
                 .stream()
@@ -146,24 +146,26 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
                   new KeyProperty(
                     k,
                     "Something went very wrong here",
-                    setupOptions(k, new Options().withDefault(true))
+                    setupOptions(k,
+                      new Options().withDefault(true))
                   )
                 ),
-            k ->
+            // Pre-existing value transformer
+            (k) ->
               new KeyProperty(
                 k,
                 entry.getValue(),
-                setupOptions(k, new Options().withDefault(false))
+                setupOptions(k,
+                  new Options().withDefault(
+                    false))
               )
-          )
-      );
-
-    contextMap.entrySet().forEach(System.out::println);
+          ));
 
     contextMap
       .entrySet()
       .forEach(
-        entry -> entry.setValue(renderValue((KeyProperty) entry.getValue()))
+        entry -> entry.setValue(
+          renderValue((KeyProperty) entry.getValue()))
       );
 
     return blueprintContext;

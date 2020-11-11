@@ -1,7 +1,3 @@
-<h1>
-    <at:var at:name="vIdeaTitle" at:rawxhtml="true"/>
-</h1>
-
 <h2>Description</h2>
 <p>
 <at:var at:name="vIdeaDescription" at:rawxhtml="true"/>
