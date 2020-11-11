@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
 
@@ -64,33 +63,6 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
   }
 
   /**
-   * Determines if a value in a map is a lossy false (null or string with a length of 0). If the
-   * evaluated value is true the left function will run, if false the right function will run.
-   *
-   * @param map   the map containing the keys and values
-   * @param key   key to evaluate
-   * @param left  Function to run if the lossy check is true
-   * @param right Function to run if the lossy check is false
-   */
-  private <K, V> void ifElseComputeLossyFalse(
-    Map<K, V> map,
-    K key,
-    Function<K, V> left,
-    Function<K, V> right
-  ) {
-    V value = map.get(key);
-    V newValue =
-      (
-        value == null ||
-          (value instanceof String && ((String) value).length() == 0)
-          ? left
-          : right
-      ).apply(key);
-
-    map.put(key, newValue);
-  }
-
-  /**
    * Flags the options object with additional options based off the key
    *
    * @param key     Key of the context item
@@ -133,32 +105,19 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
       .entrySet()
       .forEach(
         entry ->
-          ifElseComputeLossyFalse(
-            contextMap,
-            entry.getKey(),
-            // Default value transformer
-            k ->
-              defaults
+          contextMap.compute(entry.getKey(),
+            (key, value) ->
+              value == null || (value instanceof String && ((String) value).length() == 0)
+                ? defaults
                 .stream()
-                .filter(property -> property.key.equals(k))
+                .filter(property -> property.key.equals(key))
                 .findFirst()
                 .orElse(
-                  new KeyProperty(
-                    k,
-                    "Something went very wrong here",
-                    setupOptions(k,
-                      new Options().withDefault(true))
-                  )
-                ),
-            // Pre-existing value transformer
-            (k) ->
-              new KeyProperty(
-                k,
-                entry.getValue(),
-                setupOptions(k,
-                  new Options().withDefault(
-                    false))
-              )
+                  new KeyProperty(key, "Something went very wrong here",
+                    setupOptions(key, new Options().withDefault(true))))
+                : new KeyProperty(key, entry.getValue(),
+                  setupOptions(key, new Options().withDefault(false))
+                )
           ));
 
     contextMap
