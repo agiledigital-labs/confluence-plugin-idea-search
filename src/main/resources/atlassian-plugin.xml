@@ -3,37 +3,109 @@
   name="${project.name}"
   plugins-version="2"
 >
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor
+  <blueprint
+    content-template-key="ideaSearch-template"
+    i18n-name-key="ideaSearch.blueprint.name"
+    index-key="my-index"
+    key="my-blueprint"
+  >
+    <dialog-wizard key="ideaSearch-wizard">
+      <dialog-page
+        description-content-key="ideaSearch.blueprint.wizard.page1.desc.content"
+        description-header-key="ideaSearch.blueprint.wizard.page1.desc.header"
+        id="page1Id"
+        last="true"
+        template-key="IdeaSearch.Blueprints.FedexIdea.page1Form"
+        title-key="ideaSearch.blueprint.wizard.page1.title"
+      />
+    </dialog-wizard>
+  </blueprint>
+
+  <!-- add our i18n resource -->
+  <content-template
+    i18n-name-key="ideaSearch.blueprint.title"
+    key="ideaSearch-template"
+  >
+
+    <context-provider
+      class="au.com.agiledigital.idea_search.BlueprintContextProvider"
+    />
+    <resource
+      location="/templates/blueprint.xml"
+      name="template"
+      type="download"
+    />
+  </content-template>
+
+  <!-- add our web resources -->
+  <plugin-info>
+    <description>${project.description}</description>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+    <vendor
       name="${project.organization.name}"
       url="${project.organization.url}"
     />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-    </plugin-info>
+    <version>${project.version}</version>
+  </plugin-info>
 
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="ideaSearch" />
-    
-    <!-- add our web resources -->
-    <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource
-      type="download"
-      name="ideaSearch.css"
+  <resource location="ideaSearch" name="i18n" type="i18n"/>
+
+  <web-item
+    i18n-name-key="ideaSearch.create-link.title"
+    key="create-by-sample-template"
+    section="system.create.dialog/content"
+  >
+    <description key="ideaSearch.create-link.description"/>
+    <param name="blueprintKey" value="my-blueprint"/>
+    <resource location="/images/myblueprint.png" name="icon" type="download"/>
+  </web-item>
+
+  <!-- Add to the Create Menu -->
+  <web-resource key="ideaSearch-page-resources" name="ideaSearch Web Resources">
+    <context>ideaSearch</context>
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+    <resource
       location="/css/ideaSearch.css"
-    />
-        <resource
+      name="ideaSearch.css"
       type="download"
-      name="ideaSearch.js"
-      location="/js/ideaSearch.js"
     />
-        <resource type="download" name="images/" location="/images" />
+  </web-resource>
 
-        <context>ideaSearch</context>
-    </web-resource>
-    
+
+  <!-- Template for Blueprint -->
+  <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">-->
+    <context>create-content</context>
+    <dependency>
+      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
+    </dependency>
+
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+    <resource
+      location="/js/ideaSearch.js"
+      name="ideaSearch.js"
+      type="download"
+    />
+    <resource
+      location="/soy/ideaSearch.soy"
+      name="ideaSearch.soy.js"
+      type="download"
+    />
+    <resource location="/images" name="images/" type="download"/>
+    <resource
+      location="/css/ideaSearch.css"
+      name="ideaSearch.css"
+      type="download"
+    />
+
+    <transformation extension="soy">
+      <transformer key="soyTransformer">
+        <functions>com.atlassian.confluence.plugins.soy:soy-core-functions
+        </functions>
+      </transformer>
+    </transformation>
+  </web-resource>
+
 </atlassian-plugin>

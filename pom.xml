@@ -6,18 +6,17 @@
 >
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId> com.riseserver.tutorial</groupId>
-    <artifactId>myConfluenceMacro</artifactId>
+    <groupId>au.com.agiledigital</groupId>
+    <artifactId>idea_search</artifactId>
     <version>1.0.2-SNAPSHOT</version>
 
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>Agile Digital</name>
+        <url>https://agiledigital.com.au</url>
     </organization>
 
-    <name>myConfluenceMacro</name>
-    <description
-  >This is the  com.atlassian.tutorial:myConfluenceMacro plugin for Atlassian Confluence.</description>
+    <name>Idea Search</name>
+    <description />
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
@@ -38,6 +37,12 @@
             <groupId>com.atlassian.plugin</groupId>
             <artifactId>atlassian-spring-scanner-annotation</artifactId>
             <version>${atlassian.spring.scanner.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.confluence.plugins</groupId>
+            <artifactId>confluence-create-content-plugin</artifactId>
+            <version>5.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -90,7 +95,7 @@
 
                         <!-- Add package to export here -->
                         <Export-Package>
-                             com.atlassian.tutorial.api,
+                             au.com.agiledigital.idea_search,
                         </Export-Package>
 
                         <!-- Add package import here -->

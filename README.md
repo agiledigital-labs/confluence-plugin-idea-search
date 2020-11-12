@@ -12,8 +12,15 @@ Either add the addon throught he Atlassian Market place (link to come) or by dir
 
 # Developing
 
-- Clone the repository, install the Atlassian SDK,
-- In the root directory run atlas-run
+1. Clone the repository
+2. Install the [Atlassian SDK](https://developer.atlassian.com/server/framework/atlassian-sdk/)
+3. In the root directory run `atlas-run` to start the confluence server
+4. Once Confluence has started you can access it via http://localhost:1990/confluence. Note you will need to change the baseUrl in the confluence settings otherwise you will have issues with the creation of resources
+
+- To run without tests add this argument to the command `-Dmaven.test.skip=true`
+- We suggest dumping logs to a file due to the large number of lines in the output. A command to do this would be `rm -rf logs.log; atlas-run > logs.log`
+
+To run the hot reload, have the confluence server running. Run the command `atlas-mvn package` which will build the app. The server will see the change and hot load the new version into the app.
 
 ## Developer tooling
 
