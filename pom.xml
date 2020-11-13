@@ -1,21 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId> com.riseserver.tutorial</groupId>
-    <artifactId>myConfluenceMacro</artifactId>
+    <groupId>au.com.agiledigital</groupId>
+    <artifactId>idea_search</artifactId>
     <version>1.0.2-SNAPSHOT</version>
 
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>Agile Digital</name>
+        <url>https://agiledigital.com.au</url>
     </organization>
 
-    <name>myConfluenceMacro</name>
-    <description>This is the  com.atlassian.tutorial:myConfluenceMacro plugin for Atlassian Confluence.</description>
+    <name>Idea Search</name>
+    <description />
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
@@ -36,6 +37,12 @@
             <groupId>com.atlassian.plugin</groupId>
             <artifactId>atlassian-spring-scanner-annotation</artifactId>
             <version>${atlassian.spring.scanner.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.confluence.plugins</groupId>
+            <artifactId>confluence-create-content-plugin</artifactId>
+            <version>5.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -74,18 +81,21 @@
                 <extensions>true</extensions>
                 <configuration>
                     <productVersion>${confluence.version}</productVersion>
-                    <productDataVersion>${confluence.data.version}</productDataVersion>
+                    <productDataVersion
+          >${confluence.data.version}</productDataVersion>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
-                    <includeExclude>-com.atlassian.plugin.spring.scanner.annotation.*</includeExclude>
+                    <includeExclude
+          >-com.atlassian.plugin.spring.scanner.annotation.*</includeExclude>
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>
-                        <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+                        <Atlassian-Plugin-Key
+            >${atlassian.plugin.key}</Atlassian-Plugin-Key>
 
                         <!-- Add package to export here -->
                         <Export-Package>
-                             com.atlassian.tutorial.api,
+                             au.com.agiledigital.idea_search,
                         </Export-Package>
 
                         <!-- Add package import here -->
@@ -124,9 +134,11 @@
         <confluence.data.version>7.6.2</confluence.data.version>
         <amps.version>8.1.0</amps.version>
         <plugin.testrunner.version>2.0.1</plugin.testrunner.version>
-        <atlassian.spring.scanner.version>2.1.7</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version
+    >2.1.7</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
-        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <atlassian.plugin.key
+    >${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

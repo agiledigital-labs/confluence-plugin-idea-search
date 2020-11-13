@@ -1,0 +1,2 @@
+##<ac:placeholder>$message.value</ac:placeholder>
+<ac:placeholder>$message.value</ac:placeholder>

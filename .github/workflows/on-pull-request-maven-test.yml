@@ -5,41 +5,27 @@ name: on-push-maven-test
 
 on: [pull_request]
 
-
 jobs:
-  send-slack:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Post to slack webhook
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}     
-      run: |
-        curl -X POST -H "Content-Type: application/json" \
-        -d '{"blocks":[{"type":"section","block_id":"section1","text":{"type":"mrkdwn","text":"A new PR was made, start the review:"}},{"type":"section","block_id":"section2","text":{"type":"mrkdwn","text":"<https://github.com/agiledigital-labs/confluence-plugin-idea-search/pull/${{ github.event.number }}|Github Pull Request ${{ github.event.number }}>\n :thinking_face: :Microscope:"}}]}' \
-        $SLACK_WEBHOOK
   test:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    - name: Cache maven modules
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-maven-modules
-      with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
-        path: ~/.m2
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-    - name: Test with Maven
-      run: mvn -s ./settings.xml -B test --file pom.xml
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Cache maven modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-maven-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.m2
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Test with Maven
+        run: mvn -s ./settings.xml -B test --file pom.xml
