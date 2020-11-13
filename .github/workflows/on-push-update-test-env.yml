@@ -1,0 +1,46 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: on-push-update-test-env
+
+on:
+  push:
+    branches:
+      - qa
+      - develop
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set env to dev
+        if: endsWith(github.ref, '/develop')
+        run: |
+          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+
+      - name: Set env to ga
+        if: endsWith(github.ref, '/qa')
+        run: |
+          echo "ENVIRONMENT=qa" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v2
+        with:
+          repository: agiledigital-labs/argo-apps
+
+      - name: Edit yaml file
+        run: docker run --rm -v "$GITHUB_WORKSPACE":/workdir mikefarah/yq yq w --inplace  /workdir/overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'configMapGenerator[0].literals[2]' "COMMIT_HASH=$GITHUB_SHA"
+
+      - name: Commit changes
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git add --all
+          git config --global user.email "CI@agiledigital.com.au"
+          git config --global user.name "commit bot"
+          git commit -m "chore(ci) commit made by run $GITHUB_RUN_ID in workflow $GITHUB_WORKFLOW  in $GITHUB_REPOSITORY"
+          git config -l | grep 'http\..*\.extraheader' | cut -d= -f1 |  xargs -L1 git config --unset-all
+
+          git remote add ade-labs https://token:$GH_TOKEN@github.com/agiledigital-labs/argo-apps.git
+
+      - name: Push changes
+        run: git push ade-labs qa
