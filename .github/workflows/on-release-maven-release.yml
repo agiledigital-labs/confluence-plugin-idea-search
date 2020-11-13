@@ -6,7 +6,7 @@ name: on-release-maven-release
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   prepare_and_publish:
