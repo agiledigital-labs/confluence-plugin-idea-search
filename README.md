@@ -2,6 +2,10 @@
 
 Provides a blue print for idea capture, search, and display.
 
+# Release
+
+The latest released version [can be downloaded from github.](https://github.com/agiledigital-labs/confluence-plugin-idea-search/releases/latest) 
+
 # Requirements
 
 The plugin is built using the Atlassian SDK, for installation instructions see [Atlassian documentation](https://developer.atlassian.com/server/framework/atlassian-sdk/set-up-the-atlassian-plugin-sdk-and-build-a-project/).
