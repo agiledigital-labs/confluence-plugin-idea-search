@@ -140,8 +140,8 @@
     <description key="ideaSearch.macro.structuredField.desc" />
     <category name="hidden" />
     <parameters>
-      <parameter name="category" type="enum" >
-        <value name="technologies"/>
+      <parameter name="category" type="enum">
+        <value name="technologies" />
       </parameter>
     </parameters>
   </xhtml-macro>
@@ -155,7 +155,6 @@
       name="StructuredField.css"
       location="/css/StructuredField.css"
     />
-<!--    <resource type="velocity" name="template" location="/vm/StructuredData.vm"/>-->
   </web-resource>
 
 </atlassian-plugin>
