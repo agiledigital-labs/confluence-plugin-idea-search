@@ -1,0 +1,5 @@
+#* @vtlvariable name="payload" type="java.lang.reflect.Array" *#
+<h2>Technologies</h2>
+#foreach ($technology in $payload)
+<span class="technology">$technology</span>
+#end

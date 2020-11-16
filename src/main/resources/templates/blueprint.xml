@@ -20,6 +20,11 @@
 <at:var at:name="vIdeaTeam" at:rawxhtml="true"/>
 </p>
 
+<ac:structured-macro ac:name="Idea Structured Field">
+  <ac:parameter ac:name="category">technologies</ac:parameter>
+  <ac:rich-text-body>Add your technology</ac:rich-text-body>
+</ac:structured-macro>
+
 <h2>Links to resources for this idea</h2>
 <ac:placeholder>Link to external websites</ac:placeholder>
 
