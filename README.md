@@ -12,7 +12,7 @@ The plugin is built using the Atlassian SDK, for installation instructions see [
 
 # Adding to confluence
 
-Either add the addon throught he Atlassian Market place (link to come) or by directly installing the .jar file from [one of the releases](https://github.com/agiledigital-labs/confluence-plugin-idea-search/releases)
+Either add the addon through the Atlassian Market place (link to come) or by directly installing the .jar file from [one of the releases](https://github.com/agiledigital-labs/confluence-plugin-idea-search/releases)
 
 # Developing
 
@@ -45,7 +45,7 @@ This repository is using [semantic release](https://semantic-release.gitbook.io/
 
 ## Branching strategy
 
-Branches should be attached either to an issue in this repository or a ticket on the jira,
+Branches should be attached either to an issue in this repository, or a ticket on the jira,
 
 ### A branch attached to an issue
 

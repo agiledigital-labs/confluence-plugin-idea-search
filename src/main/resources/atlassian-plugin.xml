@@ -49,16 +49,16 @@
     <version>${project.version}</version>
   </plugin-info>
 
-  <resource location="ideaSearch" name="i18n" type="i18n"/>
+  <resource location="ideaSearch" name="i18n" type="i18n" />
 
   <web-item
     i18n-name-key="ideaSearch.create-link.title"
-    key="create-by-sample-template"
+    key="ideaSearch.idea-blueprint"
     section="system.create.dialog/content"
   >
-    <description key="ideaSearch.create-link.description"/>
-    <param name="blueprintKey" value="my-blueprint"/>
-    <resource location="/images/myblueprint.png" name="icon" type="download"/>
+    <description key="ideaSearch.create-link.description" />
+    <param name="blueprintKey" value="my-blueprint" />
+    <resource location="/images/myblueprint.png" name="icon" type="download" />
   </web-item>
 
   <!-- Add to the Create Menu -->
@@ -93,7 +93,7 @@
       name="ideaSearch.soy.js"
       type="download"
     />
-    <resource location="/images" name="images/" type="download"/>
+    <resource location="/images" name="images/" type="download" />
     <resource
       location="/css/ideaSearch.css"
       name="ideaSearch.css"
@@ -106,6 +106,30 @@
         </functions>
       </transformer>
     </transformation>
+  </web-resource>
+
+  <xhtml-macro
+    name="Idea Search Client Side Scripts"
+    class="au.com.agiledigital.idea_search.macros.ClientSideScripts"
+    key='ideaSearch-macro-clientSideScripts'
+  >
+    <description key="ideaSearch.macro.client-side-scripts.desc" />
+    <category name="hidden" />
+    <parameters />
+  </xhtml-macro>
+
+  <web-resource
+    key="ideaSearch-macro-clientSideScripts-macro-resource"
+    name="Client Side Scripts Web Resources"
+  >
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+    <!--  Add Background resource loading here  -->
+    <resource
+      type="download"
+      name="ideaSearch.css"
+      location="/css/ideaSearch.css"
+    />
   </web-resource>
 
 </atlassian-plugin>
