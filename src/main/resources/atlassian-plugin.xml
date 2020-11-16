@@ -132,4 +132,30 @@
     />
   </web-resource>
 
+  <xhtml-macro
+    name="Idea Structured Field"
+    class="au.com.agiledigital.idea_search.macros.StructuredField"
+    key='ideaSearch-macro-structuredField'
+  >
+    <description key="ideaSearch.macro.structuredField.desc" />
+    <category name="hidden" />
+    <parameters>
+      <parameter name="category" type="enum" >
+        <value name="technologies"/>
+      </parameter>
+    </parameters>
+  </xhtml-macro>
+
+  <web-resource
+    key="ideaSearch-macro-structuredField-macro-resource"
+    name="Structured Field Web Resources"
+  >
+    <resource
+      type="download"
+      name="StructuredField.css"
+      location="/css/StructuredField.css"
+    />
+<!--    <resource type="velocity" name="template" location="/vm/StructuredData.vm"/>-->
+  </web-resource>
+
 </atlassian-plugin>

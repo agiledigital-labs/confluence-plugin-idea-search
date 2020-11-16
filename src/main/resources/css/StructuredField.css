@@ -1,0 +1,10 @@
+.technology {
+  display: inline-block;
+  padding: .25em .4rem;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
+  color: #ffffff;
+  background-color: #007bff;
+}
