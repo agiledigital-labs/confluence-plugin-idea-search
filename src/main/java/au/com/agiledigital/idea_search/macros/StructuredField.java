@@ -21,18 +21,18 @@ public class StructuredField implements Macro {
   }
 
   private String render(StructuredCategory category, String body) {
-    Map<String, Object> test = new HashMap<>();
+    Map<String, Object> context = new HashMap<>();
 
 
     switch (category) {
       case TECHNOLOGIES:
-        test.put("payload", Arrays.asList(body.split(",")));
+        context.put("payload", Arrays.asList(body.split(",")));
         break;
     }
 
     return VelocityUtils.getRenderedTemplate(
       "vm/" + category.getTemplate(),
-      test
+      context
     );
   }
 
