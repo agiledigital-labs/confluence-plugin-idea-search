@@ -3,41 +3,6 @@
   name="${project.name}"
   plugins-version="2"
 >
-  <blueprint
-    content-template-key="ideaSearch-template"
-    i18n-name-key="ideaSearch.blueprint.name"
-    index-key="my-index"
-    key="my-blueprint"
-  >
-    <dialog-wizard key="ideaSearch-wizard">
-      <dialog-page
-        description-content-key="ideaSearch.blueprint.wizard.page1.desc.content"
-        description-header-key="ideaSearch.blueprint.wizard.page1.desc.header"
-        id="page1Id"
-        last="true"
-        template-key="IdeaSearch.Blueprints.FedexIdea.page1Form"
-        title-key="ideaSearch.blueprint.wizard.page1.title"
-      />
-    </dialog-wizard>
-  </blueprint>
-
-  <!-- add our i18n resource -->
-  <content-template
-    i18n-name-key="ideaSearch.blueprint.title"
-    key="ideaSearch-template"
-  >
-
-    <context-provider
-      class="au.com.agiledigital.idea_search.BlueprintContextProvider"
-    />
-    <resource
-      location="/templates/blueprint.xml"
-      name="template"
-      type="download"
-    />
-  </content-template>
-
-  <!-- add our web resources -->
   <plugin-info>
     <description>${project.description}</description>
     <param name="plugin-icon">images/pluginIcon.png</param>
@@ -49,33 +14,53 @@
     <version>${project.version}</version>
   </plugin-info>
 
+  <!-- Property Naming from ideaSearch.properties -->
   <resource location="ideaSearch" name="i18n" type="i18n" />
 
+  <!-- Page Blueprint -->
+  <blueprint
+    content-template-key="ideaSearch-page-template"
+    i18n-name-key="ideaSearch.blueprint.name"
+    index-key="fedex-ideas"
+    key="idea-blueprint"
+  >
+    <dialog-wizard key="ideaSearch-wizard">
+      <dialog-page
+        description-content-key="ideaSearch.blueprint.page.wizard.page1.desc.content"
+        description-header-key="ideaSearch.blueprint.page.wizard.page1.desc.header"
+        id="page1Id"
+        last="true"
+        template-key="ideaSearch.blueprint.page.fedexIdea.page1Form"
+        title-key="ideaSearch.blueprint.page.wizard.page1.title"
+      />
+    </dialog-wizard>
+  </blueprint>
+
+  <content-template
+    i18n-name-key="ideaSearch.blueprint.page.title"
+    key="ideaSearch-page-template"
+  >
+    <context-provider
+      class="au.com.agiledigital.idea_search.blueprints.BlueprintPageContextProvider"
+    />
+    <resource
+      location="/templates/pageBlueprint.xml"
+      name="template"
+      type="download"
+    />
+  </content-template>
+
   <web-item
-    i18n-name-key="ideaSearch.create-link.title"
-    key="ideaSearch.idea-blueprint"
+    i18n-name-key="ideaSearch.blueprint.page.create-link.title"
+    key="ideaSearch-page-blueprint-entry"
     section="system.create.dialog/content"
   >
-    <description key="ideaSearch.create-link.description" />
-    <param name="blueprintKey" value="my-blueprint" />
+    <description key="ideaSearch.blueprint.page.create-link.description" />
+    <param name="blueprintKey" value="idea-blueprint" />
     <resource location="/images/myblueprint.png" name="icon" type="download" />
   </web-item>
 
-  <!-- Add to the Create Menu -->
-  <web-resource key="ideaSearch-page-resources" name="ideaSearch Web Resources">
-    <context>ideaSearch</context>
-    <dependency>com.atlassian.auiplugin:ajs</dependency>
-
-    <resource
-      location="/css/ideaSearch.css"
-      name="ideaSearch.css"
-      type="download"
-    />
-  </web-resource>
-
-
-  <!-- Template for Blueprint -->
-  <web-resource key="ideaSearch-resources" name="ideaSearch Web Resources">-->
+  <web-resource key="ideaSearch.blueprint.page.wizard" name="Fedex create blueprint wizard">-->
     <context>create-content</context>
     <dependency>
       com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
@@ -94,11 +79,6 @@
       type="download"
     />
     <resource location="/images" name="images/" type="download" />
-    <resource
-      location="/css/ideaSearch.css"
-      name="ideaSearch.css"
-      type="download"
-    />
 
     <transformation extension="soy">
       <transformer key="soyTransformer">
@@ -108,6 +88,7 @@
     </transformation>
   </web-resource>
 
+  <!-- Client Side Scripts Macro -->
   <xhtml-macro
     name="Idea Search Client Side Scripts"
     class="au.com.agiledigital.idea_search.macros.ClientSideScripts"
@@ -132,6 +113,7 @@
     />
   </web-resource>
 
+  <!-- Structured Data Macro -->
   <xhtml-macro
     name="Idea Structured Field"
     class="au.com.agiledigital.idea_search.macros.StructuredField"

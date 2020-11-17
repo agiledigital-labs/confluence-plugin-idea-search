@@ -1,4 +1,4 @@
-package au.com.agiledigital.idea_search;
+package au.com.agiledigital.idea_search.blueprints;
 
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
+public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
 
   private final List<KeyProperty> defaults = Arrays.asList(
     new KeyProperty(
