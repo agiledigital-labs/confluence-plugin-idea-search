@@ -1,0 +1,22 @@
+#* @vtlvariable name="row" type="au.com.agiledigital.idea_search.macros.IdeaRow" *#
+#* @vtlvariable name="rows" type="java.lang.reflect.Array" *#
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Technologies</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    #foreach($row in $rows)
+      <tr>
+        <td>$row.title</td>
+        <td>$row.technologies.getRenderedValue()</td>
+        <td>
+          <a href="$row.url" title="Link to $row.title">View $row.title</a>
+        </td>
+      </tr>
+    #end
+  </tbody>
+</table>

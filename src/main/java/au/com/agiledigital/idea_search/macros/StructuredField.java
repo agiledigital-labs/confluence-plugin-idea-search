@@ -1,13 +1,12 @@
 package au.com.agiledigital.idea_search.macros;
 
+import static au.com.agiledigital.idea_search.macros.StructureFieldRenderHelper.render;
+
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
-import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 public class StructuredField implements Macro {
@@ -18,22 +17,6 @@ public class StructuredField implements Macro {
     @ComponentImport PageBuilderService pageBuilderService
   ) {
     this.pageBuilderService = pageBuilderService;
-  }
-
-  private String render(StructuredCategory category, String body) {
-    Map<String, Object> context = new HashMap<>();
-
-
-    switch (category) {
-      case TECHNOLOGIES:
-        context.put("payload", Arrays.asList(body.split(",")));
-        break;
-    }
-
-    return VelocityUtils.getRenderedTemplate(
-      "vm/" + category.getTemplate(),
-      context
-    );
   }
 
   @Override

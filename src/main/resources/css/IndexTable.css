@@ -1,0 +1,11 @@
+table {
+  width: 100vw;
+}
+
+td {
+  padding: 0.25rem 1rem;
+}
+
+td:last-child {
+  max-width: 10%;
+}
