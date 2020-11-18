@@ -116,11 +116,6 @@
     <dependency>com.atlassian.auiplugin:ajs</dependency>
 
     <!--  Add Background resource loading here  -->
-    <resource
-      type="download"
-      name="ideaSearch.css"
-      location="/css/ideaSearch.css"
-    />
   </web-resource>
 
   <!-- Structured Data Macro -->
@@ -133,7 +128,10 @@
     <category name="hidden" />
     <parameters>
       <parameter name="category" type="enum">
+        <value name="description" />
         <value name="technologies" />
+        <value name="status" />
+        <value name="owner" />
       </parameter>
     </parameters>
   </xhtml-macro>

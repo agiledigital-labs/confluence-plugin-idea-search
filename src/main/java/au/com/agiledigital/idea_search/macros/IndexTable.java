@@ -2,6 +2,8 @@ package au.com.agiledigital.idea_search.macros;
 
 import static au.com.agiledigital.idea_search.macros.MacroHelpers.splitTrimToSet;
 
+import au.com.agiledigital.idea_search.macros.transport.BlueprintContainer;
+import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import com.atlassian.bonnie.Searchable;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.core.BodyContent;
@@ -25,15 +27,18 @@ import com.atlassian.confluence.search.v2.searchfilter.SpacePermissionsSearchFil
 import com.atlassian.confluence.search.v2.sort.ModifiedSort;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
+import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
@@ -43,26 +48,46 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
+/**
+ * Macro for the Index Table.
+ * Fetches the pages with the label "fedex-ideas", pulls the structured field macro from each and
+ * processes the data. It constructs a table to display said data.
+ */
 public class IndexTable implements Macro {
 
   private SearchManager searchManager;
   private PageBuilderService pageBuilderService;
   private SettingsManager settingsManager;
+  private XhtmlContent xhtmlContent;
   private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
   public IndexTable(@ComponentImport SearchManager searchManager,
     @ComponentImport PageBuilderService pageBuilderService,
-    @ComponentImport SettingsManager settingsManager) {
+    @ComponentImport SettingsManager settingsManager,
+    @ComponentImport XhtmlContent xhtmlContent) {
     this.searchManager = searchManager;
     this.pageBuilderService = pageBuilderService;
     this.settingsManager = settingsManager;
+    this.xhtmlContent = xhtmlContent;
 
     documentBuilderFactory.setNamespaceAware(false);
     documentBuilderFactory.setValidating(false);
   }
 
+  /**
+   * Parses XML to Java Dom objects
+   *
+   * @param xml string of readin XML content
+   * @return Object containing the structure of the XML which has functionality for navigating the
+   * dom
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
+   */
   private Document parseXML(String xml)
     throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
@@ -70,7 +95,16 @@ public class IndexTable implements Macro {
     return builder.parse(new ByteArrayInputStream(xml.getBytes()));
   }
 
-  private MacroRepresentation getMacroFromList(NodeList macros, StructuredCategory category) {
+  /**
+   * Finds a Structured Field macro with a category from a list of macros
+   *
+   * @param macros Structured Field macro list
+   * @param category The needle for the search
+   * @param serializer XML serialiser
+   * @return Representation of a macro from Confluence Storage format
+   */
+  private MacroRepresentation getMacroFromList(NodeList macros, StructuredCategory category,
+    LSSerializer serializer) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
 
@@ -83,7 +117,7 @@ public class IndexTable implements Macro {
       do {
         if (child instanceof Element && child.getNodeName().equals("ac:parameter") && child
           .getTextContent().equals(category.getKey())) {
-          return new MacroRepresentation(node, category);
+          return new MacroRepresentation(node, category, serializer, xhtmlContent);
         }
       } while ((child = child.getNextSibling()) != null);
     }
@@ -91,6 +125,23 @@ public class IndexTable implements Macro {
     return null;
   }
 
+  /**
+   * Wraps Confluence storage format with a root element and doctype defining custom DTD definition
+   *
+   * @param body confluence storage format body
+   * @return Wrapped body
+   */
+  private String wrapBody(String body) {
+    return "<!DOCTYPE html [ <!ENTITY nbsp \"&#160;\"> ]><ac:confluence>" + body
+      + "</ac:confluence>";
+  }
+
+  /**
+   * Query for Confluence page labels
+   *
+   * @param labels List of labels
+   * @return Confluence searchable query for labels
+   */
   private BooleanQuery getLabelQuery(Set<String> labels) {
     BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
     labels.forEach((label) -> booleanQueryFactory.addShould(new LabelQuery(label)));
@@ -98,8 +149,27 @@ public class IndexTable implements Macro {
     return booleanQueryFactory.toBooleanQuery();
   }
 
-  private String wrapBody(String body) {
-    return "<ac:confluence>" + body + "</ac:confluence>";
+  /**
+   * Creates a confluence searchable query to find pages of a certain type
+   *
+   * @param labels list of page labels
+   * @param spaceKey location of page search in confluence
+   * @return Confluence searchable query
+   */
+  private BooleanQuery createSearchableQuery(Set<String> labels, String spaceKey) {
+    BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
+    booleanQueryFactory.addMust(getLabelQuery(labels));
+    booleanQueryFactory.addMust(new ContentTypeQuery(ContentTypeEnum.PAGE));
+    booleanQueryFactory.addMust(new InSpaceQuery(spaceKey));
+
+    return booleanQueryFactory.toBooleanQuery();
+  }
+
+  private Set<String> getMacroLabels(Map<String, String> parameters) {
+    Set<String> labels = new HashSet<String>(splitTrimToSet(parameters.get("labels"), ","));
+    labels.add("fedex-ideas");
+
+    return labels;
   }
 
   @Override
@@ -113,19 +183,13 @@ public class IndexTable implements Macro {
 
     Map<String, Object> context = new HashMap<>();
 
-    BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
-    Set<String> labels = new HashSet<String>(splitTrimToSet(map.get("labels"), ","));
-    labels.add("fedex-ideas");
-    booleanQueryFactory.addMust(getLabelQuery(labels));
-    booleanQueryFactory.addMust(new ContentTypeQuery(ContentTypeEnum.PAGE));
-    booleanQueryFactory.addMust(new InSpaceQuery(conversionContext.getSpaceKey()));
-
     SearchFilter searchFilter = ContentPermissionsSearchFilter.getInstance().and(
       SpacePermissionsSearchFilter.getInstance());
-    ContentSearch search = new ContentSearch(booleanQueryFactory.toBooleanQuery(),
+    ContentSearch search = new ContentSearch(
+      createSearchableQuery(getMacroLabels(map), conversionContext.getSpaceKey()),
       ModifiedSort.DESCENDING, searchFilter, new SubsetResultFilter(20));
 
-    List<IdeaRow> rows;
+    List<IdeaContainer> rows = Collections.emptyList();
 
     try {
       List<Searchable> maybePages = this.searchManager
@@ -139,11 +203,15 @@ public class IndexTable implements Macro {
         try {
           Document bodyParsed = parseXML(wrapBody(content.getBody()));
           NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
+          DOMImplementationLS ls = (DOMImplementationLS) bodyParsed.getImplementation();
+          LSSerializer serializer = ls.createLSSerializer();
 
-          IdeaRow row = new IdeaRow();
-          row.technologies = getMacroFromList(macros, StructuredCategory.TECHNOLOGIES);
+          IdeaContainer row = new IdeaContainer();
           row.title = page.getTitle();
           row.url = settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath();
+
+          Arrays.asList(StructuredCategory.values()).forEach((category) -> row
+            .setMacroRepresentations(category, getMacroFromList(macros, category, serializer)));
 
           return row;
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -151,14 +219,15 @@ public class IndexTable implements Macro {
         }
 
         return null;
-      }).filter((entry) -> entry != null).collect(Collectors.toList());
+      }).filter(Objects::nonNull).collect(Collectors.toList());
 
     } catch (InvalidSearchException e) {
       e.printStackTrace();
-      rows = Collections.emptyList();
     }
 
     context.put("rows", rows);
+    context.put("blueprint", new BlueprintContainer(conversionContext.getSpaceKey(),
+      settingsManager.getGlobalSettings().getBaseUrl(), ""));
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

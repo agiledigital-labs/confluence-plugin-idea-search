@@ -5,6 +5,9 @@ import com.atlassian.confluence.plugins.createcontent.api.contextproviders.Abstr
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import java.util.Map;
 
+/**
+ * Context provider for Idea index blueprint
+ */
 public class IndexPageContextProvider extends AbstractBlueprintContextProvider {
 
   /**

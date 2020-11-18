@@ -1,22 +1,40 @@
-#* @vtlvariable name="row" type="au.com.agiledigital.idea_search.macros.IdeaRow" *#
+#* @vtlvariable name="blueprint" type="au.com.agiledigital.idea_search.macros.transport.BlueprintContainer" *#
+#* @vtlvariable name="row" type="au.com.agiledigital.idea_search.macros.transport.IdeaContainer" *#
 #* @vtlvariable name="rows" type="java.lang.reflect.Array" *#
+<p class="add-button">
+  <a class="aui-button create-from-template-button conf-macro output-inline"
+     data-space-key="$blueprint.spaceKey"
+     href="$blueprint.baseUrl?createDialogSpaceKey=$blueprint.spaceKey&createDialogBlueprintId=$blueprint.blueprintId"
+     data-content-blueprint-id="$blueprint.blueprintId" data-hasbody="false"
+     data-macro-name="create-from-template">Add Fedex Idea</a>
+</p>
 <table>
   <thead>
-    <tr>
-      <th>Name</th>
-      <th>Technologies</th>
-      <th></th>
-    </tr>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Technologies</th>
+    <th>Status</th>
+    <th>Talk to</th>
+    <th></th>
+  </tr>
   </thead>
   <tbody>
-    #foreach($row in $rows)
+      #foreach($row in $rows)
       <tr>
-        <td>$row.title</td>
-        <td>$row.technologies.getRenderedValue()</td>
-        <td>
+        <td class="cell-title">$row.title</td>
+        <td class="cell-description">$row.description.getRenderedValue()</td>
+        <td class="cell-technology">$row.technologies.getRenderedValue()</td>
+        <td class="cell-status">$row.status.getRenderedValue()</td>
+        <td class="cell-owner">
+          #if($row.owner.getRenderedValue())
+            $row.owner.getRenderedValue()
+          #end
+        </td>
+        <td class="cell-link">
           <a href="$row.url" title="Link to $row.title">View $row.title</a>
         </td>
       </tr>
-    #end
+      #end
   </tbody>
 </table>

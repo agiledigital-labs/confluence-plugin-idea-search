@@ -2,15 +2,29 @@ package au.com.agiledigital.idea_search.macros;
 
 import java.util.Arrays;
 
+
+/**
+ * Categories of structure data for the Structured Field macro
+ */
 public enum StructuredCategory {
-  TECHNOLOGIES("technologies", "Technology");
+  TECHNOLOGIES("technologies", "Technology", "Add your technologies"),
+  DESCRIPTION("description", "Description", "It is awesome, how could it not be"),
+  STATUS("status", "Status", "new"),
+  OWNER("owner", "Owner", "No one :(");
 
   private String key;
   private String template;
+  private String fallbackText;
 
-  StructuredCategory(String key, String template) {
+  StructuredCategory(String key, String template, String fallbackText) {
     this.key = key;
     this.template = template;
+    this.fallbackText = fallbackText;
+  }
+
+  public static StructuredCategory fromKey(String key) {
+    return Arrays.stream(StructuredCategory.values()).filter((constant) -> constant.key.equals(key))
+      .findFirst().orElse(null);
   }
 
   public String getKey() {
@@ -21,8 +35,7 @@ public enum StructuredCategory {
     return "StructuredField" + template + ".vm";
   }
 
-  public static StructuredCategory fromKey(String key) {
-    return Arrays.stream(StructuredCategory.values()).filter((constant) -> constant.key.equals(key))
-      .findFirst().orElse(null);
+  public String getFallbackText() {
+    return fallbackText;
   }
 }

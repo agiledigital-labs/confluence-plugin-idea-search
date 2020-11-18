@@ -5,18 +5,26 @@ import static au.com.agiledigital.idea_search.macros.StructureFieldRenderHelper.
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
+import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import java.util.Map;
 
+/**
+ * Macro for Structure Field data.
+ * Does body transformation for the category of structured field
+ */
 public class StructuredField implements Macro {
 
   private PageBuilderService pageBuilderService;
+  private XhtmlContent xhtmlContent;
 
   public StructuredField(
-    @ComponentImport PageBuilderService pageBuilderService
+    @ComponentImport PageBuilderService pageBuilderService,
+    @ComponentImport XhtmlContent xhtmlContent
   ) {
     this.pageBuilderService = pageBuilderService;
+    this.xhtmlContent = xhtmlContent;
   }
 
   @Override
@@ -32,10 +40,14 @@ public class StructuredField implements Macro {
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-structuredField-macro-resource"
       );
-
+    StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
     String stripped = s.replace("<p>", "").replace("</p>", "");
 
-    return render(StructuredCategory.fromKey(map.get("category")), stripped);
+    if(stripped.isEmpty()) {
+      stripped = category.getFallbackText();
+    }
+
+    return render(category, stripped);
   }
 
   @Override

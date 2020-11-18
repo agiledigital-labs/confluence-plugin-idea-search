@@ -8,9 +8,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Context provider for Idea page blueprint
+ */
 public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
 
-  private final List<KeyProperty> defaults = Arrays.asList(
+  public final List<KeyProperty> ideaFieldsDefaults = Arrays.asList(
     new KeyProperty(
       Parameter.IDEA_TITLE.reference,
       "I totally forgot to put one in the form"
@@ -108,7 +111,7 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
           contextMap.compute(entry.getKey(),
             (key, value) ->
               value == null || (value instanceof String && ((String) value).length() == 0)
-                ? defaults
+                ? ideaFieldsDefaults
                 .stream()
                 .filter(property -> property.key.equals(key))
                 .findFirst()

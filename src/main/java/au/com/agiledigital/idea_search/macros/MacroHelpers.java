@@ -6,6 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Helpers to do data transformation for macros
+ */
 public class MacroHelpers {
   public static Set<String> splitTrimToSet(String str, String delimiter) {
     if (StringUtils.isBlank(str)) {
