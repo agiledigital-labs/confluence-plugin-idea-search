@@ -10,7 +10,8 @@ public enum StructuredCategory {
   TECHNOLOGIES("technologies", "Technology", "Add your technologies"),
   DESCRIPTION("description", "Description", "It is awesome, how could it not be"),
   STATUS("status", "Status", "new"),
-  OWNER("owner", "Owner", "No one :(");
+  OWNER("owner", "Owner", "No one :("),
+  BLUEPRINT_ID("blueprintId", "", "");
 
   private String key;
   private String template;

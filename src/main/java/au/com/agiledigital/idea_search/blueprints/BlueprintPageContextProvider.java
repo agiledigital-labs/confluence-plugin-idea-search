@@ -130,6 +130,8 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
           renderValue((KeyProperty) entry.getValue()))
       );
 
+    contextMap.put("blueprintId", blueprintContext.getBlueprintId());
+
     return blueprintContext;
   }
 }

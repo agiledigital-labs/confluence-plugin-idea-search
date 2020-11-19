@@ -175,4 +175,20 @@
     />
   </web-resource>
 
+  <!-- Blueprint ID Storage -->
+  <xhtml-macro
+    name="Blueprint Id Storage"
+    class="au.com.agiledigital.idea_search.macros.TemplateId"
+    key='ideaSearch-macro-templateId'
+  >
+    <description key="ideaSearch.macro.templateId.desc" />
+    <category name="hidden" />
+    <parameters>
+      <parameter name="blueprintId" type="string" />
+      <parameter name="category" type="enum">
+        <value name="blueprintId" />
+      </parameter>
+    </parameters>
+  </xhtml-macro>
+
 </atlassian-plugin>

@@ -11,8 +11,7 @@ import com.atlassian.webresource.api.assembler.PageBuilderService;
 import java.util.Map;
 
 /**
- * Macro for Structure Field data.
- * Does body transformation for the category of structured field
+ * Macro for Structure Field data. Does body transformation for the category of structured field
  */
 public class StructuredField implements Macro {
 
@@ -42,10 +41,6 @@ public class StructuredField implements Macro {
       );
     StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
     String stripped = s.replace("<p>", "").replace("</p>", "");
-
-    if(stripped.isEmpty()) {
-      stripped = category.getFallbackText();
-    }
 
     return render(category, stripped);
   }

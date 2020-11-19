@@ -11,6 +11,7 @@ import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.macro.query.BooleanQueryFactory;
 import com.atlassian.confluence.pages.AbstractPage;
+import com.atlassian.confluence.plugins.createcontent.actions.BlueprintManager;
 import com.atlassian.confluence.search.service.ContentTypeEnum;
 import com.atlassian.confluence.search.v2.ContentSearch;
 import com.atlassian.confluence.search.v2.InvalidSearchException;
@@ -34,13 +35,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,9 +57,8 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * Macro for the Index Table.
- * Fetches the pages with the label "fedex-ideas", pulls the structured field macro from each and
- * processes the data. It constructs a table to display said data.
+ * Macro for the Index Table. Fetches the pages with the label "fedex-ideas", pulls the structured
+ * field macro from each and processes the data. It constructs a table to display said data.
  */
 public class IndexTable implements Macro {
 
@@ -64,6 +67,7 @@ public class IndexTable implements Macro {
   private SettingsManager settingsManager;
   private XhtmlContent xhtmlContent;
   private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+  private BlueprintManager blueprintManager;
 
   public IndexTable(@ComponentImport SearchManager searchManager,
     @ComponentImport PageBuilderService pageBuilderService,
@@ -98,8 +102,8 @@ public class IndexTable implements Macro {
   /**
    * Finds a Structured Field macro with a category from a list of macros
    *
-   * @param macros Structured Field macro list
-   * @param category The needle for the search
+   * @param macros     Structured Field macro list
+   * @param category   The needle for the search
    * @param serializer XML serialiser
    * @return Representation of a macro from Confluence Storage format
    */
@@ -108,18 +112,16 @@ public class IndexTable implements Macro {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
 
-      if (!node.getAttributes().getNamedItem("ac:name").getNodeValue()
-        .equals("Idea Structured Field")) {
-        continue;
+      String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
+      if (nodeName.equals("Idea Structured Field") || nodeName.equals("Blueprint Id Storage")) {
+        Node child = node.getFirstChild();
+        do {
+          if (child instanceof Element && child.getNodeName().equals("ac:parameter") && child
+            .getTextContent().equals(category.getKey())) {
+            return new MacroRepresentation(node, category, serializer, xhtmlContent);
+          }
+        } while ((child = child.getNextSibling()) != null);
       }
-
-      Node child = node.getFirstChild();
-      do {
-        if (child instanceof Element && child.getNodeName().equals("ac:parameter") && child
-          .getTextContent().equals(category.getKey())) {
-          return new MacroRepresentation(node, category, serializer, xhtmlContent);
-        }
-      } while ((child = child.getNextSibling()) != null);
     }
 
     return null;
@@ -152,7 +154,7 @@ public class IndexTable implements Macro {
   /**
    * Creates a confluence searchable query to find pages of a certain type
    *
-   * @param labels list of page labels
+   * @param labels   list of page labels
    * @param spaceKey location of page search in confluence
    * @return Confluence searchable query
    */
@@ -197,7 +199,6 @@ public class IndexTable implements Macro {
 
       rows = maybePages.stream().filter((entity) -> entity instanceof AbstractPage).map(entity -> {
         AbstractPage page = (AbstractPage) entity;
-
         BodyContent content = page.getBodyContent();
 
         try {
@@ -225,9 +226,17 @@ public class IndexTable implements Macro {
       e.printStackTrace();
     }
 
+    Stream<IdeaContainer> filteredRows = rows.stream()
+      .filter((container) -> container.blueprintId != null && !container.blueprintId.isEmpty());
+
     context.put("rows", rows);
     context.put("blueprint", new BlueprintContainer(conversionContext.getSpaceKey(),
-      settingsManager.getGlobalSettings().getBaseUrl(), ""));
+      settingsManager.getGlobalSettings().getBaseUrl(),
+      filteredRows.count() == 0 ? "" : Collections.max(filteredRows.collect(
+        Collectors
+          .groupingBy((ideaContainer) -> ideaContainer.blueprintId, Collectors.counting()))
+          .entrySet(),
+        Comparator.comparing(Entry::getValue)).getKey()));
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

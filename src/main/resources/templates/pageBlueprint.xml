@@ -38,3 +38,8 @@
 
 <h2>Presentations on the idea</h2>
 <ac:placeholder>Upload them here</ac:placeholder>
+
+<ac:structured-macro ac:name="Blueprint Id Storage">
+  <ac:parameter ac:name="blueprintId"><at:var at:name="blueprintId"/></ac:parameter>
+  <ac:parameter ac:name="category">blueprintId</ac:parameter>
+</ac:structured-macro>

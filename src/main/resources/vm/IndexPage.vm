@@ -2,11 +2,13 @@
 #* @vtlvariable name="row" type="au.com.agiledigital.idea_search.macros.transport.IdeaContainer" *#
 #* @vtlvariable name="rows" type="java.lang.reflect.Array" *#
 <p class="add-button">
-  <a class="aui-button create-from-template-button conf-macro output-inline"
-     data-space-key="$blueprint.spaceKey"
-     href="$blueprint.baseUrl?createDialogSpaceKey=$blueprint.spaceKey&createDialogBlueprintId=$blueprint.blueprintId"
-     data-content-blueprint-id="$blueprint.blueprintId" data-hasbody="false"
-     data-macro-name="create-from-template">Add Fedex Idea</a>
+  #if($blueprint.blueprintId != "")
+    <a class="aui-button create-from-template-button conf-macro output-inline"
+       data-space-key="$blueprint.spaceKey"
+       href="$blueprint.baseUrl?createDialogSpaceKey=$blueprint.spaceKey&createDialogBlueprintId=$blueprint.blueprintId"
+       data-content-blueprint-id="$blueprint.blueprintId" data-hasbody="false"
+       data-macro-name="create-from-template">Add Fedex Idea</a>
+  #end
 </p>
 <table>
   <thead>
