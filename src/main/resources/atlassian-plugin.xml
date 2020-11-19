@@ -23,6 +23,8 @@
     i18n-name-key="ideaSearch.blueprint.name"
     index-key="fedex-ideas"
     key="idea-blueprint"
+    index-template-key="ideaSearch-index-template"
+    i18n-index-title-key="ideaSearch.blueprint.page.index-title"
   >
     <dialog-wizard key="ideaSearch-wizard">
       <dialog-page
@@ -88,6 +90,14 @@
     </transformation>
   </web-resource>
 
+  <!-- Index Blueprint -->
+  <content-template key="ideaSearch-index-template" i18n-name-key="ideaSearch.blueprint.index.name">
+    <resource name="template" type="download" location="templates/indexBlueprint.xml"/>
+    <context-provider
+      class="au.com.agiledigital.idea_search.blueprints.IndexPageContextProvider"
+    />
+  </content-template>
+
   <!-- Client Side Scripts Macro -->
   <xhtml-macro
     name="Idea Search Client Side Scripts"
@@ -106,11 +116,6 @@
     <dependency>com.atlassian.auiplugin:ajs</dependency>
 
     <!--  Add Background resource loading here  -->
-    <resource
-      type="download"
-      name="ideaSearch.css"
-      location="/css/ideaSearch.css"
-    />
   </web-resource>
 
   <!-- Structured Data Macro -->
@@ -123,7 +128,10 @@
     <category name="hidden" />
     <parameters>
       <parameter name="category" type="enum">
+        <value name="description" />
         <value name="technologies" />
+        <value name="status" />
+        <value name="owner" />
       </parameter>
     </parameters>
   </xhtml-macro>
@@ -138,5 +146,49 @@
       location="/css/StructuredField.css"
     />
   </web-resource>
+
+  <!-- Index Table Macro -->
+  <xhtml-macro
+    name="Ideas index table"
+    class="au.com.agiledigital.idea_search.macros.IndexTable"
+    key='ideaSearch-macro-indexTable'
+  >
+    <description key="ideaSearch.macro.indexTable.desc" />
+    <category name="hidden" />
+    <parameters />
+  </xhtml-macro>
+
+  <web-resource
+    key="ideaSearch-macro-indexTable-macro-resource"
+    name="Index Table Web Resources"
+  >
+    <resource
+      type="download"
+      name="IndexTable.css"
+      location="/css/IndexTable.css"
+    />
+
+    <resource
+      type="download"
+      name="StructuredField.css"
+      location="/css/StructuredField.css"
+    />
+  </web-resource>
+
+  <!-- Blueprint ID Storage -->
+  <xhtml-macro
+    name="Blueprint Id Storage"
+    class="au.com.agiledigital.idea_search.macros.TemplateId"
+    key='ideaSearch-macro-templateId'
+  >
+    <description key="ideaSearch.macro.templateId.desc" />
+    <category name="hidden" />
+    <parameters>
+      <parameter name="blueprintId" type="string" />
+      <parameter name="category" type="enum">
+        <value name="blueprintId" />
+      </parameter>
+    </parameters>
+  </xhtml-macro>
 
 </atlassian-plugin>

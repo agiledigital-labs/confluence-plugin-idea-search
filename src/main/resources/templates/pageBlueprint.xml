@@ -1,19 +1,24 @@
 <ac:structured-macro ac:name="Idea Search Client Side Scripts" />
-<h2>Description</h2>
-<p>
-<at:var at:name="vIdeaDescription" at:rawxhtml="true"/>
-</p>
+<ac:structured-macro ac:name="Idea Structured Field">
+  <ac:parameter ac:name="category">description</ac:parameter>
+  <ac:rich-text-body>
+    <at:var at:name="vIdeaDescription" at:rawxhtml="true"/>
+  </ac:rich-text-body>
+</ac:structured-macro>
 
+<ac:structured-macro ac:name="Idea Structured Field">
+<ac:parameter ac:name="category">owner</ac:parameter>
+<ac:rich-text-body>
+  <at:var at:name="vIdeaOwner" at:rawxhtml="true"/>
+</ac:rich-text-body>
+</ac:structured-macro>
 
-<h2>Idea Owner</h2>
-<p>
-<at:var at:name="vIdeaOwner" at:rawxhtml="true"/>
-</p>
-
-<h2>Idea Status</h2>
-<p>
-<at:var at:name="vIdeaStatus" at:rawxhtml="true"/>
-</p>
+<ac:structured-macro ac:name="Idea Structured Field">
+  <ac:parameter ac:name="category">status</ac:parameter>
+  <ac:rich-text-body>
+    <at:var at:name="vIdeaStatus" />
+  </ac:rich-text-body>
+</ac:structured-macro>
 
 <h2>Idea Team</h2>
 <p>
@@ -22,7 +27,7 @@
 
 <ac:structured-macro ac:name="Idea Structured Field">
   <ac:parameter ac:name="category">technologies</ac:parameter>
-  <ac:rich-text-body>Add your technology</ac:rich-text-body>
+  <ac:rich-text-body>Add your technologies</ac:rich-text-body>
 </ac:structured-macro>
 
 <h2>Links to resources for this idea</h2>
@@ -33,3 +38,8 @@
 
 <h2>Presentations on the idea</h2>
 <ac:placeholder>Upload them here</ac:placeholder>
+
+<ac:structured-macro ac:name="Blueprint Id Storage">
+  <ac:parameter ac:name="blueprintId"><at:var at:name="blueprintId"/></ac:parameter>
+  <ac:parameter ac:name="category">blueprintId</ac:parameter>
+</ac:structured-macro>

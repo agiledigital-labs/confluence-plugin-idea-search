@@ -1,0 +1,37 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+tr {
+  border-bottom: solid thin #A9A9A9;
+}
+
+tr:last-child {
+  border-bottom: none;
+}
+
+tr:last-child {
+  max-width: 10%;
+}
+
+td {
+  padding: 0.25rem 1rem;
+}
+
+.add-button {
+  text-align: right;
+  margin-bottom: 0.25rem;
+}
+
+.cell-status, .cell-technology {
+  text-align: center;
+}
+
+.cell-technology {
+  line-height: 1.25rem;
+}
+
+.cell-description > ul {
+  padding-left: 1rem;
+}

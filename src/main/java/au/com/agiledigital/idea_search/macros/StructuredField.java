@@ -1,39 +1,29 @@
 package au.com.agiledigital.idea_search.macros;
 
+import static au.com.agiledigital.idea_search.macros.StructureFieldRenderHelper.render;
+
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
-import com.atlassian.confluence.util.velocity.VelocityUtils;
+import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Macro for Structure Field data. Does body transformation for the category of structured field
+ */
 public class StructuredField implements Macro {
 
   private PageBuilderService pageBuilderService;
+  private XhtmlContent xhtmlContent;
 
   public StructuredField(
-    @ComponentImport PageBuilderService pageBuilderService
+    @ComponentImport PageBuilderService pageBuilderService,
+    @ComponentImport XhtmlContent xhtmlContent
   ) {
     this.pageBuilderService = pageBuilderService;
-  }
-
-  private String render(StructuredCategory category, String body) {
-    Map<String, Object> context = new HashMap<>();
-
-
-    switch (category) {
-      case TECHNOLOGIES:
-        context.put("payload", Arrays.asList(body.split(",")));
-        break;
-    }
-
-    return VelocityUtils.getRenderedTemplate(
-      "vm/" + category.getTemplate(),
-      context
-    );
+    this.xhtmlContent = xhtmlContent;
   }
 
   @Override
@@ -49,10 +39,10 @@ public class StructuredField implements Macro {
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-structuredField-macro-resource"
       );
-
+    StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
     String stripped = s.replace("<p>", "").replace("</p>", "");
 
-    return render(StructuredCategory.fromKey(map.get("category")), stripped);
+    return render(category, stripped);
   }
 
   @Override
