@@ -6,7 +6,7 @@ import com.atlassian.confluence.macro.MacroExecutionException;
 import java.util.Map;
 
 /**
- * Container macro for the
+ * Container macro for the page blueprint id
  */
 public class TemplateId implements Macro {
 

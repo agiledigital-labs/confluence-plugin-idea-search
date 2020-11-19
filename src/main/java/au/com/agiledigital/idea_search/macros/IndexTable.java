@@ -57,8 +57,9 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * Macro for the Index Table. Fetches the pages with the label "fedex-ideas", pulls the structured
- * field macro from each and processes the data. It constructs a table to display said data.
+ * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space
+ * specified, pulls the structured field macro from each and processes the data. It constructs a
+ * table to display said data.
  */
 public class IndexTable implements Macro {
 
