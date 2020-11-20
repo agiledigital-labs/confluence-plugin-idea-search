@@ -1,1 +1,3 @@
-$message.value
+#foreach($user in $message.value)
+<ac:link><ri:user ri:username="$user" /></ac:link>
+#end

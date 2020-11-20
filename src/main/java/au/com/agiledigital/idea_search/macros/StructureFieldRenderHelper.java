@@ -37,6 +37,7 @@ public class StructureFieldRenderHelper {
         break;
       case DESCRIPTION:
       case OWNER:
+      case TEAM:
         String bodyConverted = body;
 
         if(xhtmlContent != null) {
