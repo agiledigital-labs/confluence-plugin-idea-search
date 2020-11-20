@@ -146,6 +146,16 @@
       location="/css/StructuredField.css"
     />
   </web-resource>
+    <ao key="ao-module" namespace="fedex-idea">
+        <description>The module configuring the active objects data storage service for this plugin</description>
+        <entity>au.com.agiledigital.idea_search.dao.AOFedexIdea</entity>
+    </ao>
+    <component-import key="eventPublisher" name="Event Publisher components"
+                      interface="com.atlassian.event.api.EventPublisher">
+        <description>Access to the Active Objects service</description>
+    </component-import>
+    <component key="fedexIdeaService" class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"/>
+    <component key="fedexIdeaDao" class="au.com.agiledigital.idea_search.dao.FedexIdeaDao"/>
 
   <!-- Index Table Macro -->
   <xhtml-macro
