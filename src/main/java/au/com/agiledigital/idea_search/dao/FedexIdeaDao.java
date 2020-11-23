@@ -1,5 +1,7 @@
 package au.com.agiledigital.idea_search.dao;
 
+import au.com.agiledigital.idea_search.model.FedexTechnology;
+import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import com.atlassian.confluence.user.ConfluenceUser;
@@ -10,10 +12,14 @@ import com.atlassian.sal.api.user.UserKey;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+
+import net.java.ao.Query;
 
 
 /**
@@ -25,23 +31,13 @@ import java.util.function.Function;
 public class FedexIdeaDao {
     @ComponentImport
     private final ActiveObjects ao;
-    private static final Class<AOFedexIdea> AO_FEDEX_IDEA_TYPE = AOFedexIdea.class;
+    private static final Class<AoFedexIdea> AO_FEDEX_IDEA_TYPE = AoFedexIdea.class;
+    private static final Class<AoFedexTechnology> AO_FEDEX_TECHNOLOGY_TYPE = AoFedexTechnology.class;
     @ComponentImport
     private final UserAccessor userAccessor;
 
-    private String[] ao_column_names = new String[]{"t.GLOBAL_ID", "t.OWNER", "t.CONTENT_ID", "t.TECHNOLOGY", "t.CREATOR", "t.TITLE", "t.STATUS", "t.DESCRIPTION"};
-    private Map<String, String> tableFieldName;
+    private static final Logger log = LoggerFactory.getLogger(DefaultFedexIdeaService.class);
 
-    private static final Function<Long, String> SELECT_ID_GENERIC = (input) -> {
-        return "union all select ?";
-    };
-
-    private static final Function<Long, String> SELECT_ID_HSQLDB = (input) -> {
-        return "union all select ? from INFORMATION_SCHEMA.SYSTEM_USERS limit 1";
-    };
-    private static final Function<Long, String> SELECT_ID_ORACLE = (input) -> {
-        return "union all select ? from DUAL";
-    };
 
     @Autowired
     public FedexIdeaDao(ActiveObjects ao, UserAccessor userAccessor) {
@@ -50,31 +46,71 @@ public class FedexIdeaDao {
     }
 
     public FedexIdea create(FedexIdea fedexIdea) {
-        AOFedexIdea aoFedexIdea = (AOFedexIdea) this.ao.create(AOFedexIdea.class, new DBParam[0]);
-        this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
+        AoFedexIdea aoFedexIdea = this.ao.create(AO_FEDEX_IDEA_TYPE, new DBParam[0]);
+        List<AoFedexTechnology> aoTechList = new ArrayList<>();
 
+
+        fedexIdea.getTechnologies().forEach(tech ->
+                aoTechList.add(this.prepareAOFedexTechnology(tech.getTechnology()))
+        );
+
+        this.prepareAOFedexIdea(aoFedexIdea, fedexIdea, aoTechList);
 
         aoFedexIdea.save();
+
+        aoTechList.forEach(li -> {
+            li.setIdea(aoFedexIdea);
+            li.save();
+        });
+
+//        log.warn("\n\n\n\n\n\n\n\n" + this.asFedexIdea(aoFedexIdea) + "\n\n\n\n\n\n\n\n");
+
+        Arrays.asList(this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select().where().)).forEach(t ->
+                log.warn("\n\n\n\n\n\n\n\n" + t + "\n\n\n\n\n\n\n\n")
+
+        );
+
+
+
         return this.asFedexIdea(aoFedexIdea);
     }
 
     public List<FedexIdea> findAll() {
-        AOFedexIdea[] aoFedexIdeas = (AOFedexIdea[]) this.ao.find(AO_FEDEX_IDEA_TYPE);
+        AoFedexIdea[] aoFedexIdeas = this.ao.find(AO_FEDEX_IDEA_TYPE);
         return this.asListFedexIdea(aoFedexIdeas);
     }
 
-    private List<FedexIdea> asListFedexIdea(AOFedexIdea[] aoFedexIdeas) {
-        List<FedexIdea> tasks = Lists.newArrayList();
-        AOFedexIdea[] fedexIdeas = aoFedexIdeas;
+    public List<FedexTechnology> findAllTech() {
+        AoFedexTechnology[] aoFedexTechnologies = (AoFedexTechnology[]) this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select());
+        return this.asListFedexTechnology(aoFedexTechnologies);
+    }
+
+    private List<FedexIdea> asListFedexIdea(AoFedexIdea[] aoFedexIdeas) {
+        List<FedexIdea> ideas = Lists.newArrayList();
+        AoFedexIdea[] fedexIdeas = aoFedexIdeas;
         int numberIdeas = aoFedexIdeas.length;
 
         for (int counter = 0; counter < numberIdeas; ++counter) {
-            AOFedexIdea aoInlineTask = fedexIdeas[counter];
-            tasks.add(this.asFedexIdea(aoInlineTask));
+            AoFedexIdea aoFedexIdea = fedexIdeas[counter];
+            ideas.add(this.asFedexIdea(aoFedexIdea));
         }
 
-        return tasks;
+        return ideas;
     }
+
+    private List<FedexTechnology> asListFedexTechnology(AoFedexTechnology[] aoFedexTechnologies) {
+        List<FedexTechnology> tech = Lists.newArrayList();
+        AoFedexTechnology[] fedexTechnologies = aoFedexTechnologies;
+        int numberIdeas = aoFedexTechnologies.length;
+
+        for (int counter = 0; counter < numberIdeas; ++counter) {
+            AoFedexTechnology aoFedexTechnology = fedexTechnologies[counter];
+            tech.add(this.asFedexTechnology(aoFedexTechnology));
+        }
+
+        return tech;
+    }
+
 
     private String getUserKey(String userName) {
         if (userName == null) {
@@ -85,11 +121,17 @@ public class FedexIdeaDao {
         }
     }
 
-    private void prepareAOFedexIdea(AOFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
+    private AoFedexTechnology prepareAOFedexTechnology(String technology) {
+        AoFedexTechnology aoFedexTechnology = this.ao.create(AoFedexTechnology.class, new DBParam[0]);
+        aoFedexTechnology.setTechnology(technology);
+        return aoFedexTechnology;
+    }
+
+    private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea, List<AoFedexTechnology> aoTechList) {
         aoFedexIdea.setContentId(fedexIdea.getContentId());
         aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
+//        aoFedexIdea.setTechnologies(aoTechList.toArray());
         aoFedexIdea.setOwner(fedexIdea.getOwner());
-        aoFedexIdea.setTechnology(fedexIdea.getTechnology());
         aoFedexIdea.setStatus(fedexIdea.getStatus());
         aoFedexIdea.setDescription(fedexIdea.getDescription());
     }
@@ -103,15 +145,23 @@ public class FedexIdeaDao {
         }
     }
 
-    private FedexIdea asFedexIdea(AOFedexIdea ao) {
+    private FedexIdea asFedexIdea(AoFedexIdea ao) {
         return ao == null ? null : (new au.com.agiledigital.idea_search.model.FedexIdea.Builder())
                 .withGlobalId(ao.getGlobalId())
                 .withOwner(ao.getOwner())
                 .withContentId(ao.getContentId())
-                .withTechnology(ao.getTechnology())
+//                .withTechnologies(ao.getTechnologies())
                 .withCreator(this.getUsername(ao.getCreatorUserKey()))
                 .withDescription(ao.getDescription())
                 .withStatus(ao.getStatus())
                 .build();
     }
+
+    private FedexTechnology asFedexTechnology(AoFedexTechnology aoT) {
+        return aoT == null ? null : (new au.com.agiledigital.idea_search.model.FedexTechnology.Builder())
+                .withGlobalId(aoT.getGlobalId())
+                .withTechnology(aoT.getTechnology())
+                .build();
+    }
+
 }

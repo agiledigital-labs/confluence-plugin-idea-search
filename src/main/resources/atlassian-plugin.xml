@@ -35,6 +35,7 @@
         template-key="ideaSearch.blueprint.page.fedexIdea.page1Form"
         title-key="ideaSearch.blueprint.page.wizard.page1.title"
       />
+      />
     </dialog-wizard>
   </blueprint>
 
@@ -148,7 +149,8 @@
   </web-resource>
     <ao key="ao-module" namespace="fedex-idea">
         <description>The module configuring the active objects data storage service for this plugin</description>
-        <entity>au.com.agiledigital.idea_search.dao.AOFedexIdea</entity>
+        <entity>au.com.agiledigital.idea_search.dao.AoFedexIdea</entity>
+        <entity>au.com.agiledigital.idea_search.dao.AoFedexTechnology</entity>
     </ao>
     <component-import key="eventPublisher" name="Event Publisher components"
                       interface="com.atlassian.event.api.EventPublisher">

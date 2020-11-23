@@ -2,6 +2,7 @@ package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
+import au.com.agiledigital.idea_search.model.FedexTechnology;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -17,4 +18,5 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
 
         return this.fedexIdeaDao.create(fedexIdea);
     }
+    public FedexTechnology listTech(){}
 }

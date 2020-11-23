@@ -1,10 +1,9 @@
 package au.com.agiledigital.idea_search.dao;
+import net.java.ao.OneToMany;
 import net.java.ao.RawEntity;
-import net.java.ao.schema.AutoIncrement;
-import net.java.ao.schema.Indexed;
-import net.java.ao.schema.NotNull;
-import net.java.ao.schema.StringLength;
-import net.java.ao.schema.PrimaryKey;
+import net.java.ao.schema.*;
+
+import java.util.List;
 
 /**
  * DAO interface exported to osgi
@@ -12,25 +11,21 @@ import net.java.ao.schema.PrimaryKey;
  * Used as an active object
  *
  */
-public interface AOFedexIdea extends RawEntity<Long>  {
+public interface AoFedexIdea extends RawEntity<Long>  {
     @AutoIncrement
     @NotNull
     @PrimaryKey
     long getGlobalId();
 
     String getOwner();
-
     void setOwner(String owner);
 
     @Indexed
     long getContentId();
-
     void setContentId(long contentId);
 
-    @StringLength(-1)
-    String getTechnology();
-
-    void setTechnology(String technology);
+    @OneToMany
+    AoFedexTechnology getTechnology();
 
     @StringLength(-1)
     String getStatus();
@@ -42,6 +37,6 @@ public interface AOFedexIdea extends RawEntity<Long>  {
 
     @Indexed
     String getCreatorUserKey();
-
     void setCreatorUserKey(String creatorUserKey);
+
 }

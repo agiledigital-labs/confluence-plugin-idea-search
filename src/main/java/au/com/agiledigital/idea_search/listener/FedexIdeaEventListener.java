@@ -1,9 +1,11 @@
 package au.com.agiledigital.idea_search.listener;
 
+import au.com.agiledigital.idea_search.dao.AoFedexTechnology;
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
+import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.pages.AbstractPage;
 import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
@@ -33,7 +35,10 @@ import com.atlassian.confluence.setup.settings.SettingsManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
@@ -132,8 +137,14 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
                 Arrays.asList(StructuredCategory.values()).forEach((category) -> row
                         .setMacroRepresentations(category, getMacroFromList(macros, category, serializer)));
 
+                List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*"));
+
+                List<FedexTechnology> techList = new ArrayList<FedexTechnology>();
+
+                tech.forEach((t) -> techList.add(  new FedexTechnology.Builder().withTechnology(t).build()));
+
                 FedexIdea idea = new FedexIdea.Builder()
-                        .withTechnology(row.getTechnologies().getValue())
+                        .withTechnologies(techList)
                         .withContentId(page.getId())
                         .withCreator(page.getCreator().getName())
                         .withDescription(row.getDescription().getValue())
