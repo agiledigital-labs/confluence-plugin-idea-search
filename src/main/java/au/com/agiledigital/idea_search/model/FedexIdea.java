@@ -7,28 +7,41 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @Immutable
 public class FedexIdea {
     private final long globalId;
-    private final long id;
+    private final String owner;
     private final long contentId;
     private final String technology;
     private final String creator;
     private final String title;
+    private final String description;
+    private final String status;
 
     @JsonCreator
-    private FedexIdea(@JsonProperty("globalId") long globalId, @JsonProperty("id") long id, @JsonProperty("contentId") long contentId, @JsonProperty("technology") String technology, @JsonProperty("creator") String creator, @JsonProperty("title") String title) {
+    private FedexIdea(
+            @JsonProperty("globalId") long globalId,
+            @JsonProperty("owner") String  owner,
+            @JsonProperty("contentId") long contentId,
+            @JsonProperty("technology") String technology,
+            @JsonProperty("creator") String creator,
+            @JsonProperty("title") String title,
+            @JsonProperty("status") String status,
+            @JsonProperty("description") String description) {
+
         this.globalId = globalId;
-        this.id = id;
+        this.owner = owner;
         this.contentId = contentId;
         this.technology = technology;
         this.creator = creator;
         this.title = title;
+        this.description = description;
+        this.status = status;
     }
 
     public long getGlobalId() {
         return this.globalId;
     }
 
-    public long getId() {
-        return this.id;
+    public String getOwner() {
+        return this.owner;
     }
 
     public long getContentId() {
@@ -47,28 +60,49 @@ public class FedexIdea {
         return this.title;
     }
 
+    public String getStatus() {
+        return this.status;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+
     public String toString() {
-        return "Idea [globalId=" + this.globalId + ", id=" + this.id + ", contentId=" + this.contentId + ", technology=" + this.technology + ", creator=" + this.creator + ", title=" + this.title + "]";
+        return "Idea [globalId=" + this.globalId +
+                ", owner=" + this.owner +
+                ", contentId=" + this.contentId +
+                ", technology=" + this.technology +
+                ", creator=" + this.creator +
+                ", title=" + this.title +
+                ", description=" + this.description +
+                ", status=" + this.status +
+                "]";
     }
 
     public static class Builder {
         private long globalId;
-        private long id;
+        private String owner;
         private long contentId;
         private String technology;
         private String creator;
         private String title;
+        private String status;
+        private String description;
 
         public Builder() {
         }
 
         public Builder(FedexIdea fedexIdea) {
             this.globalId = fedexIdea.globalId;
-            this.id = fedexIdea.id;
+            this.owner = fedexIdea.owner;
             this.contentId = fedexIdea.contentId;
             this.technology = fedexIdea.technology;
             this.creator = fedexIdea.creator;
             this.title = fedexIdea.title;
+            this.status =fedexIdea.status;
+            this.description = fedexIdea.description;
         }
 
         public FedexIdea.Builder withTechnology(String technology) {
@@ -76,28 +110,31 @@ public class FedexIdea {
             return this;
         }
 
-        public FedexIdea.Builder withGlobalId(long globalId){
+        public FedexIdea.Builder withGlobalId(long globalId) {
             this.globalId = globalId;
             return this;
         }
 
-        public FedexIdea.Builder withId(long id){
-            this.id = id;
+        public FedexIdea.Builder withOwner(String owner) {
+            this.owner = owner;
             return this;
         }
 
-        public  FedexIdea.Builder withContentId(long contentId) {
+        public FedexIdea.Builder withContentId(long contentId) {
             this.contentId = contentId;
             return this;
         }
 
-        public  FedexIdea.Builder withCreator(String creator){
+        public FedexIdea.Builder withCreator(String creator) {
             this.creator = creator;
             return this;
         }
 
+        public FedexIdea.Builder withDescription(String description) { this.description = description; return this;}
+        public FedexIdea.Builder withStatus(String status) {this.status = status; return this;}
+
         public FedexIdea build() {
-            return new FedexIdea(this.globalId, this.id, this.contentId, this.technology, this.creator, this.title);
+            return new FedexIdea(this.globalId, this.owner, this.contentId, this.technology, this.creator, this.title, this.status, this.description);
         }
     }
 }

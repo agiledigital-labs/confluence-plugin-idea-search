@@ -1,6 +1,7 @@
 package au.com.agiledigital.idea_search.macros;
 
-import static au.com.agiledigital.idea_search.macros.MacroHelpers.splitTrimToSet;
+import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
+import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
 import au.com.agiledigital.idea_search.macros.transport.BlueprintContainer;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
@@ -128,29 +129,7 @@ public class IndexTable implements Macro {
     return null;
   }
 
-  /**
-   * Wraps Confluence storage format with a root element and doctype defining custom DTD definition
-   *
-   * @param body confluence storage format body
-   * @return Wrapped body
-   */
-  private String wrapBody(String body) {
-    return "<!DOCTYPE html [ <!ENTITY nbsp \"&#160;\"> ]><ac:confluence>" + body
-      + "</ac:confluence>";
-  }
 
-  /**
-   * Query for Confluence page labels
-   *
-   * @param labels List of labels
-   * @return Confluence searchable query for labels
-   */
-  private BooleanQuery getLabelQuery(Set<String> labels) {
-    BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
-    labels.forEach((label) -> booleanQueryFactory.addShould(new LabelQuery(label)));
-
-    return booleanQueryFactory.toBooleanQuery();
-  }
 
   /**
    * Creates a confluence searchable query to find pages of a certain type
@@ -174,6 +153,19 @@ public class IndexTable implements Macro {
 
     return labels;
   }
+  /**
+   * Query for Confluence page labels
+   *
+   * @param labels List of labels
+   * @return Confluence searchable query for labels
+   */
+  private BooleanQuery getLabelQuery(Set<String> labels) {
+    BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
+    labels.forEach((label) -> booleanQueryFactory.addShould(new LabelQuery(label)));
+
+    return booleanQueryFactory.toBooleanQuery();
+  }
+
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)

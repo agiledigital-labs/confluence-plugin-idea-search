@@ -1,6 +1,6 @@
 package au.com.agiledigital.idea_search.macros;
 
-import static au.com.agiledigital.idea_search.macros.StructureFieldRenderHelper.render;
+import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper.render;
 
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;

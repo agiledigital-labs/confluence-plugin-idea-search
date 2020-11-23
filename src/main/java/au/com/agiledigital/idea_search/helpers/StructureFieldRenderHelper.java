@@ -1,8 +1,9 @@
-package au.com.agiledigital.idea_search.macros;
+package au.com.agiledigital.idea_search.helpers;
 
-import static au.com.agiledigital.idea_search.macros.MacroHelpers.splitTrimToSet;
+import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
 
 import au.com.agiledigital.idea_search.Status;
+import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.StatusContainer;
 import com.atlassian.confluence.content.render.xhtml.DefaultConversionContext;
 import com.atlassian.confluence.content.render.xhtml.XhtmlException;

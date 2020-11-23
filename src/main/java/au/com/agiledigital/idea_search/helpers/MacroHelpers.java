@@ -1,4 +1,4 @@
-package au.com.agiledigital.idea_search.macros;
+package au.com.agiledigital.idea_search.helpers;
 
 import java.util.Arrays;
 import java.util.Collections;

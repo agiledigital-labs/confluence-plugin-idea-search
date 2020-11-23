@@ -18,22 +18,30 @@ public interface AOFedexIdea extends RawEntity<Long>  {
     @PrimaryKey
     long getGlobalId();
 
-    long getId();
+    String getOwner();
 
-    void setId(long var1);
+    void setOwner(String owner);
 
     @Indexed
     long getContentId();
 
-    void setContentId(long var1);
+    void setContentId(long contentId);
 
     @StringLength(-1)
     String getTechnology();
 
-    void setTechnology(String var1);
+    void setTechnology(String technology);
+
+    @StringLength(-1)
+    String getStatus();
+    void  setStatus(String status);
+
+    @StringLength(-1)
+    String getDescription();
+    void setDescription(String team);
 
     @Indexed
     String getCreatorUserKey();
 
-    void setCreatorUserKey(String var1);
+    void setCreatorUserKey(String creatorUserKey);
 }

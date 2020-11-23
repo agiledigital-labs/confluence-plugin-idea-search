@@ -1,9 +1,7 @@
 package au.com.agiledigital.idea_search.dao;
-import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
+
 import com.atlassian.activeobjects.external.ActiveObjects;
 import au.com.agiledigital.idea_search.model.FedexIdea;
-import com.atlassian.confluence.core.ContentEntityObject;
-import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -18,14 +16,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Fedex Idea Dao access the data stored with Atlassian active objects.
- *
+ * <p>
  * Used to create and find Fedex ideas stored in the database using active objects.
- *
  */
 @Component
 public class FedexIdeaDao {
@@ -35,11 +29,8 @@ public class FedexIdeaDao {
     @ComponentImport
     private final UserAccessor userAccessor;
 
-    private String[] ao_column_names = new String[]{"t.GLOBAL_ID", "t.ID", "t.CONTENT_ID", "t.TECHNOLOGY", "t.CREATOR", "t.TITLE"};
+    private String[] ao_column_names = new String[]{"t.GLOBAL_ID", "t.OWNER", "t.CONTENT_ID", "t.TECHNOLOGY", "t.CREATOR", "t.TITLE", "t.STATUS", "t.DESCRIPTION"};
     private Map<String, String> tableFieldName;
-
-    private static final Logger log = LoggerFactory.getLogger(FedexIdeaDao.class);
-
 
     private static final Function<Long, String> SELECT_ID_GENERIC = (input) -> {
         return "union all select ?";
@@ -58,18 +49,17 @@ public class FedexIdeaDao {
         this.userAccessor = userAccessor;
     }
 
-    public FedexIdea create(FedexIdea fedexIdea){
-        AOFedexIdea aoFedexIdea = (AOFedexIdea)this.ao.create(AOFedexIdea.class, new DBParam[0]);
+    public FedexIdea create(FedexIdea fedexIdea) {
+        AOFedexIdea aoFedexIdea = (AOFedexIdea) this.ao.create(AOFedexIdea.class, new DBParam[0]);
         this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
-        log.warn("DAO."+ aoFedexIdea.toString() +" \n\n\n\n\n\n -----------------------------------------------------------------------------------------------------------------------");
 
 
         aoFedexIdea.save();
         return this.asFedexIdea(aoFedexIdea);
     }
 
-    public List<FedexIdea> findAll(){
-        AOFedexIdea[] aoFedexIdeas = (AOFedexIdea[])this.ao.find(AO_FEDEX_IDEA_TYPE);
+    public List<FedexIdea> findAll() {
+        AOFedexIdea[] aoFedexIdeas = (AOFedexIdea[]) this.ao.find(AO_FEDEX_IDEA_TYPE);
         return this.asListFedexIdea(aoFedexIdeas);
     }
 
@@ -78,7 +68,7 @@ public class FedexIdeaDao {
         AOFedexIdea[] fedexIdeas = aoFedexIdeas;
         int numberIdeas = aoFedexIdeas.length;
 
-        for(int counter = 0; counter < numberIdeas; ++counter) {
+        for (int counter = 0; counter < numberIdeas; ++counter) {
             AOFedexIdea aoInlineTask = fedexIdeas[counter];
             tasks.add(this.asFedexIdea(aoInlineTask));
         }
@@ -95,11 +85,13 @@ public class FedexIdeaDao {
         }
     }
 
-    private void prepareAOFedexIdea(AOFedexIdea aoFedexIdea, FedexIdea fedexIdea){
+    private void prepareAOFedexIdea(AOFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
         aoFedexIdea.setContentId(fedexIdea.getContentId());
         aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
-        aoFedexIdea.setId(fedexIdea.getId());
+        aoFedexIdea.setOwner(fedexIdea.getOwner());
         aoFedexIdea.setTechnology(fedexIdea.getTechnology());
+        aoFedexIdea.setStatus(fedexIdea.getStatus());
+        aoFedexIdea.setDescription(fedexIdea.getDescription());
     }
 
     private String getUsername(String userKey) {
@@ -112,6 +104,14 @@ public class FedexIdeaDao {
     }
 
     private FedexIdea asFedexIdea(AOFedexIdea ao) {
-        return ao == null ? null : (new au.com.agiledigital.idea_search.model.FedexIdea.Builder()).withGlobalId(ao.getGlobalId()).withId(ao.getId()).withContentId(ao.getContentId()).withTechnology(ao.getTechnology()).withCreator(this.getUsername(ao.getCreatorUserKey())).build();
+        return ao == null ? null : (new au.com.agiledigital.idea_search.model.FedexIdea.Builder())
+                .withGlobalId(ao.getGlobalId())
+                .withOwner(ao.getOwner())
+                .withContentId(ao.getContentId())
+                .withTechnology(ao.getTechnology())
+                .withCreator(this.getUsername(ao.getCreatorUserKey()))
+                .withDescription(ao.getDescription())
+                .withStatus(ao.getStatus())
+                .build();
     }
 }
