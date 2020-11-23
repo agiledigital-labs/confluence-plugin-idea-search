@@ -20,10 +20,12 @@
   </ac:rich-text-body>
 </ac:structured-macro>
 
-<h2>Idea Team</h2>
-<p>
-<at:var at:name="vIdeaTeam" at:rawxhtml="true"/>
-</p>
+<ac:structured-macro ac:name="Idea Structured Field">
+<ac:parameter ac:name="category">team</ac:parameter>
+<ac:rich-text-body>
+  <at:var at:name="vIdeaTeam" at:rawxhtml="true"/>
+</ac:rich-text-body>
+</ac:structured-macro>
 
 <ac:structured-macro ac:name="Idea Structured Field">
   <ac:parameter ac:name="category">technologies</ac:parameter>

@@ -4,7 +4,7 @@ import com.atlassian.confluence.plugins.createcontent.api.contextproviders.Abstr
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +48,8 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
 
       if (property.options.isUser) {
         builder.append("User");
+
+        property.value = ((String) property.value).split(",");
       }
 
       if (property.options.isStatus) {
@@ -55,9 +57,12 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       }
 
       if (builder.length() > templatePath.length()) {
+        HashMap<String, Object> context = new HashMap<>();
+        context.put("message", property);
+
         return VelocityUtils.getRenderedTemplate(
           builder.append(".vm").toString(),
-          Collections.singletonMap("message", property)
+          context
         );
       }
     }
@@ -80,6 +85,10 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
         case IDEA_STATUS:
           options.withStatus(true);
           break;
+        case IDEA_OWNER:
+        case IDEA_TEAM:
+          options.withUser(true);
+          break;
         default:
           break;
       }
@@ -100,6 +109,8 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
     BlueprintContext blueprintContext
   ) {
     Map<String, Object> contextMap = blueprintContext.getMap();
+
+    System.out.println("Idea Owner: " + contextMap.get(Parameter.IDEA_OWNER.reference));
 
     blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());
 
@@ -129,6 +140,8 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
         entry -> entry.setValue(
           renderValue((KeyProperty) entry.getValue()))
       );
+
+    System.out.println(contextMap.get(Parameter.IDEA_OWNER.reference));
 
     contextMap.put("blueprintId", blueprintContext.getBlueprintId());
 

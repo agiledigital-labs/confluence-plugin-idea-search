@@ -132,6 +132,7 @@
         <value name="technologies" />
         <value name="status" />
         <value name="owner" />
+        <value name="team" />
       </parameter>
     </parameters>
   </xhtml-macro>
