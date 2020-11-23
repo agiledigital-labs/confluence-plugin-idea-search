@@ -57,6 +57,7 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       }
 
       if (builder.length() > templatePath.length()) {
+        // Using a hashmap as Confluence may modify this map (Needs to be mutable otherwise error)
         HashMap<String, Object> context = new HashMap<>();
         context.put("message", property);
 
@@ -110,8 +111,6 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
   ) {
     Map<String, Object> contextMap = blueprintContext.getMap();
 
-    System.out.println("Idea Owner: " + contextMap.get(Parameter.IDEA_OWNER.reference));
-
     blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());
 
     // Goes through map and adds in default values and transforms pre-existing values
@@ -140,8 +139,6 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
         entry -> entry.setValue(
           renderValue((KeyProperty) entry.getValue()))
       );
-
-    System.out.println(contextMap.get(Parameter.IDEA_OWNER.reference));
 
     contextMap.put("blueprintId", blueprintContext.getBlueprintId());
 
