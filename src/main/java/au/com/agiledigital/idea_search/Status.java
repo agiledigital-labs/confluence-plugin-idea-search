@@ -2,10 +2,14 @@ package au.com.agiledigital.idea_search;
 
 import java.util.Arrays;
 
+/**
+ * Status of an Idea
+ */
 public enum Status {
   NEW("New", "new"),
   IN_PROGRESS("In progress", "inProgress"),
-  COMPLETED("Completed", "completed");
+  COMPLETED("Completed", "completed"),
+  ABANDONED("Abandoned", "abandoned");
 
   private String humanName;
   private String referenceName;

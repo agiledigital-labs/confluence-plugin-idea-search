@@ -1,4 +1,4 @@
-package au.com.agiledigital.idea_search;
+package au.com.agiledigital.idea_search.blueprints;
 
 public class KeyProperty {
 

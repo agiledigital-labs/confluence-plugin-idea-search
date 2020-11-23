@@ -1,16 +1,19 @@
-package au.com.agiledigital.idea_search;
+package au.com.agiledigital.idea_search.blueprints;
 
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
+/**
+ * Context provider for Idea page blueprint
+ */
+public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
 
-  private final List<KeyProperty> defaults = Arrays.asList(
+  public final List<KeyProperty> ideaFieldsDefaults = Arrays.asList(
     new KeyProperty(
       Parameter.IDEA_TITLE.reference,
       "I totally forgot to put one in the form"
@@ -45,6 +48,8 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
 
       if (property.options.isUser) {
         builder.append("User");
+
+        property.value = ((String) property.value).split(",");
       }
 
       if (property.options.isStatus) {
@@ -52,9 +57,12 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
       }
 
       if (builder.length() > templatePath.length()) {
+        HashMap<String, Object> context = new HashMap<>();
+        context.put("message", property);
+
         return VelocityUtils.getRenderedTemplate(
           builder.append(".vm").toString(),
-          Collections.singletonMap("message", property)
+          context
         );
       }
     }
@@ -77,6 +85,10 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
         case IDEA_STATUS:
           options.withStatus(true);
           break;
+        case IDEA_OWNER:
+        case IDEA_TEAM:
+          options.withUser(true);
+          break;
         default:
           break;
       }
@@ -98,6 +110,8 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
   ) {
     Map<String, Object> contextMap = blueprintContext.getMap();
 
+    System.out.println("Idea Owner: " + contextMap.get(Parameter.IDEA_OWNER.reference));
+
     blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());
 
     // Goes through map and adds in default values and transforms pre-existing values
@@ -108,7 +122,7 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
           contextMap.compute(entry.getKey(),
             (key, value) ->
               value == null || (value instanceof String && ((String) value).length() == 0)
-                ? defaults
+                ? ideaFieldsDefaults
                 .stream()
                 .filter(property -> property.key.equals(key))
                 .findFirst()
@@ -126,6 +140,10 @@ public class BlueprintContextProvider extends AbstractBlueprintContextProvider {
         entry -> entry.setValue(
           renderValue((KeyProperty) entry.getValue()))
       );
+
+    System.out.println(contextMap.get(Parameter.IDEA_OWNER.reference));
+
+    contextMap.put("blueprintId", blueprintContext.getBlueprintId());
 
     return blueprintContext;
   }
