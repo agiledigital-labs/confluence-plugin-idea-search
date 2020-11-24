@@ -5,6 +5,9 @@ import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
     private final FedexIdeaDao fedexIdeaDao;
@@ -18,5 +21,8 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
 
         return this.fedexIdeaDao.create(fedexIdea);
     }
-    public FedexTechnology listTech(){}
+
+    public List<String> techList(){
+        return fedexIdeaDao.techDaoList().stream().distinct().collect(Collectors.toList());
+    }
 }

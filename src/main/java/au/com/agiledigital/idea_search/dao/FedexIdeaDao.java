@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.java.ao.Query;
 
@@ -63,15 +64,6 @@ public class FedexIdeaDao {
             li.save();
         });
 
-//        log.warn("\n\n\n\n\n\n\n\n" + this.asFedexIdea(aoFedexIdea) + "\n\n\n\n\n\n\n\n");
-
-        Arrays.asList(this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select().where().)).forEach(t ->
-                log.warn("\n\n\n\n\n\n\n\n" + t + "\n\n\n\n\n\n\n\n")
-
-        );
-
-
-
         return this.asFedexIdea(aoFedexIdea);
     }
 
@@ -81,7 +73,7 @@ public class FedexIdeaDao {
     }
 
     public List<FedexTechnology> findAllTech() {
-        AoFedexTechnology[] aoFedexTechnologies = (AoFedexTechnology[]) this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select());
+        AoFedexTechnology[] aoFedexTechnologies = (AoFedexTechnology[]) this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select("TECHNOLOGY").distinct());
         return this.asListFedexTechnology(aoFedexTechnologies);
     }
 
@@ -130,7 +122,6 @@ public class FedexIdeaDao {
     private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea, List<AoFedexTechnology> aoTechList) {
         aoFedexIdea.setContentId(fedexIdea.getContentId());
         aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
-//        aoFedexIdea.setTechnologies(aoTechList.toArray());
         aoFedexIdea.setOwner(fedexIdea.getOwner());
         aoFedexIdea.setStatus(fedexIdea.getStatus());
         aoFedexIdea.setDescription(fedexIdea.getDescription());
@@ -162,6 +153,12 @@ public class FedexIdeaDao {
                 .withGlobalId(aoT.getGlobalId())
                 .withTechnology(aoT.getTechnology())
                 .build();
+    }
+
+    public List<String> techDaoList(){
+        AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select("TECHNOLOGY"));
+        List<String> technologies = Arrays.stream(aoFedexTechnologies).map(t -> t.getTechnology()).collect(Collectors.toList());
+        return technologies;
     }
 
 }
