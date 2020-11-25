@@ -19,7 +19,9 @@ public class IndexPageContextProvider extends AbstractBlueprintContextProvider {
    * @return Context
    */
   @Override
-  protected BlueprintContext updateBlueprintContext(BlueprintContext blueprintContext) {
+  protected BlueprintContext updateBlueprintContext(
+    BlueprintContext blueprintContext
+  ) {
     return blueprintContext;
   }
 }
