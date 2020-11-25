@@ -11,7 +11,8 @@ public enum StructuredCategory {
   DESCRIPTION("description", "Description", "It is awesome, how could it not be"),
   STATUS("status", "Status", "new"),
   OWNER("owner", "Owner", "No one :("),
-  BLUEPRINT_ID("blueprintId", "", "");
+  BLUEPRINT_ID("blueprintId", "", ""),
+  TEAM("team", "Team", "No team members");
 
   private String key;
   private String template;
