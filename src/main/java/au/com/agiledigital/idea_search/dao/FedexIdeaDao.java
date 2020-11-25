@@ -7,11 +7,11 @@ import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.user.UserKey;
-import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.java.ao.Query;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,37 +40,26 @@ public class FedexIdeaDao {
 
   /**
    * Create new entry to represent the a FedexIdea
+   *
    * @param fedexIdea FedexIdea model object
    * @return FedexIdea object created in data store
    */
   public FedexIdea create(FedexIdea fedexIdea) {
-    AoFedexIdea aoFedexIdea =
-      this.ao.create(AO_FEDEX_IDEA_TYPE);
-    List<AoFedexTechnology> aoTechList = new ArrayList<>();
-
-    fedexIdea
-      .getTechnologies()
-      .forEach(
-        tech ->
-          aoTechList.add(this.prepareAOFedexTechnology(tech.getTechnology()))
-      );
+    AoFedexIdea aoFedexIdea = this.ao.create(AO_FEDEX_IDEA_TYPE);
 
     this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
 
+    // Save the changes to the active object
     aoFedexIdea.save();
-
-    aoTechList.forEach(
-      li -> {
-        li.setIdea(aoFedexIdea);
-        li.save();
-      }
-    );
+    // Set the relation of the technology to the idea and save
+    SetTechnology(getAoFedexTechnologies(fedexIdea), aoFedexIdea);
 
     return this.asFedexIdea(aoFedexIdea);
   }
 
   /**
    * Update a FedexIdea by the page content id
+   *
    * @param fedexIdea New FedexIdea for data store
    * @param contentId of the page containing the idea
    * @return FedexIdea saved to the data store
@@ -81,8 +70,8 @@ public class FedexIdeaDao {
           AO_FEDEX_IDEA_TYPE,
           Query.select().where("CONTENT_ID = ?", contentId)
         )[0];
-    //        If the title of the page already exists the create event fails and a page update event is fired on a successful save,
-    //        if this happens the aoFedexIdea will not exist in the data store and will need to be created.
+    // If the title of the page already exists the create event fails and a page update event is fired on a successful save.
+    // If this happens the aoFedexIdea will not exist in the data store and will need to be created.
     if (aoFedexIdea == null) {
       aoFedexIdea = this.ao.create(AO_FEDEX_IDEA_TYPE);
     }
@@ -90,35 +79,51 @@ public class FedexIdeaDao {
     List<AoFedexTechnology> aoFedexTechnology = Arrays.asList(
       aoFedexIdea.getTechnology()
     );
+
+    // Deletes the technology item from the table
     aoFedexTechnology.forEach(this.ao::delete);
 
-    List<AoFedexTechnology> aoTechList = new ArrayList<>();
-
-    fedexIdea
-      .getTechnologies()
-      .forEach(
-        tech ->
-          aoTechList.add(this.prepareAOFedexTechnology(tech.getTechnology()))
-      );
+    List<AoFedexTechnology> aoTechList = getAoFedexTechnologies(fedexIdea);
 
     this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
-
+    SetTechnology(aoTechList, aoFedexIdea);
     aoFedexIdea.save();
 
-    final AoFedexIdea idea = aoFedexIdea;
+    return this.asFedexIdea(aoFedexIdea);
+  }
 
-    aoTechList.forEach(
-      li -> {
-        li.setIdea(idea);
-        li.save();
+  /**
+   * Extract technologies from FedexIdea and create an active object for each
+   *
+   * @param fedexIdea from model
+   * @return List<AoFedexTechnology> unsaved.
+   */
+  @NotNull
+  private List<AoFedexTechnology> getAoFedexTechnologies(FedexIdea fedexIdea) {
+    return fedexIdea
+      .getTechnologies()
+      .stream()
+      .map(tech -> this.prepareAOFedexTechnology(tech.getTechnology()))
+      .collect(Collectors.toList());
+  }
+
+  //    See comment on https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375
+  //    This means that the setter is done on the Recipient entity(setting the Filter) and because of the way relational databases...
+  private void SetTechnology(
+    List<AoFedexTechnology> aoFedexTechnologies,
+    AoFedexIdea aoFedexIdea
+  ) {
+    aoFedexTechnologies.forEach(
+      techItem -> {
+        techItem.setIdea(aoFedexIdea);
+        techItem.save();
       }
     );
-
-    return this.asFedexIdea(idea);
   }
 
   /**
    * List all fedex idea in the data store
+   *
    * @return List<FedexIdea>
    */
   public List<FedexIdea> findAll() {
@@ -128,50 +133,46 @@ public class FedexIdeaDao {
 
   /**
    * List all fedex idea technology in the data store
+   *
    * @return List<FedexTechnology>
    */
   public List<FedexTechnology> findAllTech() {
-    AoFedexTechnology[] aoFedexTechnologies = this.ao.find(
-        AO_FEDEX_TECHNOLOGY_TYPE,
-        Query.select()
-      );
+    AoFedexTechnology[] aoFedexTechnologies =
+      this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select());
     return this.asListFedexTechnology(aoFedexTechnologies);
   }
 
   /**
    * Convert array of active objects to a list of model objects
+   *
    * @param aoFedexIdeas AoFedexIdea[]
    * @return List<FedexIdea>
    */
   private List<FedexIdea> asListFedexIdea(AoFedexIdea[] aoFedexIdeas) {
-    List<FedexIdea> ideas = Lists.newArrayList();
-
-    for (AoFedexIdea aoFedexIdea : aoFedexIdeas) {
-      ideas.add(this.asFedexIdea(aoFedexIdea));
-    }
-
-    return ideas;
+    return Arrays
+      .stream(aoFedexIdeas)
+      .map(this::asFedexIdea)
+      .collect(Collectors.toList());
   }
 
   /**
    * Convert array of active objects to a list of model objects
+   *
    * @param aoFedexTechnologies AoFedexTechnology[]
    * @return List<FedexTechnology>
    */
   private List<FedexTechnology> asListFedexTechnology(
     AoFedexTechnology[] aoFedexTechnologies
   ) {
-    List<FedexTechnology> tech = Lists.newArrayList();
-
-    for (AoFedexTechnology aoFedexTechnology : aoFedexTechnologies) {
-      tech.add(this.asFedexTechnology(aoFedexTechnology));
-    }
-
-    return tech;
+    return Arrays
+      .stream(aoFedexTechnologies)
+      .map(this::asFedexTechnology)
+      .collect(Collectors.toList());
   }
 
   /**
    * Convert a user name string into a user key ID
+   *
    * @param userName taking the confluence action
    * @return string of the user key ID
    */
@@ -186,6 +187,7 @@ public class FedexIdeaDao {
 
   /**
    * Convert a user key ID to the users name
+   *
    * @param userKey string of the user key id
    * @return userName string
    */
@@ -201,6 +203,7 @@ public class FedexIdeaDao {
 
   /**
    * Prepare technology string for saving as an an active object
+   *
    * @param technology string
    * @return AoFedexTechnology object to be saved to the data store
    */
@@ -213,8 +216,9 @@ public class FedexIdeaDao {
 
   /**
    * Prepare fedex active object with the data from a fedex idea
+   *
    * @param aoFedexIdea active object
-   * @param fedexIdea with data to be added to the active object
+   * @param fedexIdea   with data to be added to the active object
    */
   private void prepareAOFedexIdea(
     AoFedexIdea aoFedexIdea,
@@ -229,6 +233,7 @@ public class FedexIdeaDao {
 
   /**
    * Convert fedex idea active object to a fedex idea model object
+   *
    * @param aoFedexIdea active object to be converted
    * @return FedexIdea object
    */
@@ -248,6 +253,7 @@ public class FedexIdeaDao {
 
   /**
    * Convert fedex technology active object to a fedex technology model object
+   *
    * @param aoFedexTechnology active object to be converted
    * @return FedexTechnology object
    */

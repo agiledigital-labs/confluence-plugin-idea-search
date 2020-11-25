@@ -37,6 +37,11 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
+/**
+ * Listens to confluence events
+ * Connects to event publisher, and sends filtered events to the
+ * idea service
+ */
 @Named
 public class FedexIdeaEventListener
   implements InitializingBean, DisposableBean {
@@ -54,6 +59,12 @@ public class FedexIdeaEventListener
   );
   private static final String MY_BLUEPRINT_LABEL = "fedex-ideas";
 
+  /**
+   * Construct with connection to the event publisher and FedexIdea service.
+   * @param eventPublisher
+   * @param fedexIdeaService
+   * @param xhtmlContent
+   */
   @Inject
   public FedexIdeaEventListener(
     EventPublisher eventPublisher,
@@ -176,7 +187,7 @@ public class FedexIdeaEventListener
 
   /**
    * Pares structured data from page and return a fedex idea.
-   * @param page content with structured data
+   * @param page  content with structured data
    * @return FedexIdea model object
    * @throws ParserConfigurationException exception
    * @throws IOException exception

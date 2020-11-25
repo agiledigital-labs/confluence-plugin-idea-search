@@ -17,12 +17,9 @@
     <osgi:service id="fedexIdeaService_osgiService" ref="fedexIdeaService">
         <osgi:interfaces>
             <beans:value
-      >au.com.agiledigital.idea_search.service.FedexIdeaService</beans:value>
+      >au.com.agiledigital.idea_search.service.FedexIdeaService
+            </beans:value>
         </osgi:interfaces>
     </osgi:service>
 
-<!--    <beans:bean id="FedexIdeaDao" autowire="default" class="au.com.agiledigital.idea_search.dao.FedexIdeaDao">-->
-<!--        <beans:constructor-arg ref="com.atlassian.activeobjects.external.ActiveObjects"/>-->
-<!--        <beans:constructor-arg ref="com.atlassian.confluence.user.UserAccessor"/>-->
-<!--    </beans:bean>-->
 </beans:beans>

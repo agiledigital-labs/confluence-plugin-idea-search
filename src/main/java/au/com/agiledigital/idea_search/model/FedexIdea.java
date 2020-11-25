@@ -92,7 +92,7 @@ public class FedexIdea {
       "]"
     );
   }
-  
+
   public static class Builder {
 
     private long globalId;

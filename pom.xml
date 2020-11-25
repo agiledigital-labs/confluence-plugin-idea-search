@@ -169,7 +169,6 @@
                     </productDataVersion>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
-                    <!--                    <includeExclude>-com.atlassian.plugin.spring.scanner.annotation.*</includeExclude>-->
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>
