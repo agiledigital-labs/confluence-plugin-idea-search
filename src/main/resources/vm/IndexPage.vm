@@ -2,13 +2,13 @@
 #* @vtlvariable name="row" type="au.com.agiledigital.idea_search.macros.transport.IdeaContainer" *#
 #* @vtlvariable name="rows" type="java.lang.reflect.Array" *#
 <p class="add-button">
-  #if($blueprint.blueprintId != "")
-    <a class="aui-button create-from-template-button conf-macro output-inline"
-       data-space-key="$blueprint.spaceKey"
-       href="$blueprint.baseUrl?createDialogSpaceKey=$blueprint.spaceKey&createDialogBlueprintId=$blueprint.blueprintId"
-       data-content-blueprint-id="$blueprint.blueprintId" data-hasbody="false"
-       data-macro-name="create-from-template">Add Fedex Idea</a>
-  #end
+    #if($blueprint.blueprintId != "")
+      <a class="aui-button create-from-template-button conf-macro output-inline"
+         data-space-key="$blueprint.spaceKey"
+         href="$blueprint.baseUrl?createDialogSpaceKey=$blueprint.spaceKey&createDialogBlueprintId=$blueprint.blueprintId"
+         data-content-blueprint-id="$blueprint.blueprintId" data-hasbody="false"
+         data-macro-name="create-from-template">Add Fedex Idea</a>
+    #end
 </p>
 <table>
   <thead>
@@ -21,7 +21,29 @@
     <th></th>
   </tr>
   </thead>
-  <tbody>
+  <tr>
+    <td>
+      <input id="search-title" type="text" class="search-box" placeholder="Search for an idea"/>
+    </td>
+    <td></td>
+    <td class="w-20">
+      <div id="technologies-multiselect-container" class="multiselect-container">
+        <div class="tags-input search-box">
+          <input id="search-technologies" class="" autocomplete="chrome-off" tabindex="0"
+                 data-toggle="dropdown" role="textbox" aria-expanded="false"
+                 aria-controls="autocomplete-results"/>
+        </div>
+        <div id="technologies-list-container">
+          <ul id="technologies-list" class="select-list hidden" role="listbox">
+          </ul>
+        </div>
+      </div>
+    </td>
+    <td><select id="search-status" class="search-box"></select></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tbody class="table-content">
       #foreach($row in $rows)
       <tr>
         <td class="cell-title">$row.title</td>
@@ -29,7 +51,7 @@
         <td class="cell-technology">$row.technologies.getRenderedValue()</td>
         <td class="cell-status">$row.status.getRenderedValue()</td>
         <td class="cell-owner">
-          #if($row.owner.getRenderedValue())
+            #if($row.owner.getRenderedValue())
             $row.owner.getRenderedValue()
           #end
         </td>
