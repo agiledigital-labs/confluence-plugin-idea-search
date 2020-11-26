@@ -187,6 +187,7 @@
                 <configuration>
                     <productVersion>${confluence.version}</productVersion>
                     <productDataVersion>${confluence.data.version}</productDataVersion>
+                    <productDataPath>${basedir}/src/test/resources/generated-test-resources.zip</productDataPath>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
                     <!--                    <includeExclude>-com.atlassian.plugin.spring.scanner.annotation.*</includeExclude>-->
