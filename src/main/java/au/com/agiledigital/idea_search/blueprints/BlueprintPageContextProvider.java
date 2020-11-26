@@ -4,14 +4,15 @@ import com.atlassian.confluence.plugins.createcontent.api.contextproviders.Abstr
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Context provider for Idea page blueprint
  */
-public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
+public class BlueprintPageContextProvider
+  extends AbstractBlueprintContextProvider {
 
   public final List<KeyProperty> ideaFieldsDefaults = Arrays.asList(
     new KeyProperty(
@@ -48,6 +49,8 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
 
       if (property.options.isUser) {
         builder.append("User");
+
+        property.value = ((String) property.value).split(",");
       }
 
       if (property.options.isStatus) {
@@ -55,9 +58,13 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       }
 
       if (builder.length() > templatePath.length()) {
+        // Using a hashmap as Confluence may modify this map (Needs to be mutable otherwise error)
+        HashMap<String, Object> context = new HashMap<>();
+        context.put("message", property);
+
         return VelocityUtils.getRenderedTemplate(
           builder.append(".vm").toString(),
-          Collections.singletonMap("message", property)
+          context
         );
       }
     }
@@ -79,6 +86,10 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       switch (parameter) {
         case IDEA_STATUS:
           options.withStatus(true);
+          break;
+        case IDEA_OWNER:
+        case IDEA_TEAM:
+          options.withUser(true);
           break;
         default:
           break;
@@ -108,26 +119,34 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       .entrySet()
       .forEach(
         entry ->
-          contextMap.compute(entry.getKey(),
+          contextMap.compute(
+            entry.getKey(),
             (key, value) ->
-              value == null || (value instanceof String && ((String) value).length() == 0)
+              value == null ||
+                (value instanceof String && ((String) value).length() == 0)
                 ? ideaFieldsDefaults
-                .stream()
-                .filter(property -> property.key.equals(key))
-                .findFirst()
-                .orElse(
-                  new KeyProperty(key, "Something went very wrong here",
-                    setupOptions(key, new Options().withDefault(true))))
-                : new KeyProperty(key, entry.getValue(),
+                  .stream()
+                  .filter(property -> property.key.equals(key))
+                  .findFirst()
+                  .orElse(
+                    new KeyProperty(
+                      key,
+                      "Something went very wrong here",
+                      setupOptions(key, new Options().withDefault(true))
+                    )
+                  )
+                : new KeyProperty(
+                  key,
+                  entry.getValue(),
                   setupOptions(key, new Options().withDefault(false))
                 )
-          ));
+          )
+      );
 
     contextMap
       .entrySet()
       .forEach(
-        entry -> entry.setValue(
-          renderValue((KeyProperty) entry.getValue()))
+        entry -> entry.setValue(renderValue((KeyProperty) entry.getValue()))
       );
 
     contextMap.put("blueprintId", blueprintContext.getBlueprintId());

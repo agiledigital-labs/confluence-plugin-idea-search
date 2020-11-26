@@ -2,7 +2,6 @@ com.atlassian.activeobjects.external.ActiveObjects
 com.atlassian.confluence.api.service.content.ContentService
 com.atlassian.confluence.api.service.datetime.DateFormatService
 com.atlassian.confluence.api.service.pagination.PaginationService
-com.atlassian.confluence.concurrent.LockFactory
 com.atlassian.confluence.content.render.xhtml.MarshallingRegistry
 com.atlassian.confluence.content.render.xhtml.XMLEventFactoryProvider
 com.atlassian.confluence.content.render.xhtml.XmlEventReaderFactory
@@ -28,9 +27,7 @@ com.atlassian.confluence.spaces.SpaceManager
 com.atlassian.confluence.user.UserAccessor
 com.atlassian.confluence.util.i18n.I18NBeanFactory
 com.atlassian.confluence.xhtml.api.XhtmlContent
-com.atlassian.core.task.MultiQueueTaskManager
 com.atlassian.event.api.EventPublisher
-com.atlassian.hibernate.PluginHibernateSessionFactory
 com.atlassian.plugin.webresource.WebResourceUrlProvider
 com.atlassian.sal.api.features.DarkFeatureManager
 com.atlassian.sal.api.message.I18nResolver

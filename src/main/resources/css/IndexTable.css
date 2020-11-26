@@ -4,7 +4,7 @@ table {
 }
 
 tr {
-  border-bottom: solid thin #A9A9A9;
+  border-bottom: solid thin #a9a9a9;
 }
 
 tr:last-child {
@@ -24,7 +24,8 @@ td {
   margin-bottom: 0.25rem;
 }
 
-.cell-status, .cell-technology {
+.cell-status,
+.cell-technology {
   text-align: center;
 }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -10,7 +10,7 @@
         <url>https://agiledigital.com.au</url>
     </organization>
     <name>Idea Search</name>
-    <description/>
+    <description />
     <packaging>atlassian-plugin</packaging>
     <dependencies>
         <dependency>
@@ -190,7 +190,6 @@
                     <productDataPath>${basedir}/src/test/resources/generated-test-resources.zip</productDataPath>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
-                    <!--                    <includeExclude>-com.atlassian.plugin.spring.scanner.annotation.*</includeExclude>-->
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>

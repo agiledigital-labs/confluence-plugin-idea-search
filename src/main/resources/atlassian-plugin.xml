@@ -1,105 +1,227 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<atlassian-plugin
+  key="${atlassian.plugin.key}"
+  name="${project.name}"
+  plugins-version="2"
+>
+  <plugin-info>
+    <description>${project.description}</description>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+    <vendor
+      name="${project.organization.name}"
+      url="${project.organization.url}"
+    />
+    <version>${project.version}</version>
+  </plugin-info>
 
-<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2"> 
-  <plugin-info> 
-    <description>${project.description}</description>  
-    <param name="plugin-icon">images/pluginIcon.png</param>  
-    <param name="plugin-logo">images/pluginLogo.png</param>  
-    <vendor name="${project.organization.name}" url="${project.organization.url}"/>  
-    <version>${project.version}</version> 
-  </plugin-info>  
-  <!-- Property Naming from ideaSearch.properties -->  
-  <resource location="ideaSearch" name="i18n" type="i18n"/>  
-  <!-- Page Blueprint -->  
-  <blueprint content-template-key="ideaSearch-page-template" i18n-name-key="ideaSearch.blueprint.name" index-key="fedex-ideas" key="idea-blueprint" index-template-key="ideaSearch-index-template" i18n-index-title-key="ideaSearch.blueprint.page.index-title"> 
-    <dialog-wizard key="ideaSearch-wizard"> 
-      <dialog-page description-content-key="ideaSearch.blueprint.page.wizard.page1.desc.content" description-header-key="ideaSearch.blueprint.page.wizard.page1.desc.header" id="page1Id" last="true" template-key="ideaSearch.blueprint.page.fedexIdea.page1Form" title-key="ideaSearch.blueprint.page.wizard.page1.title"/> /&gt;
-    </dialog-wizard> 
-  </blueprint>  
-  <content-template i18n-name-key="ideaSearch.blueprint.page.title" key="ideaSearch-page-template"> 
-    <context-provider class="au.com.agiledigital.idea_search.blueprints.BlueprintPageContextProvider"/>  
-    <resource location="/templates/pageBlueprint.xml" name="template" type="download"/> 
-  </content-template>  
-  <web-item i18n-name-key="ideaSearch.blueprint.page.create-link.title" key="ideaSearch-page-blueprint-entry" section="system.create.dialog/content"> 
-    <description key="ideaSearch.blueprint.page.create-link.description"/>  
-    <param name="blueprintKey" value="idea-blueprint"/>  
-    <resource location="/images/myblueprint.png" name="icon" type="download"/> 
-  </web-item>  
-  <web-resource key="ideaSearch.blueprint.page.wizard" name="Fedex create blueprint wizard">--&gt; 
-    <context>create-content</context>  
-    <dependency>com.atlassian.confluence.plugins.confluence-create-content-plugin:resources</dependency>  
-    <dependency>com.atlassian.auiplugin:ajs</dependency>  
-    <resource location="/js/ideaSearch.js" name="ideaSearch.js" type="download"/>  
-    <resource location="/soy/ideaSearch.soy" name="ideaSearch.soy.js" type="download"/>  
-    <resource location="/images" name="images/" type="download"/>  
-    <transformation extension="soy"> 
-      <transformer key="soyTransformer"> 
-        <functions>com.atlassian.confluence.plugins.soy:soy-core-functions</functions> 
-      </transformer> 
-    </transformation> 
-  </web-resource>  
-  <!-- Index Blueprint -->  
-  <content-template key="ideaSearch-index-template" i18n-name-key="ideaSearch.blueprint.index.name"> 
-    <resource name="template" type="download" location="templates/indexBlueprint.xml"/>  
-    <context-provider class="au.com.agiledigital.idea_search.blueprints.IndexPageContextProvider"/> 
-  </content-template>  
-  <!-- Client Side Scripts Macro -->  
-  <xhtml-macro name="Idea Search Client Side Scripts" class="au.com.agiledigital.idea_search.macros.ClientSideScripts" key="ideaSearch-macro-clientSideScripts"> 
-    <description key="ideaSearch.macro.client-side-scripts.desc"/>  
-    <category name="hidden"/>  
-    <parameters/> 
-  </xhtml-macro>  
-  <web-resource key="ideaSearch-macro-clientSideScripts-macro-resource" name="Client Side Scripts Web Resources"> 
-    <dependency>com.atlassian.auiplugin:ajs</dependency>  
-    <!--  Add Background resource loading here  --> 
-  </web-resource>  
-  <!-- Structured Data Macro -->  
-  <xhtml-macro name="Idea Structured Field" class="au.com.agiledigital.idea_search.macros.StructuredField" key="ideaSearch-macro-structuredField"> 
-    <description key="ideaSearch.macro.structuredField.desc"/>  
-    <category name="hidden"/>  
-    <parameters> 
-      <parameter name="category" type="enum"> 
-        <value name="description"/>  
-        <value name="technologies"/>  
-        <value name="status"/>  
-        <value name="owner"/> 
-      </parameter> 
-    </parameters> 
-  </xhtml-macro>  
-  <web-resource key="ideaSearch-macro-structuredField-macro-resource" name="Structured Field Web Resources"> 
-    <resource type="download" name="StructuredField.css" location="/css/StructuredField.css"/> 
-  </web-resource>  
-  <ao key="ao-module" namespace="fedex-idea"> 
-    <description>The module configuring the active objects data storage service for this plugin</description>  
-    <entity>au.com.agiledigital.idea_search.dao.AoFedexIdea</entity>  
-    <entity>au.com.agiledigital.idea_search.dao.AoFedexTechnology</entity> 
-  </ao>  
-  <component-import key="eventPublisher" name="Event Publisher components" interface="com.atlassian.event.api.EventPublisher"> 
-    <description>Access to the Active Objects service</description> 
-  </component-import>  
-  <component key="fedexIdeaService" class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"/>  
-  <component key="fedexIdeaDao" class="au.com.agiledigital.idea_search.dao.FedexIdeaDao"/>  
-  <!-- Index Table Macro -->  
-  <xhtml-macro name="Ideas index table" class="au.com.agiledigital.idea_search.macros.IndexTable" key="ideaSearch-macro-indexTable"> 
-    <description key="ideaSearch.macro.indexTable.desc"/>  
-    <category name="hidden"/>  
-    <parameters/> 
-  </xhtml-macro>  
-  <web-resource key="ideaSearch-macro-indexTable-macro-resource" name="Index Table Web Resources"> 
-    <resource type="download" name="IndexTable.css" location="/css/IndexTable.css"/>  
-    <resource type="download" name="StructuredField.css" location="/css/StructuredField.css"/> 
-  </web-resource>  
-  <!-- Blueprint ID Storage -->  
-  <xhtml-macro name="Blueprint Id Storage" class="au.com.agiledigital.idea_search.macros.TemplateId" key="ideaSearch-macro-templateId"> 
-    <description key="ideaSearch.macro.templateId.desc"/>  
-    <category name="hidden"/>  
-    <parameters> 
-      <parameter name="blueprintId" type="string"/>  
-      <parameter name="category" type="enum"> 
-        <value name="blueprintId"/> 
-      </parameter> 
-    </parameters> 
-  </xhtml-macro>  
+  <!-- Property Naming from ideaSearch.properties -->
+  <resource location="ideaSearch" name="i18n" type="i18n" />
+
+  <!-- Page Blueprint -->
+  <blueprint
+    content-template-key="ideaSearch-page-template"
+    i18n-name-key="ideaSearch.blueprint.name"
+    index-key="fedex-ideas"
+    key="idea-blueprint"
+    index-template-key="ideaSearch-index-template"
+    i18n-index-title-key="ideaSearch.blueprint.page.index-title"
+  >
+    <dialog-wizard key="ideaSearch-wizard">
+      <dialog-page
+        description-content-key="ideaSearch.blueprint.page.wizard.page1.desc.content"
+        description-header-key="ideaSearch.blueprint.page.wizard.page1.desc.header"
+        id="page1Id"
+        last="true"
+        template-key="ideaSearch.blueprint.page.fedexIdea.page1Form"
+        title-key="ideaSearch.blueprint.page.wizard.page1.title"
+      />
+    </dialog-wizard>
+  </blueprint>
+
+  <content-template
+    i18n-name-key="ideaSearch.blueprint.page.title"
+    key="ideaSearch-page-template"
+  >
+    <context-provider
+      class="au.com.agiledigital.idea_search.blueprints.BlueprintPageContextProvider"
+    />
+    <resource
+      location="/templates/pageBlueprint.xml"
+      name="template"
+      type="download"
+    />
+  </content-template>
+
+  <web-item
+    i18n-name-key="ideaSearch.blueprint.page.create-link.title"
+    key="ideaSearch-page-blueprint-entry"
+    section="system.create.dialog/content"
+  >
+    <description key="ideaSearch.blueprint.page.create-link.description" />
+    <param name="blueprintKey" value="idea-blueprint" />
+    <resource location="/images/myblueprint.png" name="icon" type="download" />
+  </web-item>
+
+  <web-resource
+    key="ideaSearch.blueprint.page.wizard"
+    name="Fedex create blueprint wizard"
+  >-->
+    <context>create-content</context>
+    <dependency>
+      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
+    </dependency>
+
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+    <resource
+      location="/js/ideaSearch.js"
+      name="ideaSearch.js"
+      type="download"
+    />
+    <resource
+      location="/soy/ideaSearch.soy"
+      name="ideaSearch.soy.js"
+      type="download"
+    />
+    <resource location="/images" name="images/" type="download" />
+
+    <transformation extension="soy">
+      <transformer key="soyTransformer">
+        <functions>com.atlassian.confluence.plugins.soy:soy-core-functions
+        </functions>
+      </transformer>
+    </transformation>
+  </web-resource>
+
+  <!-- Index Blueprint -->
+  <content-template
+    key="ideaSearch-index-template"
+    i18n-name-key="ideaSearch.blueprint.index.name"
+  >
+    <resource
+      name="template"
+      type="download"
+      location="templates/indexBlueprint.xml"
+    />
+    <context-provider
+      class="au.com.agiledigital.idea_search.blueprints.IndexPageContextProvider"
+    />
+  </content-template>
+
+  <!-- Client Side Scripts Macro -->
+  <xhtml-macro
+    name="Idea Search Client Side Scripts"
+    class="au.com.agiledigital.idea_search.macros.ClientSideScripts"
+    key='ideaSearch-macro-clientSideScripts'
+  >
+    <description key="ideaSearch.macro.client-side-scripts.desc" />
+    <category name="hidden" />
+    <parameters />
+  </xhtml-macro>
+
+  <web-resource
+    key="ideaSearch-macro-clientSideScripts-macro-resource"
+    name="Client Side Scripts Web Resources"
+  >
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+    <!--  Add Background resource loading here  -->
+  </web-resource>
+
+  <!-- Structured Data Macro -->
+  <xhtml-macro
+    name="Idea Structured Field"
+    class="au.com.agiledigital.idea_search.macros.StructuredField"
+    key='ideaSearch-macro-structuredField'
+  >
+    <description key="ideaSearch.macro.structuredField.desc" />
+    <category name="hidden" />
+    <parameters>
+      <parameter name="category" type="enum">
+        <value name="description" />
+        <value name="technologies" />
+        <value name="status" />
+        <value name="owner" />
+        <value name="team" />
+      </parameter>
+    </parameters>
+  </xhtml-macro>
+
+  <web-resource
+    key="ideaSearch-macro-structuredField-macro-resource"
+    name="Structured Field Web Resources"
+  >
+    <resource
+      type="download"
+      name="StructuredField.css"
+      location="/css/StructuredField.css"
+    />
+  </web-resource>
+    <ao key="ao-module" namespace="fedex-idea">
+        <description
+    >The module configuring the active objects data storage service for this plugin</description>
+        <entity>au.com.agiledigital.idea_search.dao.AoFedexIdea</entity>
+        <entity>au.com.agiledigital.idea_search.dao.AoFedexTechnology</entity>
+    </ao>
+    <component-import
+    key="eventPublisher"
+    name="Event Publisher components"
+    interface="com.atlassian.event.api.EventPublisher"
+  >
+        <description>Access to the Active Objects service</description>
+    </component-import>
+    <component
+    key="fedexIdeaService"
+    class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"
+  />
+    <component
+    key="fedexIdeaDao"
+    class="au.com.agiledigital.idea_search.dao.FedexIdeaDao"
+  />
+
+  <!-- Index Table Macro -->
+  <xhtml-macro
+    name="Ideas index table"
+    class="au.com.agiledigital.idea_search.macros.IndexTable"
+    key='ideaSearch-macro-indexTable'
+  >
+    <description key="ideaSearch.macro.indexTable.desc" />
+    <category name="hidden" />
+    <parameters />
+  </xhtml-macro>
+
+  <web-resource
+    key="ideaSearch-macro-indexTable-macro-resource"
+    name="Index Table Web Resources"
+  >
+    <resource
+      type="download"
+      name="IndexTable.css"
+      location="/css/IndexTable.css"
+    />
+
+    <resource
+      type="download"
+      name="StructuredField.css"
+      location="/css/StructuredField.css"
+    />
+  </web-resource>
+
+  <!-- Blueprint ID Storage -->
+  <xhtml-macro
+    name="Blueprint Id Storage"
+    class="au.com.agiledigital.idea_search.macros.TemplateId"
+    key='ideaSearch-macro-templateId'
+  >
+    <description key="ideaSearch.macro.templateId.desc" />
+    <category name="hidden" />
+    <parameters>
+      <parameter name="blueprintId" type="string" />
+      <parameter name="category" type="enum">
+        <value name="blueprintId" />
+      </parameter>
+    </parameters>
+  </xhtml-macro>
   <servlet name="Technology Servlet" i18n-name-key="technology-servlet.name" key="technology-servlet" class="au.com.agiledigital.idea_search.servlet.TechnologyServlet">
     <description key="technology-servlet.description">Technology Servelet Plugin to resolve technology related queries.</description>  
     <url-pattern>/technology</url-pattern>

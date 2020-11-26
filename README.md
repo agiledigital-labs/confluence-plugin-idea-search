@@ -4,7 +4,7 @@ Provides a blue print for idea capture, search, and display.
 
 # Release
 
-The latest released version [can be downloaded from github.](https://github.com/agiledigital-labs/confluence-plugin-idea-search/releases/latest) 
+The latest released version [can be downloaded from github.](https://github.com/agiledigital-labs/confluence-plugin-idea-search/releases/latest)
 
 # Requirements
 

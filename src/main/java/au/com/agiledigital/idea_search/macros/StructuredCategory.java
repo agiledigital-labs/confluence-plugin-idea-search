@@ -2,16 +2,20 @@ package au.com.agiledigital.idea_search.macros;
 
 import java.util.Arrays;
 
-
 /**
  * Categories of structure data for the Structured Field macro
  */
 public enum StructuredCategory {
   TECHNOLOGIES("technologies", "Technology", "Add your technologies"),
-  DESCRIPTION("description", "Description", "It is awesome, how could it not be"),
+  DESCRIPTION(
+    "description",
+    "Description",
+    "It is awesome, how could it not be"
+  ),
   STATUS("status", "Status", "new"),
   OWNER("owner", "Owner", "No one :("),
-  BLUEPRINT_ID("blueprintId", "", "");
+  BLUEPRINT_ID("blueprintId", "", ""),
+  TEAM("team", "Team", "No team members");
 
   private String key;
   private String template;
@@ -24,8 +28,11 @@ public enum StructuredCategory {
   }
 
   public static StructuredCategory fromKey(String key) {
-    return Arrays.stream(StructuredCategory.values()).filter((constant) -> constant.key.equals(key))
-      .findFirst().orElse(null);
+    return Arrays
+      .stream(StructuredCategory.values())
+      .filter(constant -> constant.key.equals(key))
+      .findFirst()
+      .orElse(null);
   }
 
   public String getKey() {

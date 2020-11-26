@@ -24,10 +24,12 @@ public class StructureFieldRenderHelper {
     return render(category, body, true, null);
   }
 
-  public static String render(StructuredCategory category,
+  public static String render(
+    StructuredCategory category,
     String body,
     boolean heading,
-    XhtmlContent xhtmlContent) {
+    XhtmlContent xhtmlContent
+  ) {
     Map<String, Object> context = new HashMap<>();
 
     context.put("heading", heading);
@@ -38,11 +40,16 @@ public class StructureFieldRenderHelper {
         break;
       case DESCRIPTION:
       case OWNER:
+      case TEAM:
         String bodyConverted = body;
 
-        if(xhtmlContent != null) {
+        if (xhtmlContent != null) {
           try {
-            bodyConverted = xhtmlContent.convertStorageToView(body, new DefaultConversionContext(new RenderContext()));
+            bodyConverted =
+              xhtmlContent.convertStorageToView(
+                body,
+                new DefaultConversionContext(new RenderContext())
+              );
           } catch (XMLStreamException e) {
             e.printStackTrace();
           } catch (XhtmlException e) {
@@ -53,7 +60,10 @@ public class StructureFieldRenderHelper {
         context.put("payload", bodyConverted);
         break;
       case STATUS:
-        context.put("payload", new StatusContainer(Status.getStatusFromReference(body)));
+        context.put(
+          "payload",
+          new StatusContainer(Status.getStatusFromReference(body))
+        );
         break;
     }
 
