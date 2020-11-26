@@ -11,7 +11,8 @@ import java.util.Map;
 /**
  * Context provider for Idea page blueprint
  */
-public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
+public class BlueprintPageContextProvider
+  extends AbstractBlueprintContextProvider {
 
   public final List<KeyProperty> ideaFieldsDefaults = Arrays.asList(
     new KeyProperty(
@@ -118,26 +119,34 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       .entrySet()
       .forEach(
         entry ->
-          contextMap.compute(entry.getKey(),
+          contextMap.compute(
+            entry.getKey(),
             (key, value) ->
-              value == null || (value instanceof String && ((String) value).length() == 0)
+              value == null ||
+                (value instanceof String && ((String) value).length() == 0)
                 ? ideaFieldsDefaults
-                .stream()
-                .filter(property -> property.key.equals(key))
-                .findFirst()
-                .orElse(
-                  new KeyProperty(key, "Something went very wrong here",
-                    setupOptions(key, new Options().withDefault(true))))
-                : new KeyProperty(key, entry.getValue(),
+                  .stream()
+                  .filter(property -> property.key.equals(key))
+                  .findFirst()
+                  .orElse(
+                    new KeyProperty(
+                      key,
+                      "Something went very wrong here",
+                      setupOptions(key, new Options().withDefault(true))
+                    )
+                  )
+                : new KeyProperty(
+                  key,
+                  entry.getValue(),
                   setupOptions(key, new Options().withDefault(false))
                 )
-          ));
+          )
+      );
 
     contextMap
       .entrySet()
       .forEach(
-        entry -> entry.setValue(
-          renderValue((KeyProperty) entry.getValue()))
+        entry -> entry.setValue(renderValue((KeyProperty) entry.getValue()))
       );
 
     contextMap.put("blueprintId", blueprintContext.getBlueprintId());

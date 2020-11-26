@@ -1,6 +1,6 @@
 package au.com.agiledigital.idea_search.macros;
 
-import static au.com.agiledigital.idea_search.macros.StructureFieldRenderHelper.render;
+import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper.render;
 
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
@@ -39,7 +39,9 @@ public class StructuredField implements Macro {
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-structuredField-macro-resource"
       );
-    StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
+    StructuredCategory category = StructuredCategory.fromKey(
+      map.get("category")
+    );
     String stripped = s.replace("<p>", "").replace("</p>", "");
 
     return render(category, stripped);

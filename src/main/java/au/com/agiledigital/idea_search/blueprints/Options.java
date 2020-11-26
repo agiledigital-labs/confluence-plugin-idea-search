@@ -46,13 +46,13 @@ public class Options {
   public String toString() {
     return (
       "Options{" +
-        "isDefault=" +
-        isDefault +
-        ", isUser=" +
-        isUser +
-        ", isStatus=" +
-        isStatus +
-        '}'
+      "isDefault=" +
+      isDefault +
+      ", isUser=" +
+      isUser +
+      ", isStatus=" +
+      isStatus +
+      '}'
     );
   }
 }
