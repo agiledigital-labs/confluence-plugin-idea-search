@@ -8,6 +8,7 @@ import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
+import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.pages.AbstractPage;
 import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
@@ -27,6 +28,9 @@ import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.w3c.dom.Document;
@@ -46,6 +50,8 @@ import org.xml.sax.SAXException;
 public class FedexIdeaEventListener
   implements InitializingBean, DisposableBean {
 
+  private static final Logger log = LoggerFactory.getLogger(FedexIdeaEventListener.class);
+
   @ConfluenceImport
   private final EventPublisher eventPublisher;
 
@@ -61,9 +67,9 @@ public class FedexIdeaEventListener
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
-   * @param eventPublisher
-   * @param fedexIdeaService
-   * @param xhtmlContent
+   * @param eventPublisher confluence event publisher
+   * @param fedexIdeaService fedex Idea service
+   * @param xhtmlContent used to parse the page content
    */
   @Inject
   public FedexIdeaEventListener(
@@ -161,7 +167,7 @@ public class FedexIdeaEventListener
         FedexIdea idea = getFedexIdea(event.getPage());
         this.fedexIdeaService.create(idea);
       } catch (ParserConfigurationException | IOException | SAXException e) {
-        e.printStackTrace();
+        log.debug(e.getMessage());
       }
     }
   }
@@ -180,7 +186,30 @@ public class FedexIdeaEventListener
         FedexIdea idea = getFedexIdea(event.getPage());
         this.fedexIdeaService.update(idea, event.getPage().getId());
       } catch (ParserConfigurationException | IOException | SAXException e) {
-        e.printStackTrace();
+        log.debug(e.getMessage());
+      }
+    }
+  }
+
+  /**
+   * Listen for page creations events on pages with the correct label,
+   * updates the data store with the new idea
+   *
+   * If the title of the page is not unique, the blueprint create event
+   * is not used, the page create event is.
+   *
+   * @param event produced when a page is updated
+   */
+  @EventListener
+  public void pageCreated(PageCreateEvent event) {
+    if (
+      event.getContent().getLabels().toString().contains(MY_BLUEPRINT_LABEL)
+    ) {
+      try {
+        FedexIdea idea = getFedexIdea(event.getPage());
+        this.fedexIdeaService.update(idea, event.getPage().getId());
+      } catch (ParserConfigurationException | IOException | SAXException e) {
+        log.debug(e.getMessage());
       }
     }
   }
