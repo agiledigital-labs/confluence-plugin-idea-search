@@ -1,24 +1,26 @@
-package au.com.agiledigital.idea_search;
+package au.com.agiledigital.idea_search.servlet;
 
+import au.com.agiledigital.idea_search.servlet.IdeaServlet;
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
-
-import org.junit.Test;
+import com.google.gson.Gson;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import com.google.gson.*;
 
-public class ideaServletTest {
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+public class ideaServletUnitTest {
   HttpServletRequest mockRequest;
   HttpServletResponse mockResponse;
 

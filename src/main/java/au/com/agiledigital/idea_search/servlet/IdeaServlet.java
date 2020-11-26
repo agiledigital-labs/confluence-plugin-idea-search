@@ -1,4 +1,4 @@
-package au.com.agiledigital.idea_search;
+package au.com.agiledigital.idea_search.servlet;
 
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
 import javax.servlet.*;
