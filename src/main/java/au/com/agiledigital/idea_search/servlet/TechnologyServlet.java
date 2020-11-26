@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.List;
 import com.google.gson.*;
 
-public class IdeaServlet extends HttpServlet{
+public class TechnologyServlet extends HttpServlet{
     private Gson gson = new Gson();
 
     private FedexIdeaService fedexIdeaService;
 
 
-    public IdeaServlet(FedexIdeaService fedexIdeaService) {
+    public TechnologyServlet(FedexIdeaService fedexIdeaService) {
         this.fedexIdeaService = fedexIdeaService;
     }
 

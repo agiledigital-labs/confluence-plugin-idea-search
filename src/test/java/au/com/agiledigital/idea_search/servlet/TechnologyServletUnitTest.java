@@ -1,6 +1,5 @@
 package au.com.agiledigital.idea_search.servlet;
 
-import au.com.agiledigital.idea_search.servlet.IdeaServlet;
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
@@ -20,7 +19,7 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class ideaServletUnitTest {
+public class TechnologyServletUnitTest {
   HttpServletRequest mockRequest;
   HttpServletResponse mockResponse;
 
@@ -36,7 +35,7 @@ public class ideaServletUnitTest {
   @Test
   public void emptyTech() throws IOException {
     FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-    IdeaServlet newServlet = new IdeaServlet(ideaService);
+    TechnologyServlet newServlet = new TechnologyServlet(ideaService);
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
@@ -60,7 +59,7 @@ public class ideaServletUnitTest {
   @Test
   public void singleTech() throws IOException {
     FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-    IdeaServlet newServlet = new IdeaServlet(ideaService);
+    TechnologyServlet newServlet = new TechnologyServlet(ideaService);
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
@@ -84,7 +83,7 @@ public class ideaServletUnitTest {
   @Test
   public void multipleTech() throws IOException {
     FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-    IdeaServlet newServlet = new IdeaServlet(ideaService);
+    TechnologyServlet newServlet = new TechnologyServlet(ideaService);
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 

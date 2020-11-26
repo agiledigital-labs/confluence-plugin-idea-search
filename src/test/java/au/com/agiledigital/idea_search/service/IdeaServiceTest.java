@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 
-public class ideaServiceTest {
+public class IdeaServiceTest {
   private FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
   FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
 

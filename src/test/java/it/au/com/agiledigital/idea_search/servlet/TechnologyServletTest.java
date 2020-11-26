@@ -1,4 +1,4 @@
-package it.au.com.agi_search.servlet;
+package it.au.com.agiledigital.idea_search.servlet;
 
 import com.google.gson.Gson;
 import org.apache.http.client.HttpClient;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 
-public class ideaServletFuncTest {
+public class TechnologyServletTest {
 
     HttpClient httpClient;
     String baseUrl;
@@ -27,7 +27,7 @@ public class ideaServletFuncTest {
     public void setup() {
         httpClient = new DefaultHttpClient();
         baseUrl = System.getProperty("baseurl");
-        servletUrl = baseUrl + "/plugins/servlet/ideaservlet";
+        servletUrl = baseUrl + "/plugins/servlet/technology";
     }
 
     @After
@@ -36,7 +36,7 @@ public class ideaServletFuncTest {
     }
 
     @Test
-    public void ideaServletTest() throws IOException {
+    public void technologyServletTest() throws IOException {
         HttpGet httpget = new HttpGet(servletUrl);
         String expected = String.valueOf(this.gson.toJson(Arrays.asList("java", "js", "python", "ts")));
 

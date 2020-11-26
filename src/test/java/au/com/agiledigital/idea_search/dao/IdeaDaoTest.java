@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 
-public class ideaDaoTest {
+public class IdeaDaoTest {
   private AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(AoFedexTechnology.class);
   private AoFedexTechnology aoFedexTechnologyPython = Mockito.mock(AoFedexTechnology.class);
 

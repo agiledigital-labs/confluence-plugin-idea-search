@@ -36,8 +36,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 @RunWith(ActiveObjectsJUnitRunner.class)
-@Data(IdeaServletIntegrationTest.IdeaServletFuncTestDatabaseUpdater.class)
-public class IdeaServletIntegrationTest {
+@Data(TechnologyServlete2eTest.TechnologyServletFuncTestDatabaseUpdater.class)
+public class TechnologyServlete2eTest {
   private EntityManager entityManager;
   private DefaultFedexIdeaService ideaService;
   private Gson gson = new Gson();
@@ -46,7 +46,7 @@ public class IdeaServletIntegrationTest {
 
   private ActiveObjects ao;
   private FedexIdeaDao fedexIdeaDao;
-  private IdeaServlet ideaServlet;
+  private TechnologyServlet technologyServlet;
   HttpServletRequest mockRequest;
   HttpServletResponse mockResponse;
 
@@ -63,10 +63,10 @@ public class IdeaServletIntegrationTest {
     ao = new TestActiveObjects(entityManager);
     fedexIdeaDao = new FedexIdeaDao(ao, userAccessor);
     ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-    ideaServlet = new IdeaServlet(ideaService);
+    technologyServlet = new TechnologyServlet(ideaService);
     httpClient = new DefaultHttpClient();
     baseUrl = System.getProperty("baseurl");
-    servletUrl = baseUrl + "/plugins/servlet/ideaservlet";
+    servletUrl = baseUrl + "/plugins/servlet/technology";
     mockRequest = mock(HttpServletRequest.class);
     mockResponse = mock(HttpServletResponse.class);
   }
@@ -85,7 +85,7 @@ public class IdeaServletIntegrationTest {
 
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
-    ideaServlet.doGet(mockRequest, mockResponse);
+    technologyServlet.doGet(mockRequest, mockResponse);
 
     Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
     AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AoFedexTechnology.class, query);
@@ -117,7 +117,7 @@ public class IdeaServletIntegrationTest {
 
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
-    ideaServlet.doGet(mockRequest, mockResponse);
+    technologyServlet.doGet(mockRequest, mockResponse);
 
     Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
     AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AoFedexTechnology.class, query);
@@ -142,7 +142,7 @@ public class IdeaServletIntegrationTest {
 
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
-    ideaServlet.doGet(mockRequest, mockResponse);
+    technologyServlet.doGet(mockRequest, mockResponse);
 
     Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
     AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AoFedexTechnology.class, query);
@@ -157,7 +157,7 @@ public class IdeaServletIntegrationTest {
     sw.close();
   }
 
-  public static class IdeaServletFuncTestDatabaseUpdater implements DatabaseUpdater {
+  public static class TechnologyServletFuncTestDatabaseUpdater implements DatabaseUpdater {
     @Override
     public void update(EntityManager em) throws Exception {
       em.migrate(AoFedexTechnology.class);
