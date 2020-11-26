@@ -100,8 +100,8 @@
       </parameter> 
     </parameters> 
   </xhtml-macro>  
-  <servlet name="idea Servlet" i18n-name-key="idea-servlet.name" key="idea-servlet" class="au.com.agiledigital.idea_search.servlet.ideaServlet">
+  <servlet name="idea Servlet" i18n-name-key="idea-servlet.name" key="idea-servlet" class="au.com.agiledigital.idea_search.IdeaServlet">
     <description key="idea-servlet.description">The idea Servlet Plugin</description>  
-    <url-pattern>/ideaservlet</url-pattern> 
+    <url-pattern>/ideaservlet</url-pattern>
   </servlet>
 </atlassian-plugin>

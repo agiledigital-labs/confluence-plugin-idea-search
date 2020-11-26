@@ -141,7 +141,6 @@ public class FedexIdeaDao {
                 .withGlobalId(ao.getGlobalId())
                 .withOwner(ao.getOwner())
                 .withContentId(ao.getContentId())
-//                .withTechnologies(ao.getTechnologies())
                 .withCreator(this.getUsername(ao.getCreatorUserKey()))
                 .withDescription(ao.getDescription())
                 .withStatus(ao.getStatus())
@@ -156,9 +155,10 @@ public class FedexIdeaDao {
     }
 
     public List<String> techDaoList(){
-        AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select("TECHNOLOGY"));
+        Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
+        AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
+
         List<String> technologies = Arrays.stream(aoFedexTechnologies).map(t -> t.getTechnology()).collect(Collectors.toList());
         return technologies;
     }
-
 }

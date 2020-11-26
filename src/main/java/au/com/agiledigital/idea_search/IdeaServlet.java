@@ -1,9 +1,6 @@
-package au.com.agiledigital.idea_search.servlet;
+package au.com.agiledigital.idea_search;
 
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,14 +9,13 @@ import java.io.IOException;
 import java.util.List;
 import com.google.gson.*;
 
-public class ideaServlet extends HttpServlet{
-    private static final Logger log = LoggerFactory.getLogger(ideaServlet.class);
+public class IdeaServlet extends HttpServlet{
     private Gson gson = new Gson();
 
     private FedexIdeaService fedexIdeaService;
 
 
-    public ideaServlet(FedexIdeaService fedexIdeaService) {
+    public IdeaServlet(FedexIdeaService fedexIdeaService) {
         this.fedexIdeaService = fedexIdeaService;
     }
 
