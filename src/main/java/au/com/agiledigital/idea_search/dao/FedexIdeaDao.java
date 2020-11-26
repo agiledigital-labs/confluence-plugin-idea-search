@@ -9,7 +9,6 @@ import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.user.UserKey;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +60,7 @@ public class FedexIdeaDao {
         // Save the changes to the active object
         aoFedexIdea.save();
         // Set the relation of the technology to the idea and save
-        SetTechnology(getAoFedexTechnologies(fedexIdea), aoFedexIdea);
+        setTechnologies(getAoFedexTechnologies(fedexIdea), aoFedexIdea);
 
         return this.asFedexIdea(aoFedexIdea);
     }
@@ -95,7 +94,7 @@ public class FedexIdeaDao {
         List<AoFedexTechnology> aoTechList = getAoFedexTechnologies(fedexIdea);
 
         this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
-        SetTechnology(aoTechList, aoFedexIdea);
+        setTechnologies(aoTechList, aoFedexIdea);
         aoFedexIdea.save();
 
         return this.asFedexIdea(aoFedexIdea);
@@ -118,7 +117,7 @@ public class FedexIdeaDao {
 
     //    See comment on https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375
     //    This means that the setter is done on the Recipient entity(setting the Filter) and because of the way relational databases...
-    private void SetTechnology(
+    private void setTechnologies(
             List<AoFedexTechnology> aoFedexTechnologies,
             AoFedexIdea aoFedexIdea
     ) {
@@ -154,7 +153,7 @@ public class FedexIdeaDao {
     /**
      * Convert array of active objects to a list of model objects
      *
-     * @param aoFedexIdeas AoFedexIdea[]
+     * @param aoFedexIdeas list of active object ideas to be converted to a list of the model FedexIdea
      * @return List<FedexIdea>
      */
     private List<FedexIdea> asListFedexIdea(AoFedexIdea[] aoFedexIdeas) {
