@@ -1,16 +1,99 @@
 const $ = AJS.$
 
-let rowStatus;
-let technlogies = new Set();
-let usedTechnlogies = [];
+const appConstants = {
+  TECHNOLOGIES_LIST: 'technologies-list',
+  TECHNOLOGIES_SEARCH: 'search-technologies',
+  TECHNOLOGIES_COLUMN_CLASS: 'cell-technology',
+  TECHNOLOGIES_COLUMN_KEY: 'technologies',
+  STATUS_LIST: 'status-list',
+  STATUS_SEARCH: 'search-status',
+  STATUS_COLUMN_CLASS: 'cell-status',
+  STATUS_COLUMN_KEY: 'status',
+}
 
+/**
+ * Container for the column information in a row
+ * @typedef {{name: boolean, description: boolean, technologies: boolean, status: boolean, talkTo: boolean}} RowColumnStatus
+ */
+
+/**
+ * Status of each column per row
+ * @type {RowColumnStatus[]}
+ */
+let rowStatus;
+
+/**
+ * Dropdown item lists
+ * @type {Record<string, Set<string>>}
+ */
+let itemLists = {
+  [appConstants.TECHNOLOGIES_LIST]: new Set(),
+  [appConstants.STATUS_LIST]: new Set()
+};
+
+/**
+ * List of technologies currently being filtered
+ * @type {Record<string, HTMLElement[]>}
+ */
+let usedOptions = {
+  [appConstants.TECHNOLOGIES_LIST]: [],
+  [appConstants.STATUS_LIST]: []
+};
+
+/**
+ * Stores the status of the focus of different components of the multiselect dropdown
+ * @type {Record<string, {container: boolean, list: boolean}>}
+ */
 let multiSelectFocus = {
-  technlogies: {
+  [appConstants.TECHNOLOGIES_LIST]: {
+    container: false,
+    list: false
+  },
+  [appConstants.STATUS_LIST]: {
     container: false,
     list: false
   }
 }
 
+/**
+ * Translate a column class to a column key
+ * @type {{[p: string]: string}}
+ */
+const columnClassToColumnKey = {
+  [appConstants.TECHNOLOGIES_COLUMN_CLASS]: appConstants.TECHNOLOGIES_COLUMN_KEY,
+  [appConstants.STATUS_COLUMN_CLASS]: appConstants.STATUS_COLUMN_KEY
+}
+
+/**
+ * Translate a list id to a column key
+ * @type {{[p: string]: string}}
+ */
+const listToColumnClass = {
+  [appConstants.TECHNOLOGIES_LIST]: appConstants.TECHNOLOGIES_COLUMN_CLASS,
+  [appConstants.STATUS_LIST]: appConstants.STATUS_COLUMN_CLASS,
+}
+
+/**
+ * Translate a input id to a list id
+ * @type {{[p: string]: string}}
+ */
+const searchToList = {
+  [appConstants.TECHNOLOGIES_SEARCH]: appConstants.TECHNOLOGIES_LIST,
+  [appConstants.STATUS_SEARCH]: appConstants.STATUS_LIST
+};
+
+/**
+ * Translate a list id to a input id
+ * @type {{[p: string]: string}}
+ */
+const listToSearch = {
+  [appConstants.TECHNOLOGIES_LIST]: appConstants.TECHNOLOGIES_SEARCH,
+  [appConstants.STATUS_LIST]: appConstants.STATUS_SEARCH,
+}
+
+/**
+ * Determines the visability of each row from the RowColumnStauts container
+ */
 const setHidden = () => {
   $('.table-content tr').each((index, element) => {
     $(element)[Object.values(rowStatus[index]).some((value) => !value)
@@ -19,45 +102,75 @@ const setHidden = () => {
   })
 }
 
-const addTechnologyOptionsToList = () => {
-  technlogies.forEach((value) => {
-    $('#technologies-list').append(
-        `<li class="list-option" role="option">${value}</li>`);
-  });
-}
+/**
+ * Adds technologies to the technologies dropdown list
+ *
+ * @param {Set<string>>} list A set of items to add to generate list items for
+ */
+const generateHTMLTagsForListItems = (list) => [...list].map(
+    (value) => `<li class="list-option" role="option">${value}</li>`);
 
-const removeTechnologyOptionsToList = () => {
-  $('#technologies-list').empty();
-}
-
-const changeStatusOfTechnologiesList = () => {
-  $('#technologies-list')[Object.values(multiSelectFocus.technlogies).some(
+/**
+ * Filters the technology list based off the statuses of each technology
+ *
+ * @param {string} listName Name of the list  to modify
+ */
+const changeStatusOfTechnologiesList = (listName) => {
+  $(`#${listName}`)[Object.values(
+      multiSelectFocus[listName]).some(
       (value) => value) ? 'removeClass' : 'addClass']('hidden');
 }
 
-const addTechnologyToMultiSelect = (element) => {
-  $('#search-technologies').before(
-      `<span class='tag'>${$(
-          element).text()}<button type="button" class="close">&#x2715</button></span>`);
-  $(element).addClass('hidden');
-  usedTechnlogies.push(element);
-  calculateHiddenRowForTechnologies();
+/**
+ * Adds a tag to the multiselect field. Hides item from the dropdown list
+ *
+ * @param {HTMLElement} element Item from dropdown to add
+ * @param {string} searchField Id of search field
+ * @param {string} list Id of dropdown list
+ */
+const addTagToMultiSelect = (searchField, list, element) => {
+  if (element !== undefined) {
+    $(`#${searchField}`).before(
+        `<span class='tag'>${$(
+            element).text()}<button type="button" class="close">&#x2715</button></span>`);
+    $(element).addClass('hidden');
+    usedOptions[list].push(element);
+    calculateHiddenRowForColumn(list);
+    return true;
+  }
+
+  return false;
 }
 
-const removeTechnologyFromMultiSelect = (element) => {
+/**
+ * Removes a tag from the multiselect list. Item will show in the dropdown list
+ * again
+ *
+ * @param {HTMLElement} element Item from multiselect field to remove
+ * @param {string} list Id of dropdown list
+ */
+const removeTagFromMultiSelect = (list, element) => {
   const text = $(element).text().slice(0, -1);
-  const listItem = usedTechnlogies.filter(
+  const listItem = usedOptions[list].filter(
       (value) => $(value).text() === text)[0];
   $(listItem).removeClass('hidden');
 
-  usedTechnlogies = usedTechnlogies.filter((value) => $(value).text() !== text);
-  calculateHiddenRowForTechnologies();
+  usedOptions[list] = usedOptions[list].filter(
+      (value) => $(value).text() !== text);
+  calculateHiddenRowForColumn(list);
 }
 
-const setHiddenFlagsOnTechnologyList = (searchValue) => {
-  const technologiesLabels = usedTechnlogies.map((value) => $(value).text());
+/**
+ * Sets the visability status for a item in the technologies dropdown list
+ *
+ * @param {string} listName Name of the unorder list in the dom
+ * @param {string} searchValue Needle to search haystack for
+ */
+const setHiddenFlagsOnDropdownList = (listName, searchValue) => {
+  const technologiesLabels = usedOptions[listName].map(
+      (value) => $(value).text());
 
-  $('#technologies-list li').each((index, value) => {
+  $(`#${listName} li`).each((index, value) => {
     if (!technologiesLabels.includes($(value).text())) {
       $(value)[$(value).text().toLowerCase().includes(searchValue)
           ? 'removeClass' : 'addClass']('hidden');
@@ -65,25 +178,36 @@ const setHiddenFlagsOnTechnologyList = (searchValue) => {
   });
 }
 
-const calculateHiddenRowForTechnologies = () => {
-  const techList = usedTechnlogies.map((value) => $(value).text());
+/**
+ * Checks each row of the table and sees if a column in that row fit the
+ * crtiera of that in the filter box for that column
+ *
+ * @param {string} list Id of the dropdown list
+ */
+const calculateHiddenRowForColumn = (list) => {
+  const optionsList = usedOptions[list].map(
+      (value) => $(value).text());
 
-  $('.cell-technology').each((index, value) => {
-    let hasTechnology = [];
+  const columnClass = listToColumnClass[list];
 
-    if(techList.length > 0) {
-      const rowList = []
+  $(`.${columnClass}`).each((index, value) => {
+    let hasOptions;
 
-      $(value).children('span.technology').each((index, technology) => {
-        rowList.push($(technology).text());
-      });
+    if (optionsList.length > 0) {
+      const rowList = [];
 
-      techList.forEach((value) => hasTechnology.push(rowList.includes(value)));
+      $(value).children(`span.${columnClass.substring(5)}`).each(
+          (index, option) => {
+            rowList.push($(option).text());
+          });
+
+      hasOptions = optionsList.map((value) => rowList.includes(value));
     } else {
-      hasTechnology.push(true);
+      hasOptions = [true];
     }
 
-    rowStatus[index].technologies = hasTechnology.every((value) => value);
+    rowStatus[index][columnClassToColumnKey[columnClass]] = hasOptions.every(
+        (value) => value);
   });
 
   setHidden();
@@ -99,69 +223,100 @@ $(document).ready(() => {
         talkTo: true
       }));
 
-  (() => {
-    let tempList = [];
+  ((lists) => {
+    lists.forEach(({key, listRef}) => {
+      let tempList = [];
 
-    $('span.technology').each((index, value) => {
-      tempList.push($(value).text());
+      $(`span.${key}`).each((index, value) => {
+        tempList.push($(value).text());
+      });
+
+      tempList.sort().forEach((value) => itemLists[listRef].add(value));
+
+      $(`#${listRef}`).append(
+          ...generateHTMLTagsForListItems(itemLists[listRef]));
     });
+  })([{key: 'technology', listRef: appConstants.TECHNOLOGIES_LIST},
+    {key: 'status', listRef: appConstants.STATUS_LIST}]);
 
-    tempList.sort();
-    tempList.forEach((value) => technlogies.add(value));
-  })();
+  /*
+   * Standard text search
+   */
+  $('.text-search').on('input', ({target}) => {
+    const searchValue = $(target).val().toLowerCase();
+    const columnClass = target.id.substring(7);
 
-  addTechnologyOptionsToList();
-
-  $('#search-title').on('input', () => {
-    const searchValue = $('#search-title').val().toLowerCase();
-
-    $('.cell-title').each((index, value) => {
-      rowStatus[index].name = searchValue === '' ? true : $(
+    $(`.cell-${columnClass}`).each((index, value) => {
+      rowStatus[index][columnClass] = searchValue === '' ? true : $(
           value).text().toLowerCase().includes(searchValue);
     });
     setHidden();
   });
 
-  $('#search-technologies').on('input', () => {
-    const searchValue = $('#search-technologies').val().toLowerCase();
-    setHiddenFlagsOnTechnologyList(searchValue);
-  });
+  /*
+   * MultiSelect Type Ahead Event handlers
+   */
+  $(`.searchable`).on({
+    'input': ({target}) => {
+      setHiddenFlagsOnDropdownList(searchToList[target.id],
+          $(target).val().toLowerCase());
+    },
+    'keyup': ({keyCode, target}) => {
+      if (keyCode === 13 && $(target).val() != '') {
+        const searchId = target.id;
+        const listId = searchToList[searchId];
 
-  $('#search-technologies').on('keyup', (event) => {
-    if (event.keyCode === 13 && $('#search-technologies').val() != '') {
-      addTechnologyToMultiSelect($('#technologies-list li:not(.hidden):first'));
-      $('#search-technologies').val('');
-      setHiddenFlagsOnTechnologyList("");
+        if (addTagToMultiSelect(searchId, listId,
+            $(`#${listId} li:not(.hidden):first`)[0])) {
+          $(`#${searchId}`).val('');
+          setHiddenFlagsOnDropdownList(listId, "");
+        }
+      }
     }
   });
 
-  $('#technologies-multiselect-container').on('focusin', () => {
-    multiSelectFocus.technlogies.container = true;
-    changeStatusOfTechnologiesList();
+  $('.multiselect-container').on({
+    'focusin': ({target}) => {
+      const listId = searchToList[
+          target.id.includes("search") ? target.id : $(target).closest(
+              'div').children('input')[0].id];
+      multiSelectFocus[listId].container = true;
+      changeStatusOfTechnologiesList(listId);
+    },
+    'focusout': ({target}) => {
+      const listId = searchToList[
+          target.id.includes("search") ? target.id : $(target).closest(
+              'div').children('input')[0].id];
+      multiSelectFocus[listId].container = false;
+      changeStatusOfTechnologiesList(listId);
+    }
   });
 
-  $('#technologies-multiselect-container').on('focusout', () => {
-    multiSelectFocus.technlogies.container = false;
-    changeStatusOfTechnologiesList();
-  });
-
-  $('#technologies-list-container').on('mouseenter', () => {
-    multiSelectFocus.technlogies.list = true;
-    changeStatusOfTechnologiesList();
-  });
-
-  $('#technologies-list-container').on('mouseleave', () => {
-    multiSelectFocus.technlogies.list = false;
-    changeStatusOfTechnologiesList();
+  $('.list-container').on({
+    'mouseenter': ({target}) => {
+      const listId = target.id.includes("list") ? target.id : $(target).parent(
+          'ul').attr('id');
+      multiSelectFocus[listId].list = true;
+      changeStatusOfTechnologiesList(listId);
+    },
+    'mouseleave': ({target}) => {
+      const listId = target.id.includes("list") ? target.id : $(target).parent(
+          'ul').attr('id');
+      multiSelectFocus[listId].list = false;
+      changeStatusOfTechnologiesList(listId);
+    }
   });
 
   $('.list-option').on('click', ({target}) => {
-    addTechnologyToMultiSelect(target);
+    const listId = $(target).parent().attr('id');
+    addTagToMultiSelect(listToSearch[listId], listId, target);
   });
 
-  $('#technologies-multiselect-container').on('click', 'button.close', ({target}) => {
-    const parent = $(target).parent();
-    removeTechnologyFromMultiSelect(parent);
-    $(parent).remove();
-  });
+  $('.multiselect-container').on('click', 'button.close',
+      ({target}) => {
+        const parent = $(target).parent();
+        removeTagFromMultiSelect(
+            searchToList[parent.siblings('input').attr('id')], parent);
+        $(parent).remove();
+      });
 });
