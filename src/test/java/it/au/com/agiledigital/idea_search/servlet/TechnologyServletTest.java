@@ -23,8 +23,7 @@ public class TechnologyServletTest {
     @Before
     public void setup() {
         httpClient = new DefaultHttpClient();
-        baseUrl = System.getProperty("baseurl");
-        servletUrl = baseUrl + "/plugins/servlet/technology";
+        servletUrl = System.getProperty("baseurl") + "/plugins/servlet/technology";
     }
 
     @After
