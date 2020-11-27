@@ -40,6 +40,6 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return list of distinct technology strings
    */
   public List<String> techList(){
-    return fedexIdeaDao.techDaoList().stream().distinct().collect(Collectors.toList());
+    return fedexIdeaDao.techDaoList().stream().collect(Collectors.toSet());
   }
 }
