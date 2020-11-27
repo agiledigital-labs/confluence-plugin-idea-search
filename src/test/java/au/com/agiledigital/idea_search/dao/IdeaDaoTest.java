@@ -16,7 +16,7 @@ public class IdeaDaoTest {
 
   private ActiveObjects ao = Mockito.mock(ActiveObjects.class);
   private UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
-  FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+  private FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
 
   @Test
   public void emptyDaoTech() {
