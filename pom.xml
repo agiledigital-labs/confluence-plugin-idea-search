@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.com.agiledigital</groupId>
     <artifactId>idea_search</artifactId>
@@ -186,8 +189,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <productVersion>${confluence.version}</productVersion>
-                    <productDataVersion>${confluence.data.version}</productDataVersion>
-                    <productDataPath>${basedir}/src/test/resources/generated-test-resources.zip</productDataPath>
+                    <productDataVersion
+          >${confluence.data.version}</productDataVersion>
+                    <productDataPath
+          >${basedir}/src/test/resources/generated-test-resources.zip</productDataPath>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
                     <!-- See here for an explanation of default instructions: -->
@@ -197,9 +202,11 @@
                         <!--                        >${atlassian.plugin.key}-->
                         <!--                        </Atlassian-Plugin-Key>-->
                         <!-- Add package to export here -->
-                        <Export-Package>au.com.agiledigital.idea_search,</Export-Package>
+                        <Export-Package
+            >au.com.agiledigital.idea_search,</Export-Package>
                         <!-- Add package import here -->
-                        <Import-Package>org.springframework.osgi.*;resolution:="optional", org.eclipse.gemini.blueprint.*;resolution:="optional", *</Import-Package>
+                        <Import-Package
+            >org.springframework.osgi.*;resolution:="optional", org.eclipse.gemini.blueprint.*;resolution:="optional", *</Import-Package>
                         <!-- Ensure plugin is spring powered -->
                         <Spring-Context>*</Spring-Context>
                     </instructions>
@@ -228,9 +235,11 @@
         <confluence.data.version>7.6.2</confluence.data.version>
         <amps.version>8.1.0</amps.version>
         <plugin.testrunner.version>2.0.1</plugin.testrunner.version>
-        <atlassian.spring.scanner.version>2.1.7</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version
+    >2.1.7</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
-        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <atlassian.plugin.key
+    >${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

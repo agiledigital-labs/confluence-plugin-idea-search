@@ -28,7 +28,6 @@ import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -50,7 +49,9 @@ import org.xml.sax.SAXException;
 public class FedexIdeaEventListener
   implements InitializingBean, DisposableBean {
 
-  private static final Logger log = LoggerFactory.getLogger(FedexIdeaEventListener.class);
+  private static final Logger log = LoggerFactory.getLogger(
+    FedexIdeaEventListener.class
+  );
 
   @ConfluenceImport
   private final EventPublisher eventPublisher;

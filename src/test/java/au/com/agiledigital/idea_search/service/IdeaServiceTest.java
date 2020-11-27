@@ -1,14 +1,16 @@
 package au.com.agiledigital.idea_search.service;
 
+import static org.junit.Assert.assertEquals;
+
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
-import org.junit.Test;
-import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class IdeaServiceTest {
+
   private FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
   FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
 
@@ -59,7 +61,9 @@ public class IdeaServiceTest {
     List<String> expected = Arrays.asList("perl", "python", "ts");
 
     // Given dao returns multiple duplicated technologies.
-    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(Arrays.asList("perl", "perl", "python", "python", "ts"));
+    Mockito
+      .when(fedexIdeaDao.techDaoList())
+      .thenReturn(Arrays.asList("perl", "perl", "python", "python", "ts"));
 
     // When we call the service function to retrieve a list of technologies.
     List<String> techs = ideaService.techList();

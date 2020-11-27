@@ -1,18 +1,24 @@
 package au.com.agiledigital.idea_search.dao;
 
+import static org.junit.Assert.assertEquals;
+
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.confluence.user.UserAccessor;
-import net.java.ao.RawEntity;
-import org.junit.Test;
-import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
+import net.java.ao.RawEntity;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class IdeaDaoTest {
-  private AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(AoFedexTechnology.class);
-  private AoFedexTechnology aoFedexTechnologyPython = Mockito.mock(AoFedexTechnology.class);
+
+  private AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(
+    AoFedexTechnology.class
+  );
+  private AoFedexTechnology aoFedexTechnologyPython = Mockito.mock(
+    AoFedexTechnology.class
+  );
 
   private ActiveObjects ao = Mockito.mock(ActiveObjects.class);
   private UserAccessor userAccessor = Mockito.mock(UserAccessor.class);

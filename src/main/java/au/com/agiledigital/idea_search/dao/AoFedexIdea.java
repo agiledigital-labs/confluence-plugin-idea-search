@@ -12,31 +12,35 @@ import net.java.ao.schema.*;
  * @OneToMany annotation creates PK/FK relation between the two tables
  *
  */
-public interface AoFedexIdea extends RawEntity<Long>  {
-    @AutoIncrement
-    @NotNull
-    @PrimaryKey
-    long getGlobalId();
+public interface AoFedexIdea extends RawEntity<Long> {
+  @AutoIncrement
+  @NotNull
+  @PrimaryKey
+  long getGlobalId();
 
-    String getOwner();
-    void setOwner(String owner);
+  String getOwner();
+  void setOwner(String owner);
 
-    @Indexed
-    long getContentId();
-    void setContentId(long contentId);
+  @Indexed
+  long getContentId();
 
-    @OneToMany
-    AoFedexTechnology getTechnology();
+  void setContentId(long contentId);
 
-    @StringLength(-1)
-    String getStatus();
-    void  setStatus(String status);
+  @OneToMany
+  AoFedexTechnology getTechnology();
 
-    @StringLength(-1)
-    String getDescription();
-    void setDescription(String team);
+  @StringLength(-1)
+  String getStatus();
 
-    @Indexed
-    String getCreatorUserKey();
-    void setCreatorUserKey(String creatorUserKey);
+  void setStatus(String status);
+
+  @StringLength(-1)
+  String getDescription();
+
+  void setDescription(String team);
+
+  @Indexed
+  String getCreatorUserKey();
+
+  void setCreatorUserKey(String creatorUserKey);
 }
