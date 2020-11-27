@@ -44,11 +44,11 @@ public class TechnologyServlete2eTest {
   private ActiveObjects ao;
   private FedexIdeaDao fedexIdeaDao;
   private TechnologyServlet technologyServlet;
-  HttpServletRequest mockRequest;
-  HttpServletResponse mockResponse;
-  HttpClient httpClient;
-  String baseUrl;
-  String servletUrl;
+  private HttpServletRequest mockRequest;
+  private HttpServletResponse mockResponse;
+  private HttpClient httpClient;
+  private String baseUrl;
+  private String servletUrl;
   private TestActiveObjects TestActiveObjects;
 
   @Before
@@ -72,9 +72,7 @@ public class TechnologyServlete2eTest {
 
   @Test
   public void sortedTech() throws IOException {
-    String expected = String.valueOf(
-      this.gson.toJson(Arrays.asList("angular", "perl", "python"))
-    );
+    String expected = this.gson.toJson(Arrays.asList("angular", "perl", "python"));
     ao.migrate(AoFedexTechnology.class);
 
     // Given the servlet writes response on supplied response object.
@@ -93,9 +91,7 @@ public class TechnologyServlete2eTest {
 
   @Test
   public void distinctTech() throws IOException {
-    String expected = String.valueOf(
-      this.gson.toJson(Arrays.asList("angular", "perl", "python"))
-    );
+    String expected = this.gson.toJson(Arrays.asList("angular", "perl", "python"));
     ao.migrate(AoFedexTechnology.class);
 
     // Given there are duplicate technologies in the database and servlet writes response on supplied response object.
@@ -127,7 +123,7 @@ public class TechnologyServlete2eTest {
 
   @Test
   public void emptyTech() throws IOException {
-    String expected = String.valueOf(this.gson.toJson(Arrays.asList()));
+    String expected = this.gson.toJson(Arrays.asList());
     ao.migrate(AoFedexTechnology.class);
 
     // Given there is no technology in the database and servlet writes response on supplied response object.
@@ -158,19 +154,19 @@ public class TechnologyServlete2eTest {
     public void update(EntityManager em) throws Exception {
       em.migrate(AoFedexTechnology.class);
 
-      final AoFedexTechnology seedAoFedexTechnologyPython = em.create(
+      AoFedexTechnology seedAoFedexTechnologyPython = em.create(
         AoFedexTechnology.class
       );
       seedAoFedexTechnologyPython.setTechnology("python");
       seedAoFedexTechnologyPython.save();
 
-      final AoFedexTechnology seedAoFedexTechnologyPerl = em.create(
+      AoFedexTechnology seedAoFedexTechnologyPerl = em.create(
         AoFedexTechnology.class
       );
       seedAoFedexTechnologyPerl.setTechnology("perl");
       seedAoFedexTechnologyPerl.save();
 
-      final AoFedexTechnology seedAoFedexTechnologyAngular = em.create(
+      AoFedexTechnology seedAoFedexTechnologyAngular = em.create(
         AoFedexTechnology.class
       );
       seedAoFedexTechnologyAngular.setTechnology("angular");

@@ -19,13 +19,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class TechnologyServletUnitTest {
-
-  HttpServletRequest mockRequest;
-  HttpServletResponse mockResponse;
+  private HttpServletRequest mockRequest;
+  private HttpServletResponse mockResponse;
 
   private FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
-  FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-  TechnologyServlet technologyServlet = new TechnologyServlet(ideaService);
+  private FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
+  private TechnologyServlet technologyServlet = new TechnologyServlet(ideaService);
   private Gson gson = new Gson();
 
   @Before
@@ -36,7 +35,7 @@ public class TechnologyServletUnitTest {
 
   @Test
   public void emptyTech() throws IOException {
-    String expected = String.valueOf(this.gson.toJson(Collections.emptyList()));
+    String expected = this.gson.toJson(Collections.emptyList());
 
     // Given that dao returns empty list of technologies and servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
@@ -58,7 +57,7 @@ public class TechnologyServletUnitTest {
 
   @Test
   public void singleTech() throws IOException {
-    String expected = String.valueOf(this.gson.toJson(Arrays.asList("perl")));
+    String expected = this.gson.toJson(Arrays.asList("perl"));
 
     // Given that dao returns one technology and servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
@@ -78,9 +77,7 @@ public class TechnologyServletUnitTest {
 
   @Test
   public void multipleTech() throws IOException {
-    String expected = String.valueOf(
-      this.gson.toJson(Arrays.asList("perl", "python"))
-    );
+    String expected = this.gson.toJson(Arrays.asList("perl", "python"));
 
     // Given that dao returns multiple technologies and servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
