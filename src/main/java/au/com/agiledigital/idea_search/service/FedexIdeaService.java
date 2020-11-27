@@ -18,5 +18,10 @@ public interface FedexIdeaService {
    * @return updated fedex idea
    */
   FedexIdea update(FedexIdea fedexIdea, long contentId);
+
+  /**
+   * Filter technology list from dao to avoid technology duplication
+   * @return list of distinct technology strings
+   */
   List<String> techList();
 }

@@ -34,6 +34,7 @@ The following tools are required/recommended to develop with this repository
 - **Yarn**: https://classic.yarnpkg.com/en/docs/install
 - **Prettier**: https://prettier.io/docs/en/install.html
 - **Nvm**: https://github.com/nvm-sh/nvm#installing-and-updating
+- **Plugin integration test fixture modification**: https://developer.atlassian.com/server/framework/atlassian-sdk/create-test-data-and-a-test-fixture/
 
 # Contributing
 

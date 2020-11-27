@@ -9,15 +9,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
-
 import java.io.IOException;
 import java.util.Arrays;
-
 import static org.junit.Assert.*;
 
 
 public class TechnologyServletTest {
-
     HttpClient httpClient;
     String baseUrl;
     String servletUrl;
@@ -37,13 +34,16 @@ public class TechnologyServletTest {
 
     @Test
     public void technologyServletTest() throws IOException {
-        HttpGet httpget = new HttpGet(servletUrl);
         String expected = String.valueOf(this.gson.toJson(Arrays.asList("java", "js", "python", "ts")));
 
-        // Create a response handler
+        // Given httpget is constructed with servlet url and there is a response handler.
+        HttpGet httpget = new HttpGet(servletUrl);
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
+
+        // When the request is made.
         String responseBody = httpClient.execute(httpget, responseHandler);
 
+        // Then we should expect the servlet to return distinct technologies in ascending order.
         assertEquals(expected, responseBody.toString());
     }
 }

@@ -15,44 +15,56 @@ public class IdeaServiceTest {
   @Test
   public void emptyTech() {
     List<String> expected = Collections.emptyList();
+
+    // Given dao returns an empty list.
     Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(expected);
 
+    // When we call the service function to retrieve a list of technologies.
     List<String> techs = ideaService.techList();
 
+    // Then we should get an empty list.
     assertEquals(expected, techs);
   }
 
   @Test
   public void singleTech() {
-    FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
     List<String> expected = Arrays.asList("perl");
+
+    // Given dao returns an single technology.
     Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(expected);
 
+    // When we call the service function to retrieve a list of technologies.
     List<String> techs = ideaService.techList();
 
+    // Then we should get a list with a single technology.
     assertEquals(expected, techs);
   }
 
   @Test
   public void multipleTech() {
-
-    FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
     List<String> expected = Arrays.asList("perl", "python", "ts");
+
+    // Given dao returns multiple technologies.
     Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(expected);
 
+    // When we call the service function to retrieve a list of technologies.
     List<String> techs = ideaService.techList();
 
+    // Then we should get a list with multiple technologies.
     assertEquals(expected, techs);
   }
 
   @Test
   public void duplicateTech() {
-    FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(Arrays.asList("perl", "perl", "python", "python", "ts"));
-
-    List<String> techs = ideaService.techList();
     List<String> expected = Arrays.asList("perl", "python", "ts");
 
+    // Given dao returns multiple duplicated technologies.
+    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(Arrays.asList("perl", "perl", "python", "python", "ts"));
+
+    // When we call the service function to retrieve a list of technologies.
+    List<String> techs = ideaService.techList();
+
+    // Then we should get a list with distinct technologies.
     assertEquals(expected, techs);
   }
 }

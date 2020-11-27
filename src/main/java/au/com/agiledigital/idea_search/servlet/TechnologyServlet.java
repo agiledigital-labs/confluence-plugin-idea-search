@@ -11,16 +11,20 @@ import com.google.gson.*;
 
 public class TechnologyServlet extends HttpServlet{
     private Gson gson = new Gson();
-
     private FedexIdeaService fedexIdeaService;
-
 
     public TechnologyServlet(FedexIdeaService fedexIdeaService) {
         this.fedexIdeaService = fedexIdeaService;
     }
 
+    /**
+     * Populate response with a list of distinct technologies
+     * @param req HttpServletRequest coming through
+     * @param resp HttpServletResponse to be populated with response data
+     * @throws IOException exception
+     */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         List<String> allTechnologies = this.fedexIdeaService.techList();
         resp.setContentType("application/json");

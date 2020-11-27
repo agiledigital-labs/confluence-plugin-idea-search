@@ -2,7 +2,6 @@ package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexTechnology;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -36,6 +35,10 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     return this.fedexIdeaDao.updateByContentId(fedexIdea, contentId);
   }
 
+  /**
+   * Filter technology list from dao to avoid technology duplication
+   * @return list of distinct technology strings
+   */
   public List<String> techList(){
     return fedexIdeaDao.techDaoList().stream().distinct().collect(Collectors.toList());
   }

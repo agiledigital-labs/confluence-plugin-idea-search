@@ -1,12 +1,9 @@
 package au.com.agiledigital.idea_search.dao;
 
 import au.com.agiledigital.idea_search.model.FedexTechnology;
-import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import au.com.agiledigital.idea_search.listener.FedexIdeaEventListener;
 import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexTechnology;
-import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -279,6 +276,10 @@ public class FedexIdeaDao {
                         .build();
     }
 
+    /**
+     * Collect a list of technologies in ascending order from the database.
+     * @return list of strings (technology names)
+     */
     public List<String> techDaoList(){
         Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
         AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);

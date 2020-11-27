@@ -9,7 +9,6 @@ import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.gson.Gson;
 import net.java.ao.EntityManager;
-import net.java.ao.Query;
 import net.java.ao.test.jdbc.Data;
 import net.java.ao.test.jdbc.DatabaseUpdater;
 import net.java.ao.test.junit.ActiveObjectsJUnitRunner;
@@ -21,15 +20,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,19 +39,15 @@ public class TechnologyServlete2eTest {
   private Gson gson = new Gson();
   @ComponentImport
   private UserAccessor userAccessor;
-
   private ActiveObjects ao;
   private FedexIdeaDao fedexIdeaDao;
   private TechnologyServlet technologyServlet;
   HttpServletRequest mockRequest;
   HttpServletResponse mockResponse;
-
-
   HttpClient httpClient;
   String baseUrl;
   String servletUrl;
   private TestActiveObjects TestActiveObjects;
-
 
   @Before
   public void setup() {
@@ -77,33 +69,30 @@ public class TechnologyServlete2eTest {
   }
 
   @Test
-  public void sortedTech() throws IOException, ServletException {
+  public void sortedTech() throws IOException {
+    String expected = String.valueOf(this.gson.toJson(Arrays.asList("angular", "perl", "python")));
     ao.migrate(AoFedexTechnology.class);
 
+    // Given the servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
-
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
+    // When we call the servlet function to retrieve a list of technologies.
     technologyServlet.doGet(mockRequest, mockResponse);
 
-    Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
-    AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AoFedexTechnology.class, query);
-
-    List<String> technologies = Arrays.stream(aoFedexTechnologies).map(t -> t.getTechnology()).collect(Collectors.toList());
-    System.out.println(technologies);
-
-    String expected = String.valueOf(this.gson.toJson(Arrays.asList("angular", "perl", "python")));
-
+    // Then we should get a list of sorted technologies.
     assertEquals(expected, sw.toString());
     pw.close();
     sw.close();
   }
 
   @Test
-  public void distinctTech() throws IOException, ServletException {
+  public void distinctTech() throws IOException {
+    String expected = String.valueOf(this.gson.toJson(Arrays.asList("angular", "perl", "python")));
     ao.migrate(AoFedexTechnology.class);
 
+    // Given there are duplicate technologies in the database and servlet writes response on supplied response object.
     final AoFedexTechnology aoFedexTechnologyPerl = ao.create(AoFedexTechnology.class);
     aoFedexTechnologyPerl.setTechnology("perl");
     aoFedexTechnologyPerl.save();
@@ -117,24 +106,21 @@ public class TechnologyServlete2eTest {
 
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
+    // When we call the servlet function to retrieve a list of technologies.
     technologyServlet.doGet(mockRequest, mockResponse);
 
-    Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
-    AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AoFedexTechnology.class, query);
-
-    List<String> technologies = Arrays.stream(aoFedexTechnologies).map(t -> t.getTechnology()).collect(Collectors.toList());
-    System.out.println(technologies);
-
-    String expected = String.valueOf(this.gson.toJson(Arrays.asList("angular", "perl", "python")));
-
+    // Then we should get a list of distinct technologies.
     assertEquals(expected, sw.toString());
     pw.close();
     sw.close();
   }
 
   @Test
-  public void emptyTech() throws IOException, ServletException {
+  public void emptyTech() throws IOException {
+    String expected = String.valueOf(this.gson.toJson(Arrays.asList()));
     ao.migrate(AoFedexTechnology.class);
+
+    // Given there is no technology in the database and servlet writes response on supplied response object.
     ao.deleteWithSQL(AoFedexTechnology.class, "GLOBAL_ID > ?", 0);
 
     StringWriter sw = new StringWriter();
@@ -142,21 +128,19 @@ public class TechnologyServlete2eTest {
 
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
+    // When we call the servlet function to retrieve a list of technologies.
     technologyServlet.doGet(mockRequest, mockResponse);
 
-    Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
-    AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AoFedexTechnology.class, query);
-
-    List<String> technologies = Arrays.stream(aoFedexTechnologies).map(t -> t.getTechnology()).collect(Collectors.toList());
-    System.out.println(technologies);
-
-    String expected = String.valueOf(this.gson.toJson(Arrays.asList()));
-
+    // Then we should get an empty list.
     assertEquals(expected, sw.toString());
     pw.close();
     sw.close();
   }
 
+  /**
+   * Class to seed database before test.
+   * Adds python, perl and angular in respective order to the test database.
+   */
   public static class TechnologyServletFuncTestDatabaseUpdater implements DatabaseUpdater {
     @Override
     public void update(EntityManager em) throws Exception {

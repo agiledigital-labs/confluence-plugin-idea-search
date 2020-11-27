@@ -1,14 +1,15 @@
 package au.com.agiledigital.idea_search.dao;
+
 import net.java.ao.OneToMany;
 import net.java.ao.RawEntity;
 import net.java.ao.schema.*;
 
-import java.util.List;
-
 /**
- * DAO interface exported to osgi
+ * FedexIdea data store object,
  *
- * Used as an active object
+ * DAO interface used by active objects to create the data store tables
+ *
+ * @OneToMany annotation creates PK/FK relation between the two tables
  *
  */
 public interface AoFedexIdea extends RawEntity<Long>  {
@@ -38,5 +39,4 @@ public interface AoFedexIdea extends RawEntity<Long>  {
     @Indexed
     String getCreatorUserKey();
     void setCreatorUserKey(String creatorUserKey);
-
 }
