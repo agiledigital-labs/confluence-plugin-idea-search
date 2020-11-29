@@ -15,30 +15,6 @@ tbody:nth-child(1) > tr:last-child, thead > tr:first-child {
   border-bottom: none;
 }
 
-thead th:nth-child(1) {
-  width: 15%;
-}
-
-thead th:nth-child(2) {
-  width: 35%;
-}
-
-thead th:nth-child(3) {
-  width: 20%;
-}
-
-thead th:nth-child(4) {
-  width: 5%;
-}
-
-thead th:nth-child(5) {
-  width: 9%;
-}
-
-thead th:nth-child(6) {
-  width: 16%;
-}
-
 .add-button {
   text-align: right;
   margin-bottom: 0.25rem;

@@ -12,12 +12,8 @@ const appConstants = {
 }
 
 /**
- * Container for the column information in a row
- * @typedef {{name: boolean, description: boolean, technologies: boolean, status: boolean, talkTo: boolean}} RowColumnStatus
- */
-
-/**
  * Status of each column per row
+ * @typedef {{name: boolean, description: boolean, technologies: boolean, status: boolean, talkTo: boolean}} RowColumnStatus
  * @type {RowColumnStatus[]}
  */
 let rowStatus;
@@ -103,19 +99,19 @@ const setHidden = () => {
 }
 
 /**
- * Adds technologies to the technologies dropdown list
+ * Generates the options for a dropdown list from a list of values
  *
- * @param {Set<string>>} list A set of items to add to generate list items for
+ * @param {Set<string>} list A set of items to add to generate list items for
  */
 const generateHTMLTagsForListItems = (list) => [...list].map(
     (value) => `<li class="list-option" role="option">${value}</li>`);
 
 /**
- * Filters the technology list based off the statuses of each technology
+ * Filters the dropdown list based off the statuses of each option
  *
- * @param {string} listName Name of the list  to modify
+ * @param {string} listName Name of the list to modify
  */
-const changeStatusOfTechnologiesList = (listName) => {
+const changeStatusOfOptionInList = (listName) => {
   $(`#${listName}`)[Object.values(
       multiSelectFocus[listName]).some(
       (value) => value) ? 'removeClass' : 'addClass']('hidden');
@@ -161,7 +157,7 @@ const removeTagFromMultiSelect = (list, element) => {
 }
 
 /**
- * Sets the visability status for a item in the technologies dropdown list
+ * Sets the visability status for a item in a dropdown list
  *
  * @param {string} listName Name of the unorder list in the dom
  * @param {string} searchValue Needle to search haystack for
@@ -211,6 +207,33 @@ const calculateHiddenRowForColumn = (list) => {
   });
 
   setHidden();
+}
+
+/**
+ * Handles the focusing of a dropdown list
+ *
+ * @param {HTMLElement} element Unordered list or list item
+ * @param isFocus Is the element currently in focus
+ */
+const handleListFocus = (element, isFocus) => {
+  const listId = element.id.includes("list") ? element.id : $(element).parent(
+      'ul').attr('id');
+  multiSelectFocus[listId].list = isFocus;
+  changeStatusOfOptionInList(listId);
+}
+
+/**
+ * Handles the focusing of a search box container
+ *
+ * @param element Input field or the container of that field
+ * @param isFocus Is the element currently focused
+ */
+const handleContainerFocus = (element, isFocus) => {
+  const listId = searchToList[
+      element.id.includes("search") ? element.id : $(element).closest(
+          'div').children('input')[0].id];
+  multiSelectFocus[listId].container = isFocus;
+  changeStatusOfOptionInList(listId);
 }
 
 $(document).ready(() => {
@@ -276,35 +299,13 @@ $(document).ready(() => {
   });
 
   $('.multiselect-container').on({
-    'focusin': ({target}) => {
-      const listId = searchToList[
-          target.id.includes("search") ? target.id : $(target).closest(
-              'div').children('input')[0].id];
-      multiSelectFocus[listId].container = true;
-      changeStatusOfTechnologiesList(listId);
-    },
-    'focusout': ({target}) => {
-      const listId = searchToList[
-          target.id.includes("search") ? target.id : $(target).closest(
-              'div').children('input')[0].id];
-      multiSelectFocus[listId].container = false;
-      changeStatusOfTechnologiesList(listId);
-    }
+    'focusin': ({target}) => handleContainerFocus(target, true),
+    'focusout': ({target}) => handleContainerFocus(target, false)
   });
 
   $('.list-container').on({
-    'mouseenter': ({target}) => {
-      const listId = target.id.includes("list") ? target.id : $(target).parent(
-          'ul').attr('id');
-      multiSelectFocus[listId].list = true;
-      changeStatusOfTechnologiesList(listId);
-    },
-    'mouseleave': ({target}) => {
-      const listId = target.id.includes("list") ? target.id : $(target).parent(
-          'ul').attr('id');
-      multiSelectFocus[listId].list = false;
-      changeStatusOfTechnologiesList(listId);
-    }
+    'mouseenter': ({target}) => handleListFocus(target, true),
+    'mouseleave': ({target}) => handleListFocus(target, false)
   });
 
   $('.list-option').on('click', ({target}) => {
