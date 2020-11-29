@@ -19,12 +19,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class TechnologyServletUnitTest {
+
   private HttpServletRequest mockRequest;
   private HttpServletResponse mockResponse;
 
   private FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
-  private FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-  private TechnologyServlet technologyServlet = new TechnologyServlet(ideaService);
+  private FedexIdeaService ideaService = new DefaultFedexIdeaService(
+    fedexIdeaDao
+  );
+  private TechnologyServlet technologyServlet = new TechnologyServlet(
+    ideaService
+  );
   private Gson gson = new Gson();
 
   @Before
@@ -42,7 +47,7 @@ public class TechnologyServletUnitTest {
     PrintWriter pw = new PrintWriter(sw);
 
     Mockito
-      .when(fedexIdeaDao.techDaoList())
+      .when(fedexIdeaDao.queryTechDaoList())
       .thenReturn(Collections.emptyList());
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
@@ -63,7 +68,9 @@ public class TechnologyServletUnitTest {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(Arrays.asList("perl"));
+    Mockito
+      .when(fedexIdeaDao.queryTechDaoList())
+      .thenReturn(Arrays.asList("perl"));
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.
@@ -84,7 +91,7 @@ public class TechnologyServletUnitTest {
     PrintWriter pw = new PrintWriter(sw);
 
     Mockito
-      .when(fedexIdeaDao.techDaoList())
+      .when(fedexIdeaDao.queryTechDaoList())
       .thenReturn(Arrays.asList("perl", "python"));
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 

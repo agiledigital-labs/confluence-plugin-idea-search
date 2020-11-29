@@ -38,9 +38,9 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * Filter technology list from dao to avoid technology duplication
    * @return list of distinct technology strings
    */
-  public List<String> techList() {
+  public List<String> queryTechList() {
     return fedexIdeaDao
-      .techDaoList()
+      .queryTechDaoList()
       .stream()
       .distinct()
       .collect(Collectors.toList());

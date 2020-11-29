@@ -278,7 +278,7 @@ public class FedexIdeaDao {
    * Collect a list of technologies in ascending order from the database.
    * @return list of strings (technology names)
    */
-  public List<String> techDaoList() {
+  public List<String> queryTechDaoList() {
     Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
     AoFedexTechnology[] aoFedexTechnologies =
       this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);

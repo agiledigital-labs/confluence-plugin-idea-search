@@ -72,7 +72,8 @@ public class TechnologyServlete2eTest {
 
   @Test
   public void sortedTech() throws IOException {
-    String expected = this.gson.toJson(Arrays.asList("angular", "perl", "python"));
+    String expected =
+      this.gson.toJson(Arrays.asList("angular", "perl", "python"));
     ao.migrate(AoFedexTechnology.class);
 
     // Given the servlet writes response on supplied response object.
@@ -91,7 +92,8 @@ public class TechnologyServlete2eTest {
 
   @Test
   public void distinctTech() throws IOException {
-    String expected = this.gson.toJson(Arrays.asList("angular", "perl", "python"));
+    String expected =
+      this.gson.toJson(Arrays.asList("angular", "perl", "python"));
     ao.migrate(AoFedexTechnology.class);
 
     // Given there are duplicate technologies in the database and servlet writes response on supplied response object.

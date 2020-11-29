@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TechnologyServletTest {
+
   private HttpClient httpClient;
   private String servletUrl;
   private Gson gson = new Gson();
@@ -32,7 +33,8 @@ public class TechnologyServletTest {
 
   @Test
   public void technologyServletTest() throws IOException {
-    String expected = this.gson.toJson(Arrays.asList("java", "js", "python", "ts"));
+    String expected =
+      this.gson.toJson(Arrays.asList("java", "js", "python", "ts"));
 
     // Given httpget is constructed with servlet url and there is a response handler.
     HttpGet httpget = new HttpGet(servletUrl);

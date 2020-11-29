@@ -19,10 +19,10 @@ public class IdeaServiceTest {
     List<String> expected = Collections.emptyList();
 
     // Given dao returns an empty list.
-    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(expected);
+    Mockito.when(fedexIdeaDao.queryTechDaoList()).thenReturn(expected);
 
     // When we call the service function to retrieve a list of technologies.
-    List<String> techs = ideaService.techList();
+    List<String> techs = ideaService.queryTechList();
 
     // Then we should get an empty list.
     assertEquals(expected, techs);
@@ -33,10 +33,10 @@ public class IdeaServiceTest {
     List<String> expected = Arrays.asList("perl");
 
     // Given dao returns an single technology.
-    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(expected);
+    Mockito.when(fedexIdeaDao.queryTechDaoList()).thenReturn(expected);
 
     // When we call the service function to retrieve a list of technologies.
-    List<String> techs = ideaService.techList();
+    List<String> techs = ideaService.queryTechList();
 
     // Then we should get a list with a single technology.
     assertEquals(expected, techs);
@@ -47,10 +47,10 @@ public class IdeaServiceTest {
     List<String> expected = Arrays.asList("perl", "python", "ts");
 
     // Given dao returns multiple technologies.
-    Mockito.when(fedexIdeaDao.techDaoList()).thenReturn(expected);
+    Mockito.when(fedexIdeaDao.queryTechDaoList()).thenReturn(expected);
 
     // When we call the service function to retrieve a list of technologies.
-    List<String> techs = ideaService.techList();
+    List<String> techs = ideaService.queryTechList();
 
     // Then we should get a list with multiple technologies.
     assertEquals(expected, techs);
@@ -62,11 +62,11 @@ public class IdeaServiceTest {
 
     // Given dao returns multiple duplicated technologies.
     Mockito
-      .when(fedexIdeaDao.techDaoList())
+      .when(fedexIdeaDao.queryTechDaoList())
       .thenReturn(Arrays.asList("perl", "perl", "python", "python", "ts"));
 
     // When we call the service function to retrieve a list of technologies.
-    List<String> techs = ideaService.techList();
+    List<String> techs = ideaService.queryTechList();
 
     // Then we should get a list with distinct technologies.
     assertEquals(expected, techs);

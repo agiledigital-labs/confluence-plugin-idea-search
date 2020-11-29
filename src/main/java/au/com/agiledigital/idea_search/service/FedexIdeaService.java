@@ -23,5 +23,5 @@ public interface FedexIdeaService {
    * Filter technology list from dao to avoid technology duplication
    * @return list of distinct technology strings
    */
-  List<String> techList();
+  List<String> queryTechList();
 }

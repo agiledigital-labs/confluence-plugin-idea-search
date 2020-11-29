@@ -33,7 +33,7 @@ public class IdeaDaoTest {
     Mockito.when(ao.find(Mockito.any(), Mockito.any())).thenReturn(aoTechList);
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.techDaoList();
+    List<String> techs = ideaDao.queryTechDaoList();
 
     // Then we should get an empty list.
     assertEquals(expected, techs);
@@ -50,7 +50,7 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyPerl.getTechnology()).thenReturn("perl");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.techDaoList();
+    List<String> techs = ideaDao.queryTechDaoList();
 
     // Then we should get a list with a single technology.
     assertEquals(expected, techs);
@@ -69,7 +69,7 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyPython.getTechnology()).thenReturn("python");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.techDaoList();
+    List<String> techs = ideaDao.queryTechDaoList();
 
     // Then we should get a list with multiple technologies.
     assertEquals(expected, techs);
