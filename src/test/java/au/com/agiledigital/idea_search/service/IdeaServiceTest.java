@@ -30,17 +30,17 @@ public class IdeaServiceTest {
 
   private final List<String> supplied;
 
-  public IdeaServiceTest(List<String> supplied, List<String> expected) {
+  public IdeaServiceTest(List<String> supplied) {
     this.supplied = supplied;
   }
 
-  @Parameters(name = "{index}: Pass through the list returned from dao {0}")
+  @Parameters(name = "{index}: Pass through the list unchanged returned from dao {0}")
   public static Object[] data() {
     return new Object[] { noTech, singleTech, multipleTech };
   }
 
   @Test
-  public void parameteredTest() {
+  public void relayTechListFromDao() {
     Mockito.when(fedexIdeaDao.queryTechDaoList()).thenReturn(supplied);
 
     assertEquals(ideaService.queryTechList(), supplied);
