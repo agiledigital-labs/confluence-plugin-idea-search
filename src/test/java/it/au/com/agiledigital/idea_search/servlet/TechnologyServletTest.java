@@ -1,6 +1,6 @@
 package it.au.com.agiledigital.idea_search.servlet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.google.gson.Gson;
 import java.io.IOException;
