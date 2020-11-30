@@ -49,6 +49,8 @@
     <td class="w-8">
       <div id="status-multiselect-container" class="multiselect-container">
         <div class="tags-input search-box">
+##        Using autocomplete="chrome-off" due to chrome ignoring web standards.
+##        https://bugs.chromium.org/p/chromium/issues/detail?id=468153#c164
           <input id="search-status" class="searchable" autocomplete="chrome-off" tabindex="0"
                  data-toggle="dropdown" role="textbox" aria-expanded="false"
                  aria-controls="autocomplete-results" size="5"/>
@@ -70,7 +72,7 @@
         <td class="cell-technology">$row.technologies.getRenderedValue()</td>
         <td class="cell-status">$row.status.getRenderedValue()</td>
         <td class="cell-owner">
-            #if($row.owner.getRenderedValue())
+          #if($row.owner.getRenderedValue())
             $row.owner.getRenderedValue()
           #end
         </td>
