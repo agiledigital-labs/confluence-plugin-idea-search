@@ -31,9 +31,13 @@ public class TechnologyServletTest {
     httpClient.getConnectionManager().shutdown();
   }
 
+  /**
+   * Should get a list of technologies when get request is invoked on test confluence instance.
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
   public void technologyServletTest() throws IOException {
-    String expected =
+    String expectedTechList =
       this.gson.toJson(Arrays.asList("java", "js", "python", "ts"));
 
     // Given httpget is constructed with servlet url and there is a response handler.
@@ -44,6 +48,6 @@ public class TechnologyServletTest {
     String responseBody = httpClient.execute(httpget, responseHandler);
 
     // Then we should expect the servlet to return distinct technologies in ascending order.
-    assertEquals(expected, responseBody.toString());
+    assertEquals(expectedTechList, responseBody.toString());
   }
 }

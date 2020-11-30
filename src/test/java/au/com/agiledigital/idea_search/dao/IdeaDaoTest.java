@@ -14,6 +14,10 @@ import org.mockito.Mockito;
 public class IdeaDaoTest {
 
   /**
+   * Istolating test cases as test data specific method call mocks are required.
+   */
+
+  /**
    * Should return an empty list if there is no tech.
    * Should not do get technology call hence no error without mock.
    */

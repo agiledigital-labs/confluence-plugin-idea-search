@@ -70,9 +70,13 @@ public class TechnologyServlete2eTest {
     httpClient.getConnectionManager().shutdown();
   }
 
+  /**
+   * Should return a sorted list of technologies
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
   public void sortedTech() throws IOException {
-    String expected =
+    String sortedTech =
       this.gson.toJson(Arrays.asList("angular", "perl", "python"));
     ao.migrate(AoFedexTechnology.class);
 
@@ -85,14 +89,18 @@ public class TechnologyServlete2eTest {
     technologyServlet.doGet(mockRequest, mockResponse);
 
     // Then we should get a list of sorted technologies.
-    assertEquals(expected, sw.toString());
+    assertEquals(sortedTech, sw.toString());
     pw.close();
     sw.close();
   }
 
+  /**
+   * Should return a distinct list of technologies
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
   public void distinctTech() throws IOException {
-    String expected =
+    String distinctTech =
       this.gson.toJson(Arrays.asList("angular", "perl", "python"));
     ao.migrate(AoFedexTechnology.class);
 
@@ -118,14 +126,18 @@ public class TechnologyServlete2eTest {
     technologyServlet.doGet(mockRequest, mockResponse);
 
     // Then we should get a list of distinct technologies.
-    assertEquals(expected, sw.toString());
+    assertEquals(distinctTech, sw.toString());
     pw.close();
     sw.close();
   }
 
+  /**
+   * Should return an empty list with no technologies
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
-  public void emptyTech() throws IOException {
-    String expected = this.gson.toJson(Arrays.asList());
+  public void noTech() throws IOException {
+    String noTech = this.gson.toJson(Arrays.asList());
     ao.migrate(AoFedexTechnology.class);
 
     // Given there is no technology in the database and servlet writes response on supplied response object.
@@ -140,7 +152,7 @@ public class TechnologyServlete2eTest {
     technologyServlet.doGet(mockRequest, mockResponse);
 
     // Then we should get an empty list.
-    assertEquals(expected, sw.toString());
+    assertEquals(noTech, sw.toString());
     pw.close();
     sw.close();
   }

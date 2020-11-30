@@ -30,6 +30,17 @@ public class TechnologyServletUnitTest {
     mockResponse = mock(HttpServletResponse.class);
   }
 
+  /**
+   * Istolating test cases as test data specific method call mocks are required.
+   * Due to the nature of invokation of getWriter method with HttpServletResponse object,
+   * passing in a mocked printWriter causes nullPointerError during invokation.
+   * A new printWriter is constructed and passed on as the mocked return of getWriter.
+   */
+
+  /**
+   * Should write an empty list in json in response, based on get technology mocks.
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
   public void noTech() throws IOException {
     FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
@@ -55,6 +66,10 @@ public class TechnologyServletUnitTest {
     sw.close();
   }
 
+  /**
+   * Should write a single tech in response.
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
   public void singleTech() throws IOException {
     FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
@@ -80,6 +95,10 @@ public class TechnologyServletUnitTest {
     sw.close();
   }
 
+  /**
+   * Should write multiple techs in response.
+   * @throws IOException exception with input or writing outputs in servlet doGet
+   */
   @Test
   public void multipleTech() throws IOException {
     FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
