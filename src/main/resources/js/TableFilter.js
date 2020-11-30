@@ -3,6 +3,12 @@ const $ = AJS.$;
 const searchIdPrefix = 'search-';
 const cellClassPrefix = 'cell-';
 
+/**
+ * Prefix of the classes uses to denote table cell
+ * @type {string}
+ */
+const columnClassPrefix = 'cell-';
+
 const appConstants = {
   TECHNOLOGIES_LIST: 'technologies-list',
   TECHNOLOGIES_SEARCH: `${searchIdPrefix}technologies`,
@@ -227,12 +233,20 @@ const calculateHiddenRowForColumn = (list) => {
     if (optionsList.length > 0) {
       const rowList = [];
 
+<<<<<<< HEAD
       const classKey = columnClass.substring(cellClassPrefix.length);
       $(value)
         .children(`span.${classKey},a.${classKey}`)
         .each((index, option) => {
           rowList.push($(option).text());
         });
+=======
+      const classKey = columnClass.substring(columnClassPrefix.length);
+      $(value).children(`span.${classKey},a.${classKey}`).each(
+          (index, option) => {
+            rowList.push($(option).text());
+          });
+>>>>>>> fix(ADE-495): Move substring index to string variable length
 
       hasOptions = optionsList.map((option) => rowList.includes(option));
     } else {
