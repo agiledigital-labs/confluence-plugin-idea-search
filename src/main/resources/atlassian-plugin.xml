@@ -205,6 +205,12 @@
       name="StructuredField.css"
       location="/css/StructuredField.css"
     />
+
+    <resource
+      type="download"
+      name="TableFilter.js"
+      location="/js/TableFilter.js"
+    />
   </web-resource>
 
   <!-- Blueprint ID Storage -->
