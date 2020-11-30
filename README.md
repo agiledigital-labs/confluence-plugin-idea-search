@@ -58,7 +58,7 @@ To create a new test fixture:
 2. Create a zip of the application home directory in target.
    `atlas-create-home-zip`
 3. Copy the test resources to plugin home directory.
-   `cp target/jira/generated-test-resources.zip PLUGIN_HOME/src/test/resources`
+   `cp target/confluence/generated-test-resources.zip PLUGIN_HOME/src/test/resources`
 
 # Contributing
 
