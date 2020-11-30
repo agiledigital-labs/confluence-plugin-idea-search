@@ -35,14 +35,9 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   }
 
   /**
-   * Filter technology list from dao to avoid technology duplication
-   * @return list of distinct technology strings
+   * @return pass through list of distinct technology strings from dao
    */
   public List<String> queryTechList() {
-    return fedexIdeaDao
-      .queryTechDaoList()
-      .stream()
-      .distinct()
-      .collect(Collectors.toList());
+    return fedexIdeaDao.queryTechDaoList();
   }
 }

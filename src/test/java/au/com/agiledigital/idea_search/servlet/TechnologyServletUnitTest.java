@@ -22,14 +22,6 @@ public class TechnologyServletUnitTest {
 
   private HttpServletRequest mockRequest;
   private HttpServletResponse mockResponse;
-
-  private FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
-  private FedexIdeaService ideaService = new DefaultFedexIdeaService(
-    fedexIdeaDao
-  );
-  private TechnologyServlet technologyServlet = new TechnologyServlet(
-    ideaService
-  );
   private Gson gson = new Gson();
 
   @Before
@@ -39,8 +31,11 @@ public class TechnologyServletUnitTest {
   }
 
   @Test
-  public void emptyTech() throws IOException {
-    String expected = this.gson.toJson(Collections.emptyList());
+  public void noTech() throws IOException {
+    FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
+    FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
+    TechnologyServlet technologyServlet = new TechnologyServlet(ideaService);
+    String noTech = this.gson.toJson(Collections.emptyList());
 
     // Given that dao returns empty list of technologies and servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
@@ -55,14 +50,17 @@ public class TechnologyServletUnitTest {
     technologyServlet.doGet(mockRequest, mockResponse);
 
     // Then we should get an empty list.
-    assertEquals(expected, sw.toString());
+    assertEquals(noTech, sw.toString());
     pw.close();
     sw.close();
   }
 
   @Test
   public void singleTech() throws IOException {
-    String expected = this.gson.toJson(Arrays.asList("perl"));
+    FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
+    FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
+    TechnologyServlet technologyServlet = new TechnologyServlet(ideaService);
+    String singleTech = this.gson.toJson(Arrays.asList("perl"));
 
     // Given that dao returns one technology and servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
@@ -77,14 +75,17 @@ public class TechnologyServletUnitTest {
     technologyServlet.doGet(mockRequest, mockResponse);
 
     // Then we should get a list with one technology.
-    assertEquals(expected, sw.toString());
+    assertEquals(singleTech, sw.toString());
     pw.close();
     sw.close();
   }
 
   @Test
   public void multipleTech() throws IOException {
-    String expected = this.gson.toJson(Arrays.asList("perl", "python"));
+    FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
+    FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
+    TechnologyServlet technologyServlet = new TechnologyServlet(ideaService);
+    String multipleTech = this.gson.toJson(Arrays.asList("perl", "python"));
 
     // Given that dao returns multiple technologies and servlet writes response on supplied response object.
     StringWriter sw = new StringWriter();
@@ -99,7 +100,7 @@ public class TechnologyServletUnitTest {
     technologyServlet.doGet(mockRequest, mockResponse);
 
     // Then we should get a list with multiple technologies.
-    assertEquals(expected, sw.toString());
+    assertEquals(multipleTech, sw.toString());
     pw.close();
     sw.close();
   }

@@ -13,20 +13,16 @@ import org.mockito.Mockito;
 
 public class IdeaDaoTest {
 
-  private AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(
-    AoFedexTechnology.class
-  );
-  private AoFedexTechnology aoFedexTechnologyPython = Mockito.mock(
-    AoFedexTechnology.class
-  );
-
-  private ActiveObjects ao = Mockito.mock(ActiveObjects.class);
-  private UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
-  private FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
-
+  /**
+   * Should return an empty list if there is no tech.
+   * Should not do get technology call hence no error without mock.
+   */
   @Test
-  public void emptyDaoTech() {
-    List<String> expected = Collections.emptyList();
+  public void noDaoTech() {
+    ActiveObjects ao = Mockito.mock(ActiveObjects.class);
+    UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    List<String> noDaoTech = Collections.emptyList();
 
     // Given active object query returns an empty list.
     RawEntity[] aoTechList = new AoFedexTechnology[0];
@@ -36,12 +32,21 @@ public class IdeaDaoTest {
     List<String> techs = ideaDao.queryTechDaoList();
 
     // Then we should get an empty list.
-    assertEquals(expected, techs);
+    assertEquals(noDaoTech, techs);
   }
 
+  /**
+   * Should return a single tech with the mocked technology.
+   */
   @Test
   public void singleDaoTech() {
-    List<String> expected = Arrays.asList("perl");
+    ActiveObjects ao = Mockito.mock(ActiveObjects.class);
+    UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(
+      AoFedexTechnology.class
+    );
+    List<String> singleDaoTech = Arrays.asList("perl");
 
     // Given active object query returns a single list and get technology call returns technology name.
     RawEntity[] aoTechList = new AoFedexTechnology[1];
@@ -53,12 +58,25 @@ public class IdeaDaoTest {
     List<String> techs = ideaDao.queryTechDaoList();
 
     // Then we should get a list with a single technology.
-    assertEquals(expected, techs);
+    assertEquals(singleDaoTech, techs);
   }
 
+  /**
+   * Should return multiple techs, based on get technology mocks.
+   */
   @Test
   public void multipleDaoTech() {
-    List<String> expected = Arrays.asList("perl", "python");
+    ActiveObjects ao = Mockito.mock(ActiveObjects.class);
+    UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(
+      AoFedexTechnology.class
+    );
+    AoFedexTechnology aoFedexTechnologyPython = Mockito.mock(
+      AoFedexTechnology.class
+    );
+
+    List<String> multipleDaoTech = Arrays.asList("perl", "python");
 
     // Given active object query returns a list with multiple elements and get technology call returns technology name.
     RawEntity[] aoTechList = new AoFedexTechnology[2];
@@ -72,6 +90,37 @@ public class IdeaDaoTest {
     List<String> techs = ideaDao.queryTechDaoList();
 
     // Then we should get a list with multiple technologies.
-    assertEquals(expected, techs);
+    assertEquals(multipleDaoTech, techs);
+  }
+
+  /**
+   * Should filter out duplicate technologies.
+   */
+  @Test
+  public void distinctDaoTech() {
+    ActiveObjects ao = Mockito.mock(ActiveObjects.class);
+    UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    AoFedexTechnology aoFedexTechnologyDuplicateJs = Mockito.mock(
+      AoFedexTechnology.class
+    );
+    AoFedexTechnology aoFedexTechnologyJs = Mockito.mock(
+      AoFedexTechnology.class
+    );
+    List<String> distinctDaoTech = Arrays.asList("js");
+
+    // Given active object query returns a list with multiple elements and get technology call returns technology name.
+    RawEntity[] aoTechList = new AoFedexTechnology[2];
+    aoTechList[0] = aoFedexTechnologyJs;
+    aoTechList[1] = aoFedexTechnologyDuplicateJs;
+    Mockito.when(ao.find(Mockito.any(), Mockito.any())).thenReturn(aoTechList);
+    Mockito.when(aoFedexTechnologyJs.getTechnology()).thenReturn("js");
+    Mockito.when(aoFedexTechnologyDuplicateJs.getTechnology()).thenReturn("js");
+
+    // When we call the dao function to retrieve a list of technologies.
+    List<String> techs = ideaDao.queryTechDaoList();
+
+    // Then we should get a list with multiple technologies.
+    assertEquals(distinctDaoTech, techs);
   }
 }

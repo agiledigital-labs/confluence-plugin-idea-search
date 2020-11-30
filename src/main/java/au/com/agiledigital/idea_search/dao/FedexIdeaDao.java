@@ -276,6 +276,7 @@ public class FedexIdeaDao {
 
   /**
    * Collect a list of technologies in ascending order from the database.
+   * Filter technology list from dao to avoid technology duplication.
    * @return list of strings (technology names)
    */
   public List<String> queryTechDaoList() {
@@ -286,6 +287,7 @@ public class FedexIdeaDao {
     List<String> technologies = Arrays
       .stream(aoFedexTechnologies)
       .map(t -> t.getTechnology())
+      .distinct()
       .collect(Collectors.toList());
     return technologies;
   }
