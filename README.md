@@ -45,7 +45,8 @@ To utilise current test fixture and modify test data:
 
 1. To see and explore existing test instance, start in debug mode
    `atlas-debug`
-2. Currently in
+2. Currently in the test instance, there is a test page with four technologies:
+   `"java", "js", "python", "ts"`
 3. Navigate around confluence and create test data by interacting with the test instance.
 4. Close the server and clean existing instance
    `atlas-clean`

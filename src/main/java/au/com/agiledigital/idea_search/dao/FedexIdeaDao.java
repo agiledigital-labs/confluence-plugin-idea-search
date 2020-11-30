@@ -198,13 +198,13 @@ public class FedexIdeaDao {
    * @return userName string
    */
   private String getUsername(String userKey) {
-    if (userKey == null) {
-      return null;
-    } else {
+    if (userKey != null) {
       ConfluenceUser user =
         this.userAccessor.getUserByKey(new UserKey(userKey));
       return user == null ? null : user.getLowerName();
     }
+    
+    return null;
   }
 
   /**

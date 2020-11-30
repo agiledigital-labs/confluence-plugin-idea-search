@@ -160,7 +160,7 @@
             <version>5.8.7</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>com.atlassian.confluence</groupId>
             <artifactId>confluence-java-api</artifactId>
@@ -239,9 +239,6 @@
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>
-                        <!--                        <Atlassian-Plugin-Key-->
-                        <!--                        >${atlassian.plugin.key}-->
-                        <!--                        </Atlassian-Plugin-Key>-->
                         <!-- Add package to export here -->
                         <Export-Package>
                             au.com.agiledigital.idea_search,
