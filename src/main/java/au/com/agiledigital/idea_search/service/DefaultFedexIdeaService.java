@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
 
@@ -39,6 +40,13 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
         return this.fedexIdeaDao.updateByContentId(fedexIdea, contentId);
     }
 
+  /**
+   * Pass through a list of distinct technology strings from dao
+   * @return A string list of technology names
+   */
+  public List<String> queryTechList() {
+    return fedexIdeaDao.queryTechDaoList();
+  }
     public List<TechnologyAPI> techList(String searchString) {
         return fedexIdeaDao.techDaoList(searchString).stream().distinct().collect(Collectors.toList());
     }

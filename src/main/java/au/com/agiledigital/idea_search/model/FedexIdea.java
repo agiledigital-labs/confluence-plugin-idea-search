@@ -1,6 +1,5 @@
 package au.com.agiledigital.idea_search.model;
 
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import net.java.ao.Entity;
@@ -8,9 +7,6 @@ import net.java.ao.EntityManager;
 import net.java.ao.RawEntity;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-
-import java.beans.PropertyChangeListener;
-import java.util.List;
 
 @Immutable
 public class FedexIdea {

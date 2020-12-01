@@ -208,6 +208,12 @@
       name="StructuredField.css"
       location="/css/StructuredField.css"
     />
+
+    <resource
+      type="download"
+      name="TableFilter.js"
+      location="/js/TableFilter.js"
+    />
   </web-resource>
 
   <!-- Blueprint ID Storage -->
@@ -225,8 +231,15 @@
       </parameter>
     </parameters>
   </xhtml-macro>
-  <servlet name="Technology Servlet" i18n-name-key="technology-servlet.name" key="technology-servlet" class="au.com.agiledigital.idea_search.servlet.TechnologyServlet">
-    <description key="technology-servlet.description">Technology Servelet Plugin to resolve technology related queries.</description>  
+  <servlet
+    name="Technology Servlet"
+    i18n-name-key="technology-servlet.name"
+    key="technology-servlet"
+    class="au.com.agiledigital.idea_search.servlet.TechnologyServlet"
+  >
+    <description
+      key="technology-servlet.description"
+    >Technology Servelet Plugin to resolve technology related queries.</description>  
     <url-pattern>/technology</url-pattern>
   </servlet>
 </atlassian-plugin>

@@ -34,6 +34,32 @@ The following tools are required/recommended to develop with this repository
 - **Yarn**: https://classic.yarnpkg.com/en/docs/install
 - **Prettier**: https://prettier.io/docs/en/install.html
 - **Nvm**: https://github.com/nvm-sh/nvm#installing-and-updating
+- **Plugin integration test fixture**: https://developer.atlassian.com/server/framework/atlassian-sdk/create-test-data-and-a-test-fixture/
+
+### Integration test with test confluence instance
+
+Integration testing can be generated, modified and stored in a test instance. This makes creating integration
+text fixtures much quicker and easier and is fully integrated with Atlassian sdk.
+
+To utilise current test fixture and modify test data:
+
+1. To see and explore existing test instance, start in debug mode
+   `atlas-debug`
+2. Currently in the test instance, there is a test page with four technologies:
+   `"java", "js", "python", "ts"`
+3. Navigate around confluence and create test data by interacting with the test instance.
+4. Close the server and clean existing instance
+   `atlas-clean`
+5. Start again in debug mode. You should now see your test data in the instance.
+
+To create a new test fixture:
+
+1. Run an instance and interact with confluence to create test data.
+   `atlas-run -DskipTests=true`
+2. Create a zip of the application home directory in target.
+   `atlas-create-home-zip`
+3. Copy the test resources to plugin home directory.
+   `cp target/confluence/generated-test-resources.zip PLUGIN_HOME/src/test/resources`
 
 # Contributing
 
