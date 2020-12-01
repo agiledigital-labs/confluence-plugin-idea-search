@@ -51,7 +51,9 @@
       type="download"
     />
   </content-template>
-
+  <rest key="rest" name="Idea Rest API" path="/idea" version="1">
+    <description>Provides a REST interface to inline tasks</description>
+  </rest>
   <web-item
     i18n-name-key="ideaSearch.blueprint.page.create-link.title"
     key="ideaSearch-page-blueprint-entry"
@@ -65,14 +67,15 @@
   <web-resource
     key="ideaSearch.blueprint.page.wizard"
     name="Fedex create blueprint wizard"
-  >-->
+  >
     <context>create-content</context>
     <dependency>
       com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
     </dependency>
 
     <dependency>com.atlassian.auiplugin:ajs</dependency>
-
+    <dependency>com.atlassian.auiplugin:aui-select</dependency>
+    <dependency>com.atlassian.auiplugin:aui-select2</dependency>
     <resource
       location="/js/ideaSearch.js"
       name="ideaSearch.js"

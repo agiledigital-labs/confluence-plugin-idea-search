@@ -1,6 +1,7 @@
 package au.com.agiledigital.idea_search.dao;
 
 import au.com.agiledigital.idea_search.model.FedexTechnology;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import au.com.agiledigital.idea_search.listener.FedexIdeaEventListener;
@@ -279,11 +280,18 @@ public class FedexIdeaDao {
                         .build();
     }
 
-    public List<String> techDaoList(){
+    public List<TechnologyAPI> techDaoList(){
         Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
         AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-        List<String> technologies = Arrays.stream(aoFedexTechnologies).map(t -> t.getTechnology()).collect(Collectors.toList());
+        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).collect(Collectors.toList());
+        return technologies;
+
+    }  public List<TechnologyAPI> techDaoList(String searchString){
+        Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC").where("TECHNOLOGY like ?" ,searchString+"%"  );
+        AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
+
+        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).collect(Collectors.toList());
         return technologies;
     }
 }
