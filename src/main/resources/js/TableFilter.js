@@ -1,13 +1,16 @@
 const $ = AJS.$;
 
+/**
+ * Prefix of the id uses to denote search input
+ * @type {string}
+ */
 const searchIdPrefix = 'search-';
-const cellClassPrefix = 'cell-';
 
 /**
  * Prefix of the classes uses to denote table cell
  * @type {string}
  */
-const columnClassPrefix = 'cell-';
+const cellClassPrefix = 'cell-';
 
 const appConstants = {
   TECHNOLOGIES_LIST: 'technologies-list',
