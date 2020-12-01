@@ -27,7 +27,7 @@ public interface AoFedexIdea extends RawEntity<Long> {
   void setContentId(long contentId);
 
   @OneToMany
-  AoFedexTechnology[] getTechnology();
+  AoFedexTechnology getTechnology();
 
   @StringLength(-1)
   String getStatus();

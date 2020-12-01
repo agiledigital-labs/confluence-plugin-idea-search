@@ -1,6 +1,7 @@
 package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.model.FedexIdea;
+import java.util.List;
 
 public interface FedexIdeaService {
   /**
@@ -17,4 +18,10 @@ public interface FedexIdeaService {
    * @return updated fedex idea
    */
   FedexIdea update(FedexIdea fedexIdea, long contentId);
+
+  /**
+   * Filter technology list from dao to avoid technology duplication
+   * @return list of distinct technology strings
+   */
+  List<String> queryTechList();
 }
