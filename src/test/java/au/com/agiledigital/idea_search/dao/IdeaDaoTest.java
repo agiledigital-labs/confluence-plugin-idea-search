@@ -13,8 +13,8 @@ import org.mockito.Mockito;
 
 public class IdeaDaoTest {
 
-  /**
-   * Istolating test cases as test data specific method call mocks are required.
+  /*
+   * Isolating test cases as test data specific method call mocks are required.
    */
 
   /**
