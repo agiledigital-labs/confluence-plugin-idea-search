@@ -27,17 +27,8 @@ public interface FedexIdeaService {
    * Filter technology list from dao to avoid technology duplication
    * @return list of distinct technology strings
    */
-  List<String> queryTechList();
-    /**
-     * Update an idea in the data store by the contentID
-     *
-     * @param fedexIdea updated
-     * @param contentId of idea to be updated
-     * @return updated fedex idea
-     */
-    FedexIdea update(FedexIdea fedexIdea, long contentId);
 
-    List<TechnologyAPI> techList();
+    List<TechnologyAPI> queryTechList();
 
-    List<TechnologyAPI> techList(String searchString);
+    List<TechnologyAPI> queryTechList(String searchString);
 }

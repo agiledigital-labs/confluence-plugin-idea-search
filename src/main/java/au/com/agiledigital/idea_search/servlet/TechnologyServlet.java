@@ -30,7 +30,7 @@ public class TechnologyServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
     throws IOException {
-    List<String> allTechnologies = this.fedexIdeaService.queryTechList();
+    List<TechnologyAPI> allTechnologies = this.fedexIdeaService.queryTechList();
     resp.setContentType(MediaType.APPLICATION_JSON);
     resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
     resp.getWriter().write(this.gson.toJson(allTechnologies));

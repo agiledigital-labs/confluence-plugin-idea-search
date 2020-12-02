@@ -4,16 +4,16 @@ Confluence.Blueprint.setWizard(
         AJS.Confluence.Binder.autocompleteMultiUser();
         AJS.$("#tw").auiSelect2();
         wizard.on("post-render.page1Id", () => (
-            AJS.$("#tw").auiSelect2({
+            AJS.$("#videatechnology").auiSelect2({
                     multiple: true,
                     ajax: {
                         url: `${AJS.contextPath()}/rest/idea/1/technology`,
                         data: (params) => ({q: params}),
                         processResults: (data) => ({
-                            results: data.map((item, index) => ({id: index, text: item.label}))
+                            results: data.map((item, index) => ({id: item.label.toLowerCase(), text: item.label}))
                         }),
                         results: (data) => ({
-                            results: data.map((item, index) => ({id: Math.random(), text: item.label}))
+                            results: data.map((item, index) => ({id: item.label.toLowerCase(), text: item.label}))
                         }),
                     }
                 }

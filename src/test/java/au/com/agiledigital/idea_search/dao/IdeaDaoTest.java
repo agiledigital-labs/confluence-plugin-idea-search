@@ -2,6 +2,7 @@ package au.com.agiledigital.idea_search.dao;
 
 import static org.junit.Assert.assertEquals;
 
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.confluence.user.UserAccessor;
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class IdeaDaoTest {
     Mockito.when(ao.find(Mockito.any(), Mockito.any())).thenReturn(aoTechList);
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get an empty list.
     assertEquals(noDaoTech, techs);
@@ -59,7 +60,7 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyPerl.getTechnology()).thenReturn("perl");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get a list with a single technology.
     assertEquals(singleDaoTech, techs);
@@ -91,7 +92,7 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyPython.getTechnology()).thenReturn("python");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get a list with multiple technologies.
     assertEquals(multipleDaoTech, techs);
@@ -122,7 +123,7 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyDuplicateJs.getTechnology()).thenReturn("js");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get a list with multiple technologies.
     assertEquals(distinctDaoTech, techs);

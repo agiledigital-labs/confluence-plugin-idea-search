@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
 import com.google.gson.Gson;
@@ -53,7 +54,7 @@ public class TechnologyServletUnitTest {
     PrintWriter pw = new PrintWriter(sw);
 
     Mockito
-      .when(fedexIdeaDao.queryTechDaoList())
+      .when(fedexIdeaDao.queryTechList())
       .thenReturn(Collections.emptyList());
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
@@ -82,8 +83,8 @@ public class TechnologyServletUnitTest {
     PrintWriter pw = new PrintWriter(sw);
 
     Mockito
-      .when(fedexIdeaDao.queryTechDaoList())
-      .thenReturn(Arrays.asList("perl"));
+      .when(fedexIdeaDao.queryTechList())
+      .thenReturn( Arrays.asList(new TechnologyAPI("perl")));
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.
@@ -111,8 +112,8 @@ public class TechnologyServletUnitTest {
     PrintWriter pw = new PrintWriter(sw);
 
     Mockito
-      .when(fedexIdeaDao.queryTechDaoList())
-      .thenReturn(Arrays.asList("perl", "python"));
+      .when(fedexIdeaDao.queryTechList())
+      .thenReturn(Arrays.asList(new TechnologyAPI("perl"),new TechnologyAPI("python")));
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.

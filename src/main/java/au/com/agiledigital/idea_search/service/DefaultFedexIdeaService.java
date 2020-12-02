@@ -44,14 +44,12 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * Pass through a list of distinct technology strings from dao
    * @return A string list of technology names
    */
-  public List<String> queryTechList() {
-    return fedexIdeaDao.queryTechDaoList();
+  public List<TechnologyAPI> queryTechList(String searchString) {
+    return fedexIdeaDao.queryTechList(searchString);
   }
-    public List<TechnologyAPI> techList(String searchString) {
-        return fedexIdeaDao.techDaoList(searchString).stream().distinct().collect(Collectors.toList());
-    }
 
-    public List<TechnologyAPI> techList() {
-        return fedexIdeaDao.techDaoList().stream().distinct().collect(Collectors.toList());
+
+    public List<TechnologyAPI> queryTechList() {
+        return fedexIdeaDao.queryTechList().stream().distinct().collect(Collectors.toList());
     }
 }

@@ -283,49 +283,19 @@ public class FedexIdeaDao {
    * Filter technology list from dao to avoid technology duplication.
    * @return list of strings (technology names)
    */
-  public List<String> queryTechDaoList() {
-    Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
-    AoFedexTechnology[] aoFedexTechnologies =
-      this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
-
-    List<String> technologies = Arrays
-      .stream(aoFedexTechnologies)
-      .map(t -> t.getTechnology())
-      .distinct()
-      .collect(Collectors.toList());
-    return technologies;
-  }
-    /**
-     * Convert fedex technology active object to a fedex technology model object
-     *
-     * @param aoFedexTechnology active object to be converted
-     * @return FedexTechnology object
-     */
-    private FedexTechnology asFedexTechnology(
-            AoFedexTechnology aoFedexTechnology
-    ) {
-        return aoFedexTechnology == null
-                ? null
-                :
-                new au.com.agiledigital.idea_search.model
-                        .FedexTechnology.Builder()
-                        .withGlobalId(aoFedexTechnology.getGlobalId())
-                        .withTechnology(aoFedexTechnology.getTechnology())
-                        .build();
-    }
-
-    public List<TechnologyAPI> techDaoList(){
+    public List<TechnologyAPI> queryTechList(){
         Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
         AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).collect(Collectors.toList());
+        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).distinct().collect(Collectors.toList());
         return technologies;
 
-    }  public List<TechnologyAPI> techDaoList(String searchString){
+    }
+    public List<TechnologyAPI> queryTechList(String searchString){
         Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC").where("TECHNOLOGY like ?" ,searchString+"%"  );
         AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).collect(Collectors.toList());
+        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).distinct().collect(Collectors.toList());
         return technologies;
     }
 }

@@ -27,9 +27,6 @@ public class TechnologyList {
 
     Logger log = LoggerFactory.getLogger(TechnologyList.class);
 
-//    private TechnologyList() {
-//        this.fedexIdeaService = null;
-//    }
 
     @Autowired
     public TechnologyList(FedexIdeaService fedexIdeaService) {
@@ -61,9 +58,9 @@ public class TechnologyList {
         this.applyNoCacheHeaders(response);
 
         List<TechnologyAPI> allTechnologies = normalizeSearch == null || normalizeSearch.length() == 0 ?
-                this.fedexIdeaService.techList()
+                this.fedexIdeaService.queryTechList()
                 :
-                this.fedexIdeaService.techList(normalizeSearch);
+                this.fedexIdeaService.queryTechList(normalizeSearch);
 
         if(allTechnologies.isEmpty() && normalizeSearch.endsWith(",")){
             TechnologyAPI newTech = new TechnologyAPI(normalizeSearch.replace(",",""));
