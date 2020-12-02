@@ -1,12 +1,9 @@
 package au.com.agiledigital.idea_search.dao;
 
-import au.com.agiledigital.idea_search.model.FedexTechnology;
-import au.com.agiledigital.idea_search.rest.TechnologyAPI;
-import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
-import com.atlassian.activeobjects.external.ActiveObjects;
 import au.com.agiledigital.idea_search.listener.FedexIdeaEventListener;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
@@ -16,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.java.ao.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +22,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class FedexIdeaDao {
 
-  private static final Logger log = LoggerFactory.getLogger(
-    FedexIdeaEventListener.class
-  );
 
   @ComponentImport
   private final ActiveObjects ao;
@@ -80,7 +72,6 @@ public class FedexIdeaDao {
           AO_FEDEX_IDEA_TYPE,
           Query.select().where("CONTENT_ID = ?", contentId)
         );
-    log.error(String.valueOf(aoFedexIdeas.length));
     // If the title of the page already exists the create event fails and a page update event is fired on a successful save.
     // If this happens the aoFedexIdea will not exist in the data store and will need to be created.
     AoFedexIdea aoFedexIdea = aoFedexIdeas.length == 0
@@ -207,7 +198,7 @@ public class FedexIdeaDao {
         this.userAccessor.getUserByKey(new UserKey(userKey));
       return user == null ? null : user.getLowerName();
     }
-    
+
     return null;
   }
 
@@ -279,23 +270,53 @@ public class FedexIdeaDao {
   }
 
   /**
+   * Creates list of distinct technologies
+   * @param aoFedexTechnologies from the dao query
+   * @return List<TechnologyAPI> to be passed to the rest API
+   */
+  private List<TechnologyAPI> getDistinctTechnology(
+    AoFedexTechnology[] aoFedexTechnologies
+  ) {
+    return Arrays
+      .stream(aoFedexTechnologies)
+      .distinct()
+      .map(t -> new TechnologyAPI(t.getTechnology()))
+      .collect(Collectors.toList());
+  }
+
+  /**
    * Collect a list of technologies in ascending order from the database.
    * Filter technology list from dao to avoid technology duplication.
    * @return list of strings (technology names)
    */
-    public List<TechnologyAPI> queryTechList(){
-        Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
-        AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
+  public List<TechnologyAPI> queryTechList() {
+    Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC");
+    AoFedexTechnology[] aoFedexTechnologies =
+      this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).distinct().collect(Collectors.toList());
-        return technologies;
+    List<TechnologyAPI> technologies = getDistinctTechnology(
+      aoFedexTechnologies
+    );
+    return technologies;
+  }
 
-    }
-    public List<TechnologyAPI> queryTechList(String searchString){
-        Query query = Query.select("TECHNOLOGY").order("TECHNOLOGY ASC").where("TECHNOLOGY like ?" ,searchString+"%"  );
-        AoFedexTechnology [] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
+  /**
+   * Collect a list of technologies in ascending order from the database.
+   * overloaded to take a search string
+   * Filter technology list from dao to avoid technology duplication.
+   * @return list of strings (technology names)
+   */
+  public List<TechnologyAPI> queryTechList(String searchString) {
+    Query query = Query
+      .select("TECHNOLOGY")
+      .order("TECHNOLOGY ASC")
+      .where("TECHNOLOGY like ?", searchString + "%");
+    AoFedexTechnology[] aoFedexTechnologies =
+      this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-        List<TechnologyAPI> technologies = Arrays.stream(aoFedexTechnologies).map(t -> new TechnologyAPI(t.getTechnology())).distinct().collect(Collectors.toList());
-        return technologies;
-    }
+    List<TechnologyAPI> technologies = getDistinctTechnology(
+      aoFedexTechnologies
+    );
+    return technologies;
+  }
 }

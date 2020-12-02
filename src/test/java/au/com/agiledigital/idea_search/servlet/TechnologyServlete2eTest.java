@@ -6,6 +6,8 @@ import static org.mockito.Mockito.mock;
 
 import au.com.agiledigital.idea_search.dao.AoFedexTechnology;
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
+import au.com.agiledigital.idea_search.rest.TechnologyList;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.activeobjects.test.TestActiveObjects;
@@ -29,6 +31,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(ActiveObjectsJUnitRunner.class)
 @Data(TechnologyServlete2eTest.TechnologyServletFuncTestDatabaseUpdater.class)
@@ -43,12 +47,11 @@ public class TechnologyServlete2eTest {
 
   private ActiveObjects ao;
   private FedexIdeaDao fedexIdeaDao;
-  private TechnologyServlet technologyServlet;
+  private TechnologyList technologyList;
   private HttpServletRequest mockRequest;
   private HttpServletResponse mockResponse;
   private HttpClient httpClient;
   private String baseUrl;
-  private String servletUrl;
   private TestActiveObjects TestActiveObjects;
 
   @Before
@@ -57,10 +60,9 @@ public class TechnologyServlete2eTest {
     ao = new TestActiveObjects(entityManager);
     fedexIdeaDao = new FedexIdeaDao(ao, userAccessor);
     ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
-    technologyServlet = new TechnologyServlet(ideaService);
+    technologyList = new TechnologyList(ideaService);
     httpClient = new DefaultHttpClient();
     baseUrl = System.getProperty("baseurl");
-    servletUrl = baseUrl + "/plugins/servlet/technology";
     mockRequest = mock(HttpServletRequest.class);
     mockResponse = mock(HttpServletResponse.class);
   }
@@ -72,12 +74,19 @@ public class TechnologyServlete2eTest {
 
   /**
    * Should return a sorted list of technologies
+   *
    * @throws IOException exception with input or writing outputs in servlet doGet
    */
   @Test
   public void sortedTech() throws IOException {
     String sortedTech =
-      this.gson.toJson(Arrays.asList("angular", "perl", "python"));
+      this.gson.toJson(
+          Arrays.asList(
+            new TechnologyAPI("angular"),
+            new TechnologyAPI("perl"),
+            new TechnologyAPI("python")
+          )
+        );
     ao.migrate(AoFedexTechnology.class);
 
     // Given the servlet writes response on supplied response object.
@@ -86,22 +95,29 @@ public class TechnologyServlete2eTest {
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.
-    technologyServlet.doGet(mockRequest, mockResponse);
+    String test = technologyList.getTechList("", mockResponse);
 
     // Then we should get a list of sorted technologies.
-    assertEquals(sortedTech, sw.toString());
+    assertEquals(sortedTech, test);
     pw.close();
     sw.close();
   }
 
   /**
    * Should return a distinct list of technologies
+   *
    * @throws IOException exception with input or writing outputs in servlet doGet
    */
   @Test
   public void distinctTech() throws IOException {
     String distinctTech =
-      this.gson.toJson(Arrays.asList("angular", "perl", "python"));
+      this.gson.toJson(
+          Arrays.asList(
+            new TechnologyAPI("angular"),
+            new TechnologyAPI("perl"),
+            new TechnologyAPI("python")
+          )
+        );
     ao.migrate(AoFedexTechnology.class);
 
     // Given there are duplicate technologies in the database and servlet writes response on supplied response object.
@@ -123,36 +139,10 @@ public class TechnologyServlete2eTest {
     Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.
-    technologyServlet.doGet(mockRequest, mockResponse);
+    String test = technologyList.getTechList("", mockResponse);
 
     // Then we should get a list of distinct technologies.
-    assertEquals(distinctTech, sw.toString());
-    pw.close();
-    sw.close();
-  }
-
-  /**
-   * Should return an empty list with no technologies
-   * @throws IOException exception with input or writing outputs in servlet doGet
-   */
-  @Test
-  public void noTech() throws IOException {
-    String noTech = this.gson.toJson(Arrays.asList());
-    ao.migrate(AoFedexTechnology.class);
-
-    // Given there is no technology in the database and servlet writes response on supplied response object.
-    ao.deleteWithSQL(AoFedexTechnology.class, "GLOBAL_ID > ?", 0);
-
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-
-    Mockito.when(mockResponse.getWriter()).thenReturn(pw);
-
-    // When we call the servlet function to retrieve a list of technologies.
-    technologyServlet.doGet(mockRequest, mockResponse);
-
-    // Then we should get an empty list.
-    assertEquals(noTech, sw.toString());
+    assertEquals(distinctTech, test);
     pw.close();
     sw.close();
   }

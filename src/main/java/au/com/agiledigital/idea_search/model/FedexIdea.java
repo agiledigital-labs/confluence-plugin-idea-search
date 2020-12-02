@@ -8,6 +8,9 @@ import net.java.ao.RawEntity;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * Internal model of the idea
+ */
 @Immutable
 public class FedexIdea {
 

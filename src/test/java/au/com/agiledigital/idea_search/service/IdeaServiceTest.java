@@ -3,11 +3,10 @@ package au.com.agiledigital.idea_search.service;
 import static org.junit.Assert.assertEquals;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -18,7 +17,9 @@ import org.mockito.Mockito;
 public class IdeaServiceTest {
 
   private static List<TechnologyAPI> noTech = Collections.emptyList();
-  private static List<TechnologyAPI> singleTech = Arrays.asList(new TechnologyAPI("perl"));
+  private static List<TechnologyAPI> singleTech = Arrays.asList(
+    new TechnologyAPI("perl")
+  );
   private static List<TechnologyAPI> multipleTech = Arrays.asList(
     new TechnologyAPI("perl"),
     new TechnologyAPI("python"),
