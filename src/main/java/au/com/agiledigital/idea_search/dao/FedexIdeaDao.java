@@ -130,7 +130,7 @@ public class FedexIdeaDao {
   /**
    * List all fedex idea in the data store
    *
-   * @return List<FedexIdea>
+   * @return a list of all available FedexIdea
    */
   public List<FedexIdea> findAll() {
     AoFedexIdea[] aoFedexIdeas = this.ao.find(AO_FEDEX_IDEA_TYPE);
@@ -140,7 +140,7 @@ public class FedexIdeaDao {
   /**
    * List all fedex idea technology in the data store
    *
-   * @return List<FedexTechnology>
+   * @return a list of all available FedexTechnology
    */
   public List<FedexTechnology> findAllTech() {
     AoFedexTechnology[] aoFedexTechnologies =
@@ -203,7 +203,6 @@ public class FedexIdeaDao {
         this.userAccessor.getUserByKey(new UserKey(userKey));
       return user == null ? null : user.getLowerName();
     }
-    
     return null;
   }
 

@@ -4,27 +4,27 @@ const $ = AJS.$;
  * Prefix of the id uses to denote search input
  * @type {string}
  */
-const searchIdPrefix = 'search-';
+const searchIdPrefix = "search-";
 
 /**
  * Prefix of the classes uses to denote table cell
  * @type {string}
  */
-const cellClassPrefix = 'cell-';
+const cellClassPrefix = "cell-";
 
 const appConstants = {
-  TECHNOLOGIES_LIST: 'technologies-list',
+  TECHNOLOGIES_LIST: "technologies-list",
   TECHNOLOGIES_SEARCH: `${searchIdPrefix}technologies`,
   TECHNOLOGIES_COLUMN_CLASS: `${cellClassPrefix}technology`,
-  TECHNOLOGIES_COLUMN_KEY: 'technologies',
-  STATUS_LIST: 'status-list',
+  TECHNOLOGIES_COLUMN_KEY: "technologies",
+  STATUS_LIST: "status-list",
   STATUS_SEARCH: `${searchIdPrefix}status`,
   STATUS_COLUMN_CLASS: `${cellClassPrefix}status`,
-  STATUS_COLUMN_KEY: 'status',
-  USER_LIST: 'user-list',
+  STATUS_COLUMN_KEY: "status",
+  USER_LIST: "user-list",
   USER_SEARCH: `${searchIdPrefix}user`,
   USER_COLUMN_CLASS: `${cellClassPrefix}confluence-userlink`,
-  USER_COLUMN_KEY: 'talkTo',
+  USER_COLUMN_KEY: "talkTo",
 };
 
 /**
@@ -115,19 +115,19 @@ const listToSearch = {
 };
 
 // Script references
-const closeSymbol = '&#x2715';
+const closeSymbol = "&#x2715";
 const enterKeyCode = 13;
 
 /**
  * Determines the visibility of each row from the RowColumnStatus container
  */
 const setHidden = () => {
-  $('.table-content tr').each((index, element) => {
+  $(".table-content tr").each((index, element) => {
     $(element)[
       Object.values(rowStatus[index]).some((value) => !value)
-        ? 'addClass'
-        : 'removeClass'
-    ]('hidden');
+        ? "addClass"
+        : "removeClass"
+    ]("hidden");
   });
 };
 
@@ -149,9 +149,9 @@ const generateHTMLTagsForListItems = (list) =>
 const changeStatusOfOptionInList = (listName) => {
   $(`#${listName}`)[
     Object.values(multiSelectFocus[listName]).some((value) => value)
-      ? 'removeClass'
-      : 'addClass'
-  ]('hidden');
+      ? "removeClass"
+      : "addClass"
+  ]("hidden");
 };
 
 /**
@@ -168,7 +168,7 @@ const addTagToMultiSelect = (searchField, list, element) => {
         element
       ).text()}<button type="button" class="close">${closeSymbol}</button></span>`
     );
-    $(element).addClass('hidden');
+    $(element).addClass("hidden");
     usedOptions[list].push(element);
     calculateHiddenRowForColumn(list);
     return true;
@@ -189,7 +189,7 @@ const removeTagFromMultiSelect = (list, element) => {
   const listItem = usedOptions[list].filter(
     (value) => $(value).text() === text
   )[0];
-  $(listItem).removeClass('hidden');
+  $(listItem).removeClass("hidden");
 
   usedOptions[list] = usedOptions[list].filter(
     (value) => $(value).text() !== text
@@ -212,9 +212,9 @@ const setHiddenFlagsOnDropdownList = (listName, searchValue) => {
     if (!technologiesLabels.includes($(value).text())) {
       $(value)[
         $(value).text().toLowerCase().includes(searchValue)
-          ? 'removeClass'
-          : 'addClass'
-      ]('hidden');
+          ? "removeClass"
+          : "addClass"
+      ]("hidden");
     }
   });
 };
@@ -262,9 +262,9 @@ const calculateHiddenRowForColumn = (list) => {
  * @param isFocus Is the element currently in focus
  */
 const handleListFocus = (element, isFocus) => {
-  const listId = element.id.includes('list')
+  const listId = element.id.includes("list")
     ? element.id
-    : $(element).parent('ul').attr('id');
+    : $(element).parent("ul").attr("id");
   multiSelectFocus[listId].list = isFocus;
   changeStatusOfOptionInList(listId);
 };
@@ -278,16 +278,16 @@ const handleListFocus = (element, isFocus) => {
 const handleContainerFocus = (element, isFocus) => {
   const listId =
     searchToList[
-      element.id.includes('search')
+      element.id.includes("search")
         ? element.id
-        : $(element).closest('div').children('input')[0].id
+        : $(element).closest("div").children("input")[0].id
     ];
   multiSelectFocus[listId].container = isFocus;
   changeStatusOfOptionInList(listId);
 };
 
 $(document).ready(() => {
-  rowStatus = new Array($('.table-content tr').length)
+  rowStatus = new Array($(".table-content tr").length)
     .fill(undefined)
     .map(() => ({
       name: true,
@@ -312,21 +312,21 @@ $(document).ready(() => {
       );
     });
   })([
-    { key: 'technology', listRef: appConstants.TECHNOLOGIES_LIST },
-    { key: 'status', listRef: appConstants.STATUS_LIST },
-    { key: 'confluence-userlink', listRef: appConstants.USER_LIST },
+    { key: "technology", listRef: appConstants.TECHNOLOGIES_LIST },
+    { key: "status", listRef: appConstants.STATUS_LIST },
+    { key: "confluence-userlink", listRef: appConstants.USER_LIST },
   ]);
 
   /*
    * Standard text search event handlers
    */
-  $('.text-search').on('input', ({ target }) => {
+  $(".text-search").on("input", ({ target }) => {
     const searchValue = $(target).val().toLowerCase();
     const columnClass = target.id.substring(searchIdPrefix.length);
 
     $(`.cell-${columnClass}`).each((index, value) => {
       rowStatus[index][columnClass] =
-        searchValue === ''
+        searchValue === ""
           ? true
           : $(value).text().toLowerCase().includes(searchValue);
     });
@@ -344,7 +344,7 @@ $(document).ready(() => {
       );
     },
     keyup: ({ keyCode, target }) => {
-      if (keyCode === enterKeyCode && $(target).val() != '') {
+      if (keyCode === enterKeyCode && $(target).val() != "") {
         const searchId = target.id;
         const listId = searchToList[searchId];
 
@@ -355,32 +355,32 @@ $(document).ready(() => {
             $(`#${listId} li:not(.hidden):first`)[0]
           )
         ) {
-          $(`#${searchId}`).val('');
-          setHiddenFlagsOnDropdownList(listId, '');
+          $(`#${searchId}`).val("");
+          setHiddenFlagsOnDropdownList(listId, "");
         }
       }
     },
   });
 
-  $('.multiselect-container').on({
+  $(".multiselect-container").on({
     focusin: ({ target }) => handleContainerFocus(target, true),
     focusout: ({ target }) => handleContainerFocus(target, false),
   });
 
-  $('.list-container').on({
+  $(".list-container").on({
     mouseenter: ({ target }) => handleListFocus(target, true),
     mouseleave: ({ target }) => handleListFocus(target, false),
   });
 
-  $('.list-option').on('click', ({ target }) => {
-    const listId = $(target).parent().attr('id');
+  $(".list-option").on("click", ({ target }) => {
+    const listId = $(target).parent().attr("id");
     addTagToMultiSelect(listToSearch[listId], listId, target);
   });
 
-  $('.multiselect-container').on('click', 'button.close', ({ target }) => {
+  $(".multiselect-container").on("click", "button.close", ({ target }) => {
     const parent = $(target).parent();
     removeTagFromMultiSelect(
-      searchToList[parent.siblings('input').attr('id')],
+      searchToList[parent.siblings("input").attr("id")],
       parent
     );
     $(parent).remove();
