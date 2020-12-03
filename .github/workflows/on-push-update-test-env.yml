@@ -40,11 +40,9 @@ jobs:
       - name: Commit changes
         run: |
           git add --all
-
           git config --global user.email "CI@agiledigital.com.au"
           git config --global user.name "commit bot"
           git commit -m "chore(ci) commit made by run $GITHUB_RUN_ID in workflow $GITHUB_WORKFLOW  in $GITHUB_REPOSITORY"
-
 
           git remote add ade-labs ssh://git@github.com/agiledigital-labs/argo-apps.git
           git push ade-labs qa
