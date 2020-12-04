@@ -31,8 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RunWith(ActiveObjectsJUnitRunner.class)
 @Data(TechnologyServlete2eTest.TechnologyServletFuncTestDatabaseUpdater.class)
@@ -90,17 +88,12 @@ public class TechnologyServlete2eTest {
     ao.migrate(AoFedexTechnology.class);
 
     // Given the servlet writes response on supplied response object.
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.
-    String test = technologyList.getTechList("", mockResponse);
+    String response = technologyList.getTechList("", mockResponse);
 
     // Then we should get a list of sorted technologies.
-    assertEquals(sortedTech, test);
-    pw.close();
-    sw.close();
+    assertEquals(sortedTech, response);
   }
 
   /**
@@ -133,18 +126,12 @@ public class TechnologyServlete2eTest {
     aoFedexTechnologyAngular.setTechnology("angular");
     aoFedexTechnologyAngular.save();
 
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-
-    Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
     // When we call the servlet function to retrieve a list of technologies.
-    String test = technologyList.getTechList("", mockResponse);
+    String response = technologyList.getTechList("", mockResponse);
 
     // Then we should get a list of distinct technologies.
-    assertEquals(distinctTech, test);
-    pw.close();
-    sw.close();
+    assertEquals(distinctTech, response);
   }
 
   /**

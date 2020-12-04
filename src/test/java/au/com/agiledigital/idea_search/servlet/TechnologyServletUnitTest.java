@@ -10,8 +10,6 @@ import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
@@ -50,22 +48,15 @@ public class TechnologyServletUnitTest {
     TechnologyList technologyList = new TechnologyList(ideaService);
     String noTech = this.gson.toJson(Arrays.asList(new TechnologyAPI("t")));
 
-    // Given that dao returns empty list of technologies and servlet writes response on supplied response object.
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-
     Mockito
       .when(fedexIdeaDao.queryTechList())
       .thenReturn(Collections.emptyList());
-    Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
-    // When we call the servlet function to retrieve a list of technologies.
-    String test = technologyList.getTechList("t,", mockResponse);
+    String response = technologyList.getTechList("t,", mockResponse);
 
     // Then we should get an empty list.
-    assertEquals(noTech, test);
-    pw.close();
-    sw.close();
+    assertEquals(noTech, response);
+
   }
 
   /**
@@ -80,22 +71,15 @@ public class TechnologyServletUnitTest {
     String singleTech =
       this.gson.toJson(Arrays.asList(new TechnologyAPI("perl")));
 
-    // Given that dao returns one technology and servlet writes response on supplied response object.
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
 
     Mockito
       .when(fedexIdeaDao.queryTechList())
       .thenReturn(Arrays.asList(new TechnologyAPI("perl")));
-    Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
-    // When we call the servlet function to retrieve a list of technologies.
-    String test = technologyList.getTechList("", mockResponse);
+    String response = technologyList.getTechList("", mockResponse);
 
     // Then we should get a list with one technology.
-    assertEquals(singleTech, test);
-    pw.close();
-    sw.close();
+    assertEquals(singleTech, response);
   }
 
   /**
@@ -112,23 +96,16 @@ public class TechnologyServletUnitTest {
           Arrays.asList(new TechnologyAPI("perl"), new TechnologyAPI("python"))
         );
 
-    // Given that dao returns multiple technologies and servlet writes response on supplied response object.
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
 
     Mockito
       .when(fedexIdeaDao.queryTechList())
       .thenReturn(
         Arrays.asList(new TechnologyAPI("perl"), new TechnologyAPI("python"))
       );
-    Mockito.when(mockResponse.getWriter()).thenReturn(pw);
 
-    // When we call the servlet function to retrieve a list of technologies.
-    String test = technologyList.getTechList("", mockResponse);
+    String response = technologyList.getTechList("", mockResponse);
 
     // Then we should get a list with multiple technologies.
-    assertEquals(multipleTech, test);
-    pw.close();
-    sw.close();
+    assertEquals(multipleTech, response);
   }
 }

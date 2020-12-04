@@ -42,6 +42,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   /**
    * Pass through a list of distinct technology strings from dao
    * Overload to take a search string
+   * @param searchString of the technology be searched for
    * @return A string list of technology names
    */
   public List<TechnologyAPI> queryTechList(String searchString) {

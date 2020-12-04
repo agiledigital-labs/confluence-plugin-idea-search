@@ -12,13 +12,10 @@ import java.util.List;
 import net.java.ao.RawEntity;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IdeaDaoTest {
 
   private Gson gson = new Gson();
-  Logger log = LoggerFactory.getLogger(IdeaDaoTest.class);
 
   /*
    * Isolating test cases as test data specific method call mocks are required.
@@ -39,7 +36,6 @@ public class IdeaDaoTest {
     RawEntity[] aoTechList = new AoFedexTechnology[0];
     Mockito.when(ao.find(Mockito.any(), Mockito.any())).thenReturn(aoTechList);
 
-    // When we call the dao function to retrieve a list of technologies.
     List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get an empty list.
