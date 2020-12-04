@@ -33,7 +33,7 @@ public class Options {
   /**
    * Sets the flag for a status value
    *
-   * @param user Is a status value
+   * @param status Is a status value
    * @return Options object with the applied flag
    */
   public Options withStatus(boolean status) {
