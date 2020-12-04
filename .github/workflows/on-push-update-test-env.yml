@@ -8,6 +8,7 @@ on:
     branches:
       - qa
       - develop
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -18,7 +19,7 @@ jobs:
         run: |
           echo "ENVIRONMENT=dev" >> $GITHUB_ENV
 
-      - name: Set env to ga
+      - name: Set env to qa
         if: endsWith(github.ref, '/qa')
         run: |
           echo "ENVIRONMENT=qa" >> $GITHUB_ENV
@@ -30,17 +31,18 @@ jobs:
       - name: Edit yaml file
         run: docker run --rm -v "$GITHUB_WORKSPACE":/workdir mikefarah/yq yq w --inplace  /workdir/overlays/${{ env.ENVIRONMENT }}/kustomization.yml 'configMapGenerator[0].literals[2]' "COMMIT_HASH=$GITHUB_SHA"
 
+      - uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.ARGO_DEPLOY_KEY }}
+        # Manages authentication with ssh keys, for more information: https://github.com/marketplace/actions/webfactory-ssh-agent .
+        # Corresponding public key is saved as a deploy key in target repository.
+
       - name: Commit changes
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git add --all
           git config --global user.email "CI@agiledigital.com.au"
           git config --global user.name "commit bot"
           git commit -m "chore(ci) commit made by run $GITHUB_RUN_ID in workflow $GITHUB_WORKFLOW  in $GITHUB_REPOSITORY"
-          git config -l | grep 'http\..*\.extraheader' | cut -d= -f1 |  xargs -L1 git config --unset-all
 
-          git remote add ade-labs https://token:$GH_TOKEN@github.com/agiledigital-labs/argo-apps.git
-
-      - name: Push changes
-        run: git push ade-labs qa
+          git remote add ade-labs ssh://git@github.com/agiledigital-labs/argo-apps.git
+          git push ade-labs qa
