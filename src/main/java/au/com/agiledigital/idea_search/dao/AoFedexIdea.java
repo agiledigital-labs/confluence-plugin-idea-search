@@ -9,7 +9,7 @@ import net.java.ao.schema.*;
  *
  * DAO interface used by active objects to create the data store tables
  *
- * @OneToMany annotation creates PK/FK relation between the two tables
+ * OneToMany annotation creates PK/FK relation between the two tables
  *
  */
 public interface AoFedexIdea extends RawEntity<Long> {
