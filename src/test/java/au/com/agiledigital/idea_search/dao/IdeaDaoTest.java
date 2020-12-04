@@ -2,8 +2,10 @@ package au.com.agiledigital.idea_search.dao;
 
 import static org.junit.Assert.assertEquals;
 
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.confluence.user.UserAccessor;
+import com.google.gson.Gson;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +14,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 public class IdeaDaoTest {
+
+  private Gson gson = new Gson();
 
   /*
    * Isolating test cases as test data specific method call mocks are required.
@@ -32,8 +36,7 @@ public class IdeaDaoTest {
     RawEntity[] aoTechList = new AoFedexTechnology[0];
     Mockito.when(ao.find(Mockito.any(), Mockito.any())).thenReturn(aoTechList);
 
-    // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get an empty list.
     assertEquals(noDaoTech, techs);
@@ -50,7 +53,8 @@ public class IdeaDaoTest {
     AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(
       AoFedexTechnology.class
     );
-    List<String> singleDaoTech = Arrays.asList("perl");
+    TechnologyAPI test = new TechnologyAPI("perl");
+    List<TechnologyAPI> singleDaoTech = Arrays.asList(test);
 
     // Given active object query returns a single list and get technology call returns technology name.
     RawEntity[] aoTechList = new AoFedexTechnology[1];
@@ -59,10 +63,10 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyPerl.getTechnology()).thenReturn("perl");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get a list with a single technology.
-    assertEquals(singleDaoTech, techs);
+    assertEquals(this.gson.toJson(singleDaoTech), this.gson.toJson(techs));
   }
 
   /**
@@ -80,7 +84,10 @@ public class IdeaDaoTest {
       AoFedexTechnology.class
     );
 
-    List<String> multipleDaoTech = Arrays.asList("perl", "python");
+    List<TechnologyAPI> multipleDaoTech = Arrays.asList(
+      new TechnologyAPI("perl"),
+      new TechnologyAPI("python")
+    );
 
     // Given active object query returns a list with multiple elements and get technology call returns technology name.
     RawEntity[] aoTechList = new AoFedexTechnology[2];
@@ -91,10 +98,10 @@ public class IdeaDaoTest {
     Mockito.when(aoFedexTechnologyPython.getTechnology()).thenReturn("python");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get a list with multiple technologies.
-    assertEquals(multipleDaoTech, techs);
+    assertEquals(this.gson.toJson(multipleDaoTech), this.gson.toJson(techs));
   }
 
   /**
@@ -105,26 +112,25 @@ public class IdeaDaoTest {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
     UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
     FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
-    AoFedexTechnology aoFedexTechnologyDuplicateJs = Mockito.mock(
-      AoFedexTechnology.class
-    );
+
     AoFedexTechnology aoFedexTechnologyJs = Mockito.mock(
       AoFedexTechnology.class
     );
-    List<String> distinctDaoTech = Arrays.asList("js");
+    List<TechnologyAPI> distinctDaoTech = Arrays.asList(
+      new TechnologyAPI("js")
+    );
 
     // Given active object query returns a list with multiple elements and get technology call returns technology name.
     RawEntity[] aoTechList = new AoFedexTechnology[2];
     aoTechList[0] = aoFedexTechnologyJs;
-    aoTechList[1] = aoFedexTechnologyDuplicateJs;
+    aoTechList[1] = aoFedexTechnologyJs;
     Mockito.when(ao.find(Mockito.any(), Mockito.any())).thenReturn(aoTechList);
     Mockito.when(aoFedexTechnologyJs.getTechnology()).thenReturn("js");
-    Mockito.when(aoFedexTechnologyDuplicateJs.getTechnology()).thenReturn("js");
 
     // When we call the dao function to retrieve a list of technologies.
-    List<String> techs = ideaDao.queryTechDaoList();
+    List<TechnologyAPI> techs = ideaDao.queryTechList();
 
     // Then we should get a list with multiple technologies.
-    assertEquals(distinctDaoTech, techs);
+    assertEquals(this.gson.toJson(distinctDaoTech), this.gson.toJson(techs));
   }
 }

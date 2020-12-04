@@ -1,11 +1,14 @@
 package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.model.FedexIdea;
+import au.com.agiledigital.idea_search.model.FedexTechnology;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.List;
 
 public interface FedexIdeaService {
   /**
    * Create an idea in the data store
+   *
    * @param fedexIdea to be created in the store
    * @return created fedexIdea
    */
@@ -23,5 +26,13 @@ public interface FedexIdeaService {
    * Filter technology list from dao to avoid technology duplication
    * @return list of distinct technology strings
    */
-  List<String> queryTechList();
+  List<TechnologyAPI> queryTechList();
+
+  /**
+   * Filter technology list from dao to avoid technology duplication
+   * Overload to take a search string
+   * @param searchString to search for technologies with this begining
+   * @return String json array of TechnologyAPI objects
+   */
+  List<TechnologyAPI> queryTechList(String searchString);
 }

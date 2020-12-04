@@ -1,14 +1,23 @@
 package au.com.agiledigital.idea_search.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * Internal model of the technology
+ */
 @Immutable
 public class FedexTechnology {
 
   private final long globalId;
   private final String technology;
 
-  public FedexTechnology(long globalId, String technology) {
+  @JsonCreator
+  public FedexTechnology(
+    @JsonProperty("globalId") long globalId,
+    @JsonProperty("technology") String technology
+  ) {
     this.globalId = globalId;
     this.technology = technology;
   }

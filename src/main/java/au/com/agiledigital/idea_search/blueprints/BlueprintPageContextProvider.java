@@ -31,8 +31,6 @@ public class BlueprintPageContextProvider
     new KeyProperty(Parameter.IDEA_TEAM.reference, "none set")
   );
 
-  private final String templatePath = "vm/";
-
   /**
    * Renders a value based on a template using the options object as the determiner.
    *
@@ -41,6 +39,7 @@ public class BlueprintPageContextProvider
    */
   private String renderValue(KeyProperty property) {
     if (property.key.startsWith("v")) {
+      String templatePath = "vm/";
       StringBuilder builder = new StringBuilder(templatePath);
 
       if (property.options.isDefault) {
@@ -50,7 +49,11 @@ public class BlueprintPageContextProvider
       if (property.options.isUser) {
         builder.append("User");
 
-        property.value = ((String) property.value).split(",");
+        property.value = (property.value.toString()).split(",");
+      }
+
+      if (property.options.isTechnology) {
+        builder.append("Technology");
       }
 
       if (property.options.isStatus) {
@@ -90,6 +93,9 @@ public class BlueprintPageContextProvider
         case IDEA_OWNER:
         case IDEA_TEAM:
           options.withUser(true);
+          break;
+        case IDEA_TECHNOLOGY:
+          options.withTechnology(true);
           break;
         default:
           break;

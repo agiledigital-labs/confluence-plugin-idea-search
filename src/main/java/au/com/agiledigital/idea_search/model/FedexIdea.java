@@ -2,7 +2,15 @@ package au.com.agiledigital.idea_search.model;
 
 import java.util.List;
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import net.java.ao.Entity;
+import net.java.ao.EntityManager;
+import net.java.ao.RawEntity;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * Internal model of the idea
+ */
 @Immutable
 public class FedexIdea {
 
@@ -15,15 +23,16 @@ public class FedexIdea {
   private final String description;
   private final String status;
 
+  @JsonCreator
   private FedexIdea(
-    long globalId,
-    String owner,
-    long contentId,
-    List<FedexTechnology> technologies,
-    String creator,
-    String title,
-    String status,
-    String description
+    @JsonProperty("globalId") long globalId,
+    @JsonProperty("owner") String owner,
+    @JsonProperty("contentId") long contentId,
+    @JsonProperty("technologies") List<FedexTechnology> technologies,
+    @JsonProperty("creator") String creator,
+    @JsonProperty("title") String title,
+    @JsonProperty("status") String status,
+    @JsonProperty("description") String description
   ) {
     this.globalId = globalId;
     this.owner = owner;

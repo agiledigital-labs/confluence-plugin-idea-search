@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.service;
 import static org.junit.Assert.assertEquals;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,24 +16,26 @@ import org.mockito.Mockito;
 @RunWith(Parameterized.class)
 public class IdeaServiceTest {
 
-  private static List<String> noTech = Collections.emptyList();
-  private static List<String> singleTech = Arrays.asList("perl");
-  private static List<String> multipleTech = Arrays.asList(
-    "perl",
-    "python",
-    "ts"
+  private static List<TechnologyAPI> noTech = Collections.emptyList();
+  private static List<TechnologyAPI> singleTech = Arrays.asList(
+    new TechnologyAPI("perl")
   );
-  private static List<String> duplicateTech = Arrays.asList(
-    "perl",
-    "python",
-    "ts",
-    "perl",
-    "ts"
+  private static List<TechnologyAPI> multipleTech = Arrays.asList(
+    new TechnologyAPI("perl"),
+    new TechnologyAPI("python"),
+    new TechnologyAPI("ts")
+  );
+  private static List<TechnologyAPI> duplicateTech = Arrays.asList(
+    new TechnologyAPI("perl"),
+    new TechnologyAPI("python"),
+    new TechnologyAPI("ts"),
+    new TechnologyAPI("perl"),
+    new TechnologyAPI("ts")
   );
 
-  private final List<String> supplied;
+  private final List<TechnologyAPI> supplied;
 
-  public IdeaServiceTest(List<String> supplied) {
+  public IdeaServiceTest(List<TechnologyAPI> supplied) {
     this.supplied = supplied;
   }
 
@@ -52,7 +55,7 @@ public class IdeaServiceTest {
     FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
     FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
 
-    Mockito.when(fedexIdeaDao.queryTechDaoList()).thenReturn(supplied);
+    Mockito.when(fedexIdeaDao.queryTechList()).thenReturn(supplied);
 
     assertEquals(ideaService.queryTechList(), supplied);
   }

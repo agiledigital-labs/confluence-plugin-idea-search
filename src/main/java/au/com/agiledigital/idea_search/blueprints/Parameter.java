@@ -7,7 +7,8 @@ public enum Parameter {
   IDEA_DESCRIPTION("vIdeaDescription"),
   IDEA_OWNER("vIdeaOwner"),
   IDEA_TEAM("vIdeaTeam"),
-  IDEA_STATUS("vIdeaStatus");
+  IDEA_STATUS("vIdeaStatus"),
+  IDEA_TECHNOLOGY("vIdeaTechnology");
 
   public String reference;
 

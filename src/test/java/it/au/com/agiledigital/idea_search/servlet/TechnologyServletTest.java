@@ -2,9 +2,12 @@ package it.au.com.agiledigital.idea_search.servlet;
 
 import static org.junit.Assert.assertEquals;
 
+import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Arrays;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -23,7 +26,7 @@ public class TechnologyServletTest {
   @Before
   public void setup() {
     httpClient = new DefaultHttpClient();
-    servletUrl = System.getProperty("baseurl") + "/plugins/servlet/technology";
+    servletUrl = System.getProperty("baseurl") + "/rest/idea/1/technology";
   }
 
   @After
@@ -38,12 +41,24 @@ public class TechnologyServletTest {
   @Test
   public void technologyServletTest() throws IOException {
     String expectedTechList =
-      this.gson.toJson(Arrays.asList("java", "js", "python", "ts"));
+      this.gson.toJson(
+          Arrays.asList(
+            new TechnologyAPI("java"),
+            new TechnologyAPI("js"),
+            new TechnologyAPI("python"),
+            new TechnologyAPI("ts")
+          )
+        );
 
     // Given httpget is constructed with servlet url and there is a response handler.
     HttpGet httpget = new HttpGet(servletUrl);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
-
+      // add Authorization param
+      String authStr = "admin:admin";
+      byte[] authEncBytes = Base64.encodeBase64(authStr.getBytes());
+      String authStringEnc = new String(authEncBytes);
+      httpget.setHeader("Authorization", "Basic " + authStringEnc);
+      httpget.setHeader("X-Atlassian-Token", "no-check ");
     // When the request is made.
     String responseBody = httpClient.execute(httpget, responseHandler);
 

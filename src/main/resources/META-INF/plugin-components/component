@@ -1,3 +1,4 @@
 au.com.agiledigital.idea_search.listener.FedexIdeaEventListener
 au.com.agiledigital.idea_search.listener.FedexIdeaDiscoveryEventListener
 au.com.agiledigital.idea_search.listener.FedexIdeaDao
+au.com.agiledigital.idea_search.rest.TechnologyList

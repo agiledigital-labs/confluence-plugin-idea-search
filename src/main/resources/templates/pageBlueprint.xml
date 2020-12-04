@@ -29,7 +29,9 @@
 
 <ac:structured-macro ac:name="Idea Structured Field">
   <ac:parameter ac:name="category">technologies</ac:parameter>
-  <ac:rich-text-body>Add your technologies</ac:rich-text-body>
+  <ac:rich-text-body>
+      <at:var at:name="vIdeaTechnology" />
+  </ac:rich-text-body>
 </ac:structured-macro>
 
 <h2>Links to resources for this idea</h2>
