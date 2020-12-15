@@ -10,8 +10,6 @@ import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import java.util.Map;
-import org.radeox.util.logging.Logger;
-import sun.rmi.runtime.Log;
 
 /** Macro for Structure Field data. Does body transformation for the category of structured field */
 public class StructuredField implements Macro {

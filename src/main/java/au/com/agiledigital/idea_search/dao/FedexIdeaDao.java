@@ -52,33 +52,43 @@ public class FedexIdeaDao {
     return this.asFedexIdea(aoFedexIdea);
   }
 
+  /**
+   * Get the id of plugin blueprint
+   * @return blueprintId or an empty string if none found
+   */
   public String getBlueprintId(){
     AoIdeaBlueprint[] blueprints = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select());
     return blueprints.length == 0 ? "" : blueprints[0].getBlueprintId();
   }
 
-  public String setBlueprintId(String blueprintId){
-    String existingId = "No id here";
+  /**
+   * Set the blueprint id if not current
+   * @param blueprintId the supplied blueprint id
+   */
+  public void setBlueprintId(String blueprintId){
     AoIdeaBlueprint[] blueprint = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select().where("BLUEPRINT_ID = ?", blueprintId));
 
+    // Check if there is already a blueprint
     if (blueprint.length != 0){
+      // If the existing blueprint id does not match with supplied one,
+      // then delete it and create a new one with the supplied id,
+      // otherwise keep blueprint id unchanged.
       if (!blueprint[0].getBlueprintId().equals(blueprintId)){
         this.ao.delete(blueprint);
-        AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
-        newBlueprint.setBlueprintId(blueprintId);
-        newBlueprint.save();
-        existingId = "Created new id because the blueprint id's don't match";
-      } else {
-        existingId = blueprint[0].getBlueprintId();
+        createBlueprintIdEntry(blueprintId);
       }
+    // If no blueprint id is found,
+    // then create a new blueprint id with the supplied one.
     } else {
-      AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
-      newBlueprint.setBlueprintId(blueprintId);
-      newBlueprint.save();
-      existingId = "Created new id because there are no blueprint ids in the database";
+      createBlueprintIdEntry(blueprintId);
     }
+  }
 
-    return existingId;
+  // Creates a blueprintId in the ao database with supplied blueprint id
+  private void createBlueprintIdEntry(String blueprintId) {
+    AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
+    newBlueprint.setBlueprintId(blueprintId);
+    newBlueprint.save();
   }
 
   /**
@@ -133,10 +143,9 @@ public class FedexIdeaDao {
         .collect(Collectors.toList());
   }
 
-  //    See comment on
-  // https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375
-  //    This means that the setter is done on the Recipient entity(setting the Filter) and because
-  // of the way relational databases...
+  // See comment on
+  // https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375.
+  // This means that the setter is done on the Recipient entity(setting the Filter).
   private void setTechnologies(
       List<AoFedexTechnology> aoFedexTechnologies, AoFedexIdea aoFedexIdea) {
     aoFedexTechnologies.forEach(

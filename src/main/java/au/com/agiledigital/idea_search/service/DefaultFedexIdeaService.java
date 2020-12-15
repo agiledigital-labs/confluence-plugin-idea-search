@@ -2,10 +2,8 @@ package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
@@ -27,12 +25,20 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     return this.fedexIdeaDao.create(fedexIdea);
   }
 
+  /**
+   * Get the existing blueprint id from database
+   * @return the current blueprint id
+   */
   public String getBlueprintId(){
     return this.fedexIdeaDao.getBlueprintId();
   }
 
-  public String setBlueprintId(String blueprintId){
-    return this.fedexIdeaDao.setBlueprintId(blueprintId);
+  /**
+   * Store a blueprint id in the database
+   * @param blueprintId the blueprint id to be set
+   */
+  public void setBlueprintId(String blueprintId){
+    this.fedexIdeaDao.setBlueprintId(blueprintId);
   }
 
   /**

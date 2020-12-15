@@ -1,7 +1,6 @@
 package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.List;
 
@@ -30,9 +29,17 @@ public interface FedexIdeaService {
    */
   List<TechnologyAPI> queryTechList();
 
+  /**
+   * Get the existing blueprint id from database
+   * @return the current blueprint id
+   */
   String getBlueprintId();
 
-  String setBlueprintId(String blueprintId);
+  /**
+   * Store a blueprint id in the database
+   * @param blueprintId the blueprint id to be set
+   */
+  void setBlueprintId(String blueprintId);
 
   /**
    * Filter technology list from dao to avoid technology duplication

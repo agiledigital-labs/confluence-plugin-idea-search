@@ -158,12 +158,13 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
 
-    String thing = MY_BLUEPRINT_KEY.getCompleteKey();
+    String blueprintKey = MY_BLUEPRINT_KEY.getCompleteKey();
 
+    // Gets the blueprintId and sets it as the current one in ao database
     String blueprintId = String.valueOf(event.getBlueprint().getId());
     this.fedexIdeaService.setBlueprintId(blueprintId);
 
-    if (thing.equals(moduleCompleteKey)) {
+    if (blueprintKey.equals(moduleCompleteKey)) {
       try {
         FedexIdea idea = getFedexIdea(event.getPage());
         this.fedexIdeaService.create(idea);
