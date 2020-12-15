@@ -54,7 +54,7 @@ public class FedexIdeaDao {
 
   public String getBlueprintId(){
     AoIdeaBlueprint[] blueprints = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select());
-    return blueprints[0].getBlueprintId();
+    return blueprints.length == 0 ? "" : blueprints[0].getBlueprintId();
   }
 
   public String setBlueprintId(String blueprintId){
