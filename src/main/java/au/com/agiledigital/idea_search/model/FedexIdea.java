@@ -77,25 +77,23 @@ public class FedexIdea {
   }
 
   public String toString() {
-    return (
-      "Idea [globalId=" +
-      this.globalId +
-      ", owner=" +
-      this.owner +
-      ", contentId=" +
-      this.contentId +
-      ", technologies=" +
-      this.technologies +
-      ", creator=" +
-      this.creator +
-      ", title=" +
-      this.title +
-      ", description=" +
-      this.description +
-      ", status=" +
-      this.status +
-      "]"
-    );
+    return ("Idea [globalId="
+        + this.globalId
+        + ", owner="
+        + this.owner
+        + ", contentId="
+        + this.contentId
+        + ", technologies="
+        + this.technologies
+        + ", creator="
+        + this.creator
+        + ", title="
+        + this.title
+        + ", description="
+        + this.description
+        + ", status="
+        + this.status
+        + "]");
   }
 
   public static class Builder {
@@ -122,9 +120,7 @@ public class FedexIdea {
       this.description = fedexIdea.description;
     }
 
-    public FedexIdea.Builder withTechnologies(
-      List<FedexTechnology> technologies
-    ) {
+    public FedexIdea.Builder withTechnologies(List<FedexTechnology> technologies) {
       this.technologies = technologies;
       return this;
     }
@@ -161,15 +157,14 @@ public class FedexIdea {
 
     public FedexIdea build() {
       return new FedexIdea(
-        this.globalId,
-        this.owner,
-        this.contentId,
-        this.technologies,
-        this.creator,
-        this.title,
-        this.status,
-        this.description
-      );
+          this.globalId,
+          this.owner,
+          this.contentId,
+          this.technologies,
+          this.creator,
+          this.title,
+          this.status,
+          this.description);
     }
   }
 }

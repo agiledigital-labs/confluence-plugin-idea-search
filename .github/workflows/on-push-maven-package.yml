@@ -50,5 +50,7 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Check linting with Maven
+        run: mvn -s ./settings.xml spotless:check
       - name: Test with Maven
         run: mvn -s ./settings.xml -B test --file pom.xml

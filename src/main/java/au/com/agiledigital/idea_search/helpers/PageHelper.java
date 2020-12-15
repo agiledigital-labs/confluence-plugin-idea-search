@@ -11,10 +11,8 @@ public class PageHelper {
    * @return Wrapped body
    */
   public static String wrapBody(String body) {
-    return (
-      "<!DOCTYPE html [ <!ENTITY nbsp \"&#160;\"> ]><ac:confluence>" +
-      body +
-      "</ac:confluence>"
-    );
+    return ("<!DOCTYPE html [ <!ENTITY nbsp \"&#160;\"> ]><ac:confluence>"
+        + body
+        + "</ac:confluence>");
   }
 }

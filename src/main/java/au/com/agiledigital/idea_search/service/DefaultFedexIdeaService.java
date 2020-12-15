@@ -5,7 +5,6 @@ import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,6 +27,14 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     return this.fedexIdeaDao.create(fedexIdea);
   }
 
+  public String getBlueprintId(){
+    return this.fedexIdeaDao.getBlueprintId();
+  }
+
+  public String setBlueprintId(String blueprintId){
+    return this.fedexIdeaDao.setBlueprintId(blueprintId);
+  }
+
   /**
    * Update an existing FedexIdea
    *
@@ -36,7 +43,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return FedexIdea that was updated
    */
   public FedexIdea update(FedexIdea fedexIdea, long contentId) {
-    return this.fedexIdeaDao.updateByContentId(fedexIdea, contentId);
+    return this.fedexIdeaDao.upsertByContentId(fedexIdea, contentId);
   }
 
   /**

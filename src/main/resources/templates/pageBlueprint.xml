@@ -30,7 +30,7 @@
 <ac:structured-macro ac:name="Idea Structured Field">
   <ac:parameter ac:name="category">technologies</ac:parameter>
   <ac:rich-text-body>
-      <at:var at:name="vIdeaTechnology" />
+      <at:var at:name="vIdeaTechnology" at:rawxhtml="true" />
   </ac:rich-text-body>
 </ac:structured-macro>
 

@@ -4,9 +4,7 @@ import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import org.w3c.dom.Node;
 
-/**
- * Container of Idea metadata to be used within a velocity template
- */
+/** Container of Idea metadata to be used within a velocity template */
 public class IdeaContainer {
 
   public String title;
@@ -42,10 +40,7 @@ public class IdeaContainer {
     return owner;
   }
 
-  public void setMacroRepresentations(
-    StructuredCategory category,
-    MacroRepresentation macro
-  ) {
+  public void setMacroRepresentations(StructuredCategory category, MacroRepresentation macro) {
     switch (category) {
       case DESCRIPTION:
         description = macro;
@@ -63,13 +58,11 @@ public class IdeaContainer {
         if (macro != null) {
           Node child = macro.getNode().getFirstChild();
           do {
-            if (
-              child
+            if (child
                 .getAttributes()
                 .getNamedItem("ac:name")
                 .getNodeValue()
-                .equals("blueprintId")
-            ) {
+                .equals("blueprintId")) {
               blueprintId = child.getTextContent();
               break;
             }

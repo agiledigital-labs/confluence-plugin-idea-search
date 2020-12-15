@@ -1,6 +1,5 @@
 package au.com.agiledigital.idea_search.dao;
 
-import au.com.agiledigital.idea_search.listener.FedexIdeaEventListener;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
@@ -16,23 +15,17 @@ import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Fedex Idea Dao
- */
+/** Fedex Idea Dao */
 @Component
 public class FedexIdeaDao {
 
+  @ComponentImport private final ActiveObjects ao;
 
-  @ComponentImport
-  private final ActiveObjects ao;
+  private static final Class<AoFedexIdea> AO_FEDEX_IDEA_TYPE = AoFedexIdea.class;
+  private static final Class<AoFedexTechnology> AO_FEDEX_TECHNOLOGY_TYPE = AoFedexTechnology.class;
+  private static final Class<AoIdeaBlueprint> AO_IDEA_BLUEPRINT_TYPE = AoIdeaBlueprint.class;
 
-  private static final Class<AoFedexIdea> AO_FEDEX_IDEA_TYPE =
-    AoFedexIdea.class;
-  private static final Class<AoFedexTechnology> AO_FEDEX_TECHNOLOGY_TYPE =
-    AoFedexTechnology.class;
-
-  @ComponentImport
-  private final UserAccessor userAccessor;
+  @ComponentImport private final UserAccessor userAccessor;
 
   @Autowired
   public FedexIdeaDao(ActiveObjects ao, UserAccessor userAccessor) {
@@ -59,6 +52,35 @@ public class FedexIdeaDao {
     return this.asFedexIdea(aoFedexIdea);
   }
 
+  public String getBlueprintId(){
+    AoIdeaBlueprint[] blueprints = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select());
+    return blueprints[0].getBlueprintId();
+  }
+
+  public String setBlueprintId(String blueprintId){
+    String existingId = "No id here";
+    AoIdeaBlueprint[] blueprint = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select().where("BLUEPRINT_ID = ?", blueprintId));
+
+    if (blueprint.length != 0){
+      if (!blueprint[0].getBlueprintId().equals(blueprintId)){
+        this.ao.delete(blueprint);
+        AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
+        newBlueprint.setBlueprintId(blueprintId);
+        newBlueprint.save();
+        existingId = "Created new id because the blueprint id's don't match";
+      } else {
+        existingId = blueprint[0].getBlueprintId();
+      }
+    } else {
+      AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
+      newBlueprint.setBlueprintId(blueprintId);
+      newBlueprint.save();
+      existingId = "Created new id because there are no blueprint ids in the database";
+    }
+
+    return existingId;
+  }
+
   /**
    * Update a FedexIdea by the page content id
    *
@@ -66,24 +88,29 @@ public class FedexIdeaDao {
    * @param contentId of the page containing the idea
    * @return FedexIdea saved to the data store
    */
-  public FedexIdea updateByContentId(FedexIdea fedexIdea, long contentId) {
+  public FedexIdea upsertByContentId(FedexIdea fedexIdea, long contentId) {
     AoFedexIdea[] aoFedexIdeas =
       this.ao.find(
-          AO_FEDEX_IDEA_TYPE,
-          Query.select().where("CONTENT_ID = ?", contentId)
-        );
+        AO_FEDEX_IDEA_TYPE,
+        Query.select().where("CONTENT_ID = ?", contentId)
+      );
+
+    boolean newIdea = aoFedexIdeas.length == 0;
+
     // If the title of the page already exists the create event fails and a page update event is fired on a successful save.
     // If this happens the aoFedexIdea will not exist in the data store and will need to be created.
-    AoFedexIdea aoFedexIdea = aoFedexIdeas.length == 0
+    AoFedexIdea aoFedexIdea = newIdea
       ? this.ao.create(AO_FEDEX_IDEA_TYPE)
       : aoFedexIdeas[0];
 
-    List<AoFedexTechnology> aoFedexTechnology = Arrays.asList(
-      aoFedexIdea.getTechnology()
-    );
-
-    // Deletes the technology item from the table
-    aoFedexTechnology.forEach(this.ao::delete);
+    // If the idea exists, remove the existing technologies so they can be updated
+    if (!newIdea) {
+      List<AoFedexTechnology> aoFedexTechnology = Arrays.asList(
+        aoFedexIdea.getTechnology()
+      );
+      // Deletes the technology item from the table
+      aoFedexTechnology.forEach(this.ao::delete);
+    }
 
     List<AoFedexTechnology> aoTechList = getAoFedexTechnologies(fedexIdea);
 
@@ -101,25 +128,22 @@ public class FedexIdeaDao {
    * @return List<AoFedexTechnology> unsaved.
    */
   private List<AoFedexTechnology> getAoFedexTechnologies(FedexIdea fedexIdea) {
-    return fedexIdea
-      .getTechnologies()
-      .stream()
-      .map(tech -> this.prepareAOFedexTechnology(tech.getTechnology()))
-      .collect(Collectors.toList());
+    return fedexIdea.getTechnologies().stream()
+        .map(tech -> this.prepareAOFedexTechnology(tech.getTechnology()))
+        .collect(Collectors.toList());
   }
 
-  //    See comment on https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375
-  //    This means that the setter is done on the Recipient entity(setting the Filter) and because of the way relational databases...
+  //    See comment on
+  // https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375
+  //    This means that the setter is done on the Recipient entity(setting the Filter) and because
+  // of the way relational databases...
   private void setTechnologies(
-    List<AoFedexTechnology> aoFedexTechnologies,
-    AoFedexIdea aoFedexIdea
-  ) {
+      List<AoFedexTechnology> aoFedexTechnologies, AoFedexIdea aoFedexIdea) {
     aoFedexTechnologies.forEach(
-      techItem -> {
-        techItem.setIdea(aoFedexIdea);
-        techItem.save();
-      }
-    );
+        techItem -> {
+          techItem.setIdea(aoFedexIdea);
+          techItem.save();
+        });
   }
 
   /**
@@ -138,22 +162,19 @@ public class FedexIdeaDao {
    * @return a list of all available FedexTechnology
    */
   public List<FedexTechnology> findAllTech() {
-    AoFedexTechnology[] aoFedexTechnologies =
-      this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select());
+    AoFedexTechnology[] aoFedexTechnologies = this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, Query.select());
     return this.asListFedexTechnology(aoFedexTechnologies);
   }
 
   /**
    * Convert array of active objects to a list of model objects
    *
-   * @param aoFedexIdeas list of active object ideas to be converted to a list of the model FedexIdea
+   * @param aoFedexIdeas list of active object ideas to be converted to a list of the model
+   *     FedexIdea
    * @return List<FedexIdea>
    */
   private List<FedexIdea> asListFedexIdea(AoFedexIdea[] aoFedexIdeas) {
-    return Arrays
-      .stream(aoFedexIdeas)
-      .map(this::asFedexIdea)
-      .collect(Collectors.toList());
+    return Arrays.stream(aoFedexIdeas).map(this::asFedexIdea).collect(Collectors.toList());
   }
 
   /**
@@ -162,13 +183,10 @@ public class FedexIdeaDao {
    * @param aoFedexTechnologies AoFedexTechnology[]
    * @return List<FedexTechnology>
    */
-  private List<FedexTechnology> asListFedexTechnology(
-    AoFedexTechnology[] aoFedexTechnologies
-  ) {
-    return Arrays
-      .stream(aoFedexTechnologies)
-      .map(this::asFedexTechnology)
-      .collect(Collectors.toList());
+  private List<FedexTechnology> asListFedexTechnology(AoFedexTechnology[] aoFedexTechnologies) {
+    return Arrays.stream(aoFedexTechnologies)
+        .map(this::asFedexTechnology)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -194,8 +212,7 @@ public class FedexIdeaDao {
    */
   private String getUsername(String userKey) {
     if (userKey != null) {
-      ConfluenceUser user =
-        this.userAccessor.getUserByKey(new UserKey(userKey));
+      ConfluenceUser user = this.userAccessor.getUserByKey(new UserKey(userKey));
       return user == null ? null : user.getLowerName();
     }
 
@@ -209,8 +226,7 @@ public class FedexIdeaDao {
    * @return AoFedexTechnology object to be saved to the data store
    */
   private AoFedexTechnology prepareAOFedexTechnology(String technology) {
-    AoFedexTechnology aoFedexTechnology =
-      this.ao.create(AoFedexTechnology.class);
+    AoFedexTechnology aoFedexTechnology = this.ao.create(AoFedexTechnology.class);
     aoFedexTechnology.setTechnology(technology);
     return aoFedexTechnology;
   }
@@ -219,12 +235,9 @@ public class FedexIdeaDao {
    * Prepare fedex active object with the data from a fedex idea
    *
    * @param aoFedexIdea active object
-   * @param fedexIdea   with data to be added to the active object
+   * @param fedexIdea with data to be added to the active object
    */
-  private void prepareAOFedexIdea(
-    AoFedexIdea aoFedexIdea,
-    FedexIdea fedexIdea
-  ) {
+  private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
     aoFedexIdea.setContentId(fedexIdea.getContentId());
     aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
     aoFedexIdea.setOwner(fedexIdea.getOwner());
@@ -240,16 +253,15 @@ public class FedexIdeaDao {
    */
   private FedexIdea asFedexIdea(AoFedexIdea aoFedexIdea) {
     return aoFedexIdea == null
-      ? null
-      : (
-        new au.com.agiledigital.idea_search.model.FedexIdea.Builder()
-      ).withGlobalId(aoFedexIdea.getGlobalId())
-        .withOwner(aoFedexIdea.getOwner())
-        .withContentId(aoFedexIdea.getContentId())
-        .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
-        .withDescription(aoFedexIdea.getDescription())
-        .withStatus(aoFedexIdea.getStatus())
-        .build();
+        ? null
+        : (new au.com.agiledigital.idea_search.model.FedexIdea.Builder())
+            .withGlobalId(aoFedexIdea.getGlobalId())
+            .withOwner(aoFedexIdea.getOwner())
+            .withContentId(aoFedexIdea.getContentId())
+            .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
+            .withDescription(aoFedexIdea.getDescription())
+            .withStatus(aoFedexIdea.getStatus())
+            .build();
   }
 
   /**
@@ -258,15 +270,13 @@ public class FedexIdeaDao {
    * @param aoFedexTechnology active object to be converted
    * @return FedexTechnology object
    */
-  private FedexTechnology asFedexTechnology(
-    AoFedexTechnology aoFedexTechnology
-  ) {
+  private FedexTechnology asFedexTechnology(AoFedexTechnology aoFedexTechnology) {
     return aoFedexTechnology == null
-      ? null
-      : new au.com.agiledigital.idea_search.model.FedexTechnology.Builder()
-        .withGlobalId(aoFedexTechnology.getGlobalId())
-        .withTechnology(aoFedexTechnology.getTechnology())
-        .build();
+        ? null
+        : new au.com.agiledigital.idea_search.model.FedexTechnology.Builder()
+            .withGlobalId(aoFedexTechnology.getGlobalId())
+            .withTechnology(aoFedexTechnology.getTechnology())
+            .build();
   }
 
   /**
@@ -294,10 +304,9 @@ public class FedexIdeaDao {
     AoFedexTechnology[] aoFedexTechnologies =
       this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-    List<TechnologyAPI> technologies = getDistinctTechnology(
+    return getDistinctTechnology(
       aoFedexTechnologies
     );
-    return technologies;
   }
 
   /**
@@ -314,9 +323,8 @@ public class FedexIdeaDao {
     AoFedexTechnology[] aoFedexTechnologies =
       this.ao.find(AO_FEDEX_TECHNOLOGY_TYPE, query);
 
-    List<TechnologyAPI> technologies = getDistinctTechnology(
+    return getDistinctTechnology(
       aoFedexTechnologies
     );
-    return technologies;
   }
 }

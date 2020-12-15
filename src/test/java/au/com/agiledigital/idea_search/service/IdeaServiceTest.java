@@ -39,16 +39,14 @@ public class IdeaServiceTest {
     this.supplied = supplied;
   }
 
-  @Parameters(
-    name = "{index}: Pass through the list unchanged returned from dao {0}"
-  )
+  @Parameters(name = "{index}: Pass through the list unchanged returned from dao {0}")
   public static Object[] data() {
-    return new Object[] { noTech, singleTech, multipleTech, duplicateTech };
+    return new Object[] {noTech, singleTech, multipleTech, duplicateTech};
   }
 
   /**
-   * The service should pass through the list from Dao.
-   * It should be unchanged, i.e. no transformation.
+   * The service should pass through the list from Dao. It should be unchanged, i.e. no
+   * transformation.
    */
   @Test
   public void relayTechListFromDao() {

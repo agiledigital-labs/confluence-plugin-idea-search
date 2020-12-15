@@ -7,32 +7,23 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import java.util.Map;
 
-/**
- * Loads client side javascript and css.
- */
+/** Loads client side javascript and css. */
 public class ClientSideScripts implements Macro {
 
   private PageBuilderService pageBuilderService;
 
-  public ClientSideScripts(
-    @ComponentImport PageBuilderService pageBuilderService
-  ) {
+  public ClientSideScripts(@ComponentImport PageBuilderService pageBuilderService) {
     this.pageBuilderService = pageBuilderService;
   }
 
   @Override
-  public String execute(
-    Map<String, String> map,
-    String s,
-    ConversionContext conversionContext
-  )
-    throws MacroExecutionException {
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
+      throws MacroExecutionException {
     pageBuilderService
-      .assembler()
-      .resources()
-      .requireWebResource(
-        "au.com.agiledigital.idea_search:ideaSearch-macro-clientSideScripts-macro-resource"
-      );
+        .assembler()
+        .resources()
+        .requireWebResource(
+            "au.com.agiledigital.idea_search:ideaSearch-macro-clientSideScripts-macro-resource");
 
     return "";
   }

@@ -26,7 +26,7 @@ public class Options {
    * @return Options object with the applied flag
    */
   public Options withUser(boolean user) {
-    isUser = user;
+    this.isUser = user;
 
     return this;
   }

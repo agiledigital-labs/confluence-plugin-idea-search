@@ -96,7 +96,6 @@ public class TechnologyServletUnitTest {
           Arrays.asList(new TechnologyAPI("perl"), new TechnologyAPI("python"))
         );
 
-
     Mockito
       .when(fedexIdeaDao.queryTechList())
       .thenReturn(

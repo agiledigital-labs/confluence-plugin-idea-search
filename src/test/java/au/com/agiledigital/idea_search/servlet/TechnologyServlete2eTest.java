@@ -40,8 +40,7 @@ public class TechnologyServlete2eTest {
   private DefaultFedexIdeaService ideaService;
   private Gson gson = new Gson();
 
-  @ComponentImport
-  private UserAccessor userAccessor;
+  @ComponentImport private UserAccessor userAccessor;
 
   private ActiveObjects ao;
   private FedexIdeaDao fedexIdeaDao;
@@ -113,16 +112,13 @@ public class TechnologyServlete2eTest {
         );
     ao.migrate(AoFedexTechnology.class);
 
-    // Given there are duplicate technologies in the database and servlet writes response on supplied response object.
-    final AoFedexTechnology aoFedexTechnologyPerl = ao.create(
-      AoFedexTechnology.class
-    );
+    // Given there are duplicate technologies in the database and servlet writes response on
+    // supplied response object.
+    final AoFedexTechnology aoFedexTechnologyPerl = ao.create(AoFedexTechnology.class);
     aoFedexTechnologyPerl.setTechnology("perl");
     aoFedexTechnologyPerl.save();
 
-    final AoFedexTechnology aoFedexTechnologyAngular = ao.create(
-      AoFedexTechnology.class
-    );
+    final AoFedexTechnology aoFedexTechnologyAngular = ao.create(AoFedexTechnology.class);
     aoFedexTechnologyAngular.setTechnology("angular");
     aoFedexTechnologyAngular.save();
 
@@ -135,31 +131,24 @@ public class TechnologyServlete2eTest {
   }
 
   /**
-   * Class to seed database before test.
-   * Adds python, perl and angular in respective order to the test database.
+   * Class to seed database before test. Adds python, perl and angular in respective order to the
+   * test database.
    */
-  public static class TechnologyServletFuncTestDatabaseUpdater
-    implements DatabaseUpdater {
+  public static class TechnologyServletFuncTestDatabaseUpdater implements DatabaseUpdater {
 
     @Override
     public void update(EntityManager em) throws Exception {
       em.migrate(AoFedexTechnology.class);
 
-      AoFedexTechnology seedAoFedexTechnologyPython = em.create(
-        AoFedexTechnology.class
-      );
+      AoFedexTechnology seedAoFedexTechnologyPython = em.create(AoFedexTechnology.class);
       seedAoFedexTechnologyPython.setTechnology("python");
       seedAoFedexTechnologyPython.save();
 
-      AoFedexTechnology seedAoFedexTechnologyPerl = em.create(
-        AoFedexTechnology.class
-      );
+      AoFedexTechnology seedAoFedexTechnologyPerl = em.create(AoFedexTechnology.class);
       seedAoFedexTechnologyPerl.setTechnology("perl");
       seedAoFedexTechnologyPerl.save();
 
-      AoFedexTechnology seedAoFedexTechnologyAngular = em.create(
-        AoFedexTechnology.class
-      );
+      AoFedexTechnology seedAoFedexTechnologyAngular = em.create(AoFedexTechnology.class);
       seedAoFedexTechnologyAngular.setTechnology("angular");
       seedAoFedexTechnologyAngular.save();
     }

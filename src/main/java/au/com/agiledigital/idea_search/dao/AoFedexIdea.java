@@ -19,6 +19,7 @@ public interface AoFedexIdea extends RawEntity<Long> {
   long getGlobalId();
 
   String getOwner();
+
   void setOwner(String owner);
 
   @Indexed

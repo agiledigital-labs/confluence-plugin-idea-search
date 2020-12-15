@@ -16,6 +16,7 @@ public interface FedexIdeaService {
 
   /**
    * Update an idea in the data store by the contentID
+   *
    * @param fedexIdea updated
    * @param contentId of idea to be updated
    * @return updated fedex idea
@@ -24,9 +25,14 @@ public interface FedexIdeaService {
 
   /**
    * Filter technology list from dao to avoid technology duplication
+   *
    * @return list of distinct technology strings
    */
   List<TechnologyAPI> queryTechList();
+
+  String getBlueprintId();
+
+  String setBlueprintId(String blueprintId);
 
   /**
    * Filter technology list from dao to avoid technology duplication

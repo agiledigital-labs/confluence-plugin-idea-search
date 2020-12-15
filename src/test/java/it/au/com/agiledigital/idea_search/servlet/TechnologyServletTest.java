@@ -36,6 +36,7 @@ public class TechnologyServletTest {
 
   /**
    * Should get a list of technologies when get request is invoked on test confluence instance.
+   *
    * @throws IOException exception with input or writing outputs in servlet doGet
    */
   @Test

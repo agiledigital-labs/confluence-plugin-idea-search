@@ -2,7 +2,6 @@ Confluence.Blueprint.setWizard(
   "au.com.agiledigital.idea_search:ideaSearch-page-blueprint-entry",
   function (wizard) {
     AJS.Confluence.Binder.autocompleteMultiUser();
-    AJS.$("#tw").auiSelect2();
     wizard.on("post-render.page1Id", () =>
       AJS.$("#videatechnology").auiSelect2({
         multiple: true,
@@ -26,7 +25,7 @@ Confluence.Blueprint.setWizard(
     );
     wizard.on("submit.page1Id", function (e, state) {
       if (!state.pageData.vIdeaTitle) {
-        alert("Please provide a name value.");
+        alert("Please provide a name value, ");
         return false;
       }
     });
