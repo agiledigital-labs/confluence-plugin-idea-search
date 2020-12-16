@@ -26,7 +26,7 @@ public class StructureFieldRenderHelper {
   }
 
   public static String render(
-      StructuredCategory category, String body, boolean heading, XhtmlContent xhtmlContent) {
+    StructuredCategory category, String body, boolean heading, XhtmlContent xhtmlContent) {
     Map<String, Object> context = new HashMap<>();
 
     context.put("heading", heading);
@@ -44,8 +44,8 @@ public class StructureFieldRenderHelper {
         if (xhtmlContent != null) {
           try {
             bodyConverted =
-                xhtmlContent.convertStorageToView(
-                    body, new DefaultConversionContext(new RenderContext()));
+              xhtmlContent.convertStorageToView(
+                body, new DefaultConversionContext(new RenderContext()));
           } catch (XMLStreamException e) {
             e.printStackTrace();
           } catch (XhtmlException e) {

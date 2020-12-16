@@ -41,7 +41,7 @@ public class IdeaServiceTest {
 
   @Parameters(name = "{index}: Pass through the list unchanged returned from dao {0}")
   public static Object[] data() {
-    return new Object[] {noTech, singleTech, multipleTech, duplicateTech};
+    return new Object[]{noTech, singleTech, multipleTech, duplicateTech};
   }
 
   /**

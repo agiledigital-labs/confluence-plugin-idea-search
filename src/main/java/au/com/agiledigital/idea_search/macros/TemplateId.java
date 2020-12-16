@@ -5,12 +5,14 @@ import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
 import java.util.Map;
 
-/** Container macro for the page blueprint id */
+/**
+ * Container macro for the page blueprint id
+ */
 public class TemplateId implements Macro {
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
-      throws MacroExecutionException {
+    throws MacroExecutionException {
     return "";
   }
 

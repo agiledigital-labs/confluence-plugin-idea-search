@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.listener;
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
 import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
+
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
@@ -55,33 +56,35 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
   private static final Logger log = LoggerFactory.getLogger(FedexIdeaEventListener.class);
 
-  @ConfluenceImport private final EventPublisher eventPublisher;
+  @ConfluenceImport
+  private final EventPublisher eventPublisher;
 
   private final DefaultFedexIdeaService fedexIdeaService;
   private final XhtmlContent xhtmlContent;
 
-  @ConfluenceImport private final IndexPageManager indexPageManager;
+  @ConfluenceImport
+  private final IndexPageManager indexPageManager;
 
   private final DocumentBuilderFactory documentBuilderFactory =
-      DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory.newInstance();
   private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY =
-      new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
+    new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
   private ContentBlueprint contentBlueprint;
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
    *
-   * @param eventPublisher confluence event publisher
+   * @param eventPublisher   confluence event publisher
    * @param fedexIdeaService fedex Idea service
-   * @param xhtmlContent used to parse the page content
+   * @param xhtmlContent     used to parse the page content
    */
   @Inject
   public FedexIdeaEventListener(
-      EventPublisher eventPublisher,
-      DefaultFedexIdeaService fedexIdeaService,
-      @ComponentImport XhtmlContent xhtmlContent,
-      IndexPageManager indexPageManager) {
+    EventPublisher eventPublisher,
+    DefaultFedexIdeaService fedexIdeaService,
+    @ComponentImport XhtmlContent xhtmlContent,
+    IndexPageManager indexPageManager) {
     this.eventPublisher = eventPublisher;
     this.fedexIdeaService = fedexIdeaService;
     this.xhtmlContent = xhtmlContent;
@@ -105,13 +108,13 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    *
    * @param xml string of readin XML content
    * @return Object containing the structure of the XML which has functionality for navigating the
-   *     dom
+   * dom
    * @throws ParserConfigurationException exception
-   * @throws IOException exception
-   * @throws SAXException exception
+   * @throws IOException                  exception
+   * @throws SAXException                 exception
    */
   private Document parseXML(String xml)
-      throws ParserConfigurationException, IOException, SAXException {
+    throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 
     return builder.parse(new ByteArrayInputStream(xml.getBytes()));
@@ -120,13 +123,13 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   /**
    * Finds a Structured Field macro with a category from a list of macros
    *
-   * @param macros Structured Field macro list
-   * @param category The needle for the search
+   * @param macros     Structured Field macro list
+   * @param category   The needle for the search
    * @param serializer XML serializer
    * @return Representation of a macro from Confluence Storage format
    */
   private MacroRepresentation getMacroFromList(
-      NodeList macros, StructuredCategory category, LSSerializer serializer) {
+    NodeList macros, StructuredCategory category, LSSerializer serializer) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
 
@@ -135,8 +138,8 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
         Node child = node.getFirstChild();
         do {
           if (child instanceof Element
-              && child.getNodeName().equals("ac:parameter")
-              && child.getTextContent().equals(category.getKey())) {
+            && child.getNodeName().equals("ac:parameter")
+            && child.getTextContent().equals(category.getKey())) {
             return new MacroRepresentation(node, category, serializer, xhtmlContent);
           }
         } while ((child = child.getNextSibling()) != null);
@@ -189,8 +192,8 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * Listen for page creations events on pages with the correct label, updates the data store with
    * the new idea
    *
-   * If the title of the page is not unique, the blueprint create event is not used, the page
-   * create event is.
+   * If the title of the page is not unique, the blueprint create event is not used, the page create
+   * event is.
    *
    * @param event produced when a page is updated
    */
@@ -201,6 +204,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
   /**
    * Puts the newly created page as a child of index page
+   *
    * @param page the new page
    */
   private void makeChildOfIndex(Page page) {
@@ -210,8 +214,9 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
   /**
    * Creates or updates a fedex technology page
+   *
    * @param content the content of the event
-   * @param page the new page
+   * @param page    the new page
    */
   private void createOrUpdateTechnology(ContentEntityObject content, Page page) {
     if (
@@ -233,11 +238,11 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * @param page content with structured data
    * @return FedexIdea model object
    * @throws ParserConfigurationException exception
-   * @throws IOException exception
-   * @throws SAXException exception
+   * @throws IOException                  exception
+   * @throws SAXException                 exception
    */
   private FedexIdea getFedexIdea(AbstractPage page)
-      throws ParserConfigurationException, IOException, SAXException {
+    throws ParserConfigurationException, IOException, SAXException {
     Document bodyParsed = parseXML(wrapBody(page.getBodyAsString()));
     NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
     DOMImplementationLS ls = (DOMImplementationLS) bodyParsed.getImplementation();
@@ -251,7 +256,8 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
             category, getMacroFromList(macros, category, serializer)));
 
     /** Splits the comma seperated string into a list and replaces all html tags */
-    List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*")).stream().map(e -> removeTags(e) ).collect(
+    List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*")).stream()
+      .map(e -> removeTags(e)).collect(
         Collectors.toList());
 
     List<FedexTechnology> techList = new ArrayList<>();
@@ -259,12 +265,12 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 
     return new FedexIdea.Builder()
-        .withTechnologies(techList)
-        .withContentId(page.getId())
-        .withCreator(page.getCreator().getName())
-        .withDescription(row.getDescription().getValue())
-        .withStatus(row.getStatus().getValue())
-        .withOwner(row.getOwner().getValue())
-        .build();
+      .withTechnologies(techList)
+      .withContentId(page.getId())
+      .withCreator(page.getCreator().getName())
+      .withDescription(row.getDescription().getValue())
+      .withStatus(row.getStatus().getValue())
+      .withOwner(row.getOwner().getValue())
+      .build();
   }
 }

@@ -2,7 +2,9 @@ package au.com.agiledigital.idea_search.macros;
 
 import java.util.Arrays;
 
-/** Categories of structure data for the Structured Field macro */
+/**
+ * Categories of structure data for the Structured Field macro
+ */
 public enum StructuredCategory {
   TECHNOLOGIES("technologies", "Technology", "Add your technologies"),
   DESCRIPTION("description", "Description", "It is awesome, how could it not be"),
@@ -23,9 +25,9 @@ public enum StructuredCategory {
 
   public static StructuredCategory fromKey(String key) {
     return Arrays.stream(StructuredCategory.values())
-        .filter(constant -> constant.key.equals(key))
-        .findFirst()
-        .orElse(null);
+      .filter(constant -> constant.key.equals(key))
+      .findFirst()
+      .orElse(null);
   }
 
   public String getKey() {

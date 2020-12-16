@@ -6,8 +6,11 @@ import net.java.ao.schema.NotNull;
 import net.java.ao.schema.PrimaryKey;
 import net.java.ao.schema.StringLength;
 
-/** Idea blueprint table definition, used to store blueprint id */
+/**
+ * Idea blueprint table definition, used to store blueprint id
+ */
 public interface AoIdeaBlueprint extends RawEntity<Long> {
+
   @AutoIncrement
   @NotNull
   @PrimaryKey

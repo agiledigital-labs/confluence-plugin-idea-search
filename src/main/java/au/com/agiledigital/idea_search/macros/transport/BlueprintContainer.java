@@ -1,6 +1,8 @@
 package au.com.agiledigital.idea_search.macros.transport;
 
-/** Container of blueprint metadata to be used within a velocity template */
+/**
+ * Container of blueprint metadata to be used within a velocity template
+ */
 public class BlueprintContainer {
 
   private final String spaceKey;

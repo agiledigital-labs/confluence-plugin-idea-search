@@ -8,21 +8,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Context provider for Idea page blueprint */
+/**
+ * Context provider for Idea page blueprint
+ */
 public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
 
   public final List<KeyProperty> ideaFieldsDefaults =
-      Arrays.asList(
-          new KeyProperty(
-              Parameter.IDEA_TITLE.reference, "I totally forgot to put one in the form"),
-          new KeyProperty(
-              Parameter.IDEA_DESCRIPTION.reference, "It is awesome, how could it not be"),
-          new KeyProperty(
-              Parameter.IDEA_OWNER.reference,
-              "@me"
-          ),
-          new KeyProperty(Parameter.IDEA_TECHNOLOGY.reference, "Add your technologies"),
-          new KeyProperty(Parameter.IDEA_TEAM.reference, "none set"));
+    Arrays.asList(
+      new KeyProperty(
+        Parameter.IDEA_TITLE.reference, "I totally forgot to put one in the form"),
+      new KeyProperty(
+        Parameter.IDEA_DESCRIPTION.reference, "It is awesome, how could it not be"),
+      new KeyProperty(
+        Parameter.IDEA_OWNER.reference,
+        "@me"
+      ),
+      new KeyProperty(Parameter.IDEA_TECHNOLOGY.reference, "Add your technologies"),
+      new KeyProperty(Parameter.IDEA_TEAM.reference, "none set"));
 
   /**
    * Renders a value based on a template using the options object as the determiner.
@@ -68,7 +70,7 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
   /**
    * Flags the options object with additional options based off the key
    *
-   * @param key Key of the context item
+   * @param key     Key of the context item
    * @param options options for the context item
    * @return The updated options
    */
@@ -110,29 +112,29 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
 
     // Goes through map and adds in default values and transforms pre-existing values
     contextMap
-        .entrySet()
-        .forEach(
-            entry ->
-                contextMap.compute(
-                    entry.getKey(),
-                    (key, value) ->
-                        value == null || (value instanceof String && ((String) value).length() == 0)
-                            ? ideaFieldsDefaults.stream()
-                                .filter(property -> property.key.equals(key))
-                                .findFirst()
-                                .orElse(
-                                    new KeyProperty(
-                                        key,
-                                        "Something went very wrong here",
-                                        setupOptions(key, new Options().withDefault(true))))
-                            : new KeyProperty(
-                                key,
-                                entry.getValue(),
-                                setupOptions(key, new Options().withDefault(false)))));
+      .entrySet()
+      .forEach(
+        entry ->
+          contextMap.compute(
+            entry.getKey(),
+            (key, value) ->
+              value == null || (value instanceof String && ((String) value).length() == 0)
+                ? ideaFieldsDefaults.stream()
+                .filter(property -> property.key.equals(key))
+                .findFirst()
+                .orElse(
+                  new KeyProperty(
+                    key,
+                    "Something went very wrong here",
+                    setupOptions(key, new Options().withDefault(true))))
+                : new KeyProperty(
+                  key,
+                  entry.getValue(),
+                  setupOptions(key, new Options().withDefault(false)))));
 
     contextMap
-        .entrySet()
-        .forEach(entry -> entry.setValue(renderValue((KeyProperty) entry.getValue())));
+      .entrySet()
+      .forEach(entry -> entry.setValue(renderValue((KeyProperty) entry.getValue())));
 
     contextMap.put("blueprintId", blueprintContext.getBlueprintId());
 

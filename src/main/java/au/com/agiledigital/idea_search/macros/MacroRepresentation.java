@@ -8,7 +8,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSSerializer;
 
-/** Represents a Structured Field Macro converted from the Confluence Storage format */
+/**
+ * Represents a Structured Field Macro converted from the Confluence Storage format
+ */
 public class MacroRepresentation {
 
   private final Node node;
@@ -19,7 +21,7 @@ public class MacroRepresentation {
   private String renderedValue;
 
   public MacroRepresentation(
-      Node node, StructuredCategory category, LSSerializer serializer, XhtmlContent xhtmlContent) {
+    Node node, StructuredCategory category, LSSerializer serializer, XhtmlContent xhtmlContent) {
     this.node = node;
     this.serializer = serializer;
 

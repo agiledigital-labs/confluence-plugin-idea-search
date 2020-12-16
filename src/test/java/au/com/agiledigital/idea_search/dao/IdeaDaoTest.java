@@ -42,7 +42,9 @@ public class IdeaDaoTest {
     assertEquals(noDaoTech, techs);
   }
 
-  /** Should return a single tech with the mocked technology. */
+  /**
+   * Should return a single tech with the mocked technology.
+   */
   @Test
   public void singleDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
@@ -68,7 +70,9 @@ public class IdeaDaoTest {
     assertEquals(this.gson.toJson(singleDaoTech), this.gson.toJson(techs));
   }
 
-  /** Should return multiple techs, based on get technology mocks. */
+  /**
+   * Should return multiple techs, based on get technology mocks.
+   */
   @Test
   public void multipleDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
@@ -98,7 +102,9 @@ public class IdeaDaoTest {
     assertEquals(this.gson.toJson(multipleDaoTech), this.gson.toJson(techs));
   }
 
-  /** Should filter out duplicate technologies. */
+  /**
+   * Should filter out duplicate technologies.
+   */
   @Test
   public void distinctDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);

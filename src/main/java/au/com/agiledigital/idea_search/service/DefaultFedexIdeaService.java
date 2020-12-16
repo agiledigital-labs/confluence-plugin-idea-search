@@ -27,17 +27,19 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
 
   /**
    * Get the existing blueprint id from database
+   *
    * @return the current blueprint id
    */
-  public String getBlueprintId(){
+  public String getBlueprintId() {
     return this.fedexIdeaDao.getBlueprintId();
   }
 
   /**
    * Store a blueprint id in the database
+   *
    * @param blueprintId the blueprint id to be set
    */
-  public void setBlueprintId(String blueprintId){
+  public void setBlueprintId(String blueprintId) {
     this.fedexIdeaDao.setBlueprintId(blueprintId);
   }
 
@@ -53,8 +55,8 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   }
 
   /**
-   * Pass through a list of distinct technology strings from dao
-   * Overload to take a search string
+   * Pass through a list of distinct technology strings from dao Overload to take a search string
+   *
    * @param searchString of the technology be searched for
    * @return A string list of technology names
    */
@@ -64,6 +66,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
 
   /**
    * Pass through a list of distinct technology strings from dao
+   *
    * @return A string list of technology names
    */
   public List<TechnologyAPI> queryTechList() {

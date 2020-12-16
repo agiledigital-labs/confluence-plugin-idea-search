@@ -5,6 +5,7 @@ import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import java.util.List;
 
 public interface FedexIdeaService {
+
   /**
    * Create an idea in the data store
    *
@@ -31,19 +32,22 @@ public interface FedexIdeaService {
 
   /**
    * Get the existing blueprint id from database
+   *
    * @return the current blueprint id
    */
   String getBlueprintId();
 
   /**
    * Store a blueprint id in the database
+   *
    * @param blueprintId the blueprint id to be set
    */
   void setBlueprintId(String blueprintId);
 
   /**
-   * Filter technology list from dao to avoid technology duplication
-   * Overload to take a search string
+   * Filter technology list from dao to avoid technology duplication Overload to take a search
+   * string
+   *
    * @param searchString to search for technologies with this begining
    * @return String json array of TechnologyAPI objects
    */

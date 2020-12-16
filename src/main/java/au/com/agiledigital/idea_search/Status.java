@@ -2,7 +2,9 @@ package au.com.agiledigital.idea_search;
 
 import java.util.Arrays;
 
-/** Status of an Idea */
+/**
+ * Status of an Idea
+ */
 public enum Status {
   NEW("New", "new"),
   IN_PROGRESS("In progress", "inProgress"),
@@ -19,9 +21,9 @@ public enum Status {
 
   public static Status getStatusFromReference(String referenceName) {
     return Arrays.stream(Status.values())
-        .filter(status -> status.referenceName.equals(referenceName))
-        .findFirst()
-        .orElse(null);
+      .filter(status -> status.referenceName.equals(referenceName))
+      .findFirst()
+      .orElse(null);
   }
 
   public String getHumanName() {

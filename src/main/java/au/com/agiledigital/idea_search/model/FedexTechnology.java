@@ -35,7 +35,8 @@ public class FedexTechnology {
     private long globalId;
     private String technology;
 
-    public Builder() {}
+    public Builder() {
+    }
 
     public Builder(FedexTechnology fedexTechnology) {
       this.technology = fedexTechnology.technology;

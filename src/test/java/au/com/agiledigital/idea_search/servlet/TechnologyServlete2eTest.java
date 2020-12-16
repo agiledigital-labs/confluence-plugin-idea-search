@@ -40,7 +40,8 @@ public class TechnologyServlete2eTest {
   private DefaultFedexIdeaService ideaService;
   private Gson gson = new Gson();
 
-  @ComponentImport private UserAccessor userAccessor;
+  @ComponentImport
+  private UserAccessor userAccessor;
 
   private ActiveObjects ao;
   private FedexIdeaDao fedexIdeaDao;
@@ -78,12 +79,12 @@ public class TechnologyServlete2eTest {
   public void sortedTech() throws IOException {
     String sortedTech =
       this.gson.toJson(
-          Arrays.asList(
-            new TechnologyAPI("angular"),
-            new TechnologyAPI("perl"),
-            new TechnologyAPI("python")
-          )
-        );
+        Arrays.asList(
+          new TechnologyAPI("angular"),
+          new TechnologyAPI("perl"),
+          new TechnologyAPI("python")
+        )
+      );
     ao.migrate(AoFedexTechnology.class);
 
     // Given the servlet writes response on supplied response object.
@@ -104,12 +105,12 @@ public class TechnologyServlete2eTest {
   public void distinctTech() throws IOException {
     String distinctTech =
       this.gson.toJson(
-          Arrays.asList(
-            new TechnologyAPI("angular"),
-            new TechnologyAPI("perl"),
-            new TechnologyAPI("python")
-          )
-        );
+        Arrays.asList(
+          new TechnologyAPI("angular"),
+          new TechnologyAPI("perl"),
+          new TechnologyAPI("python")
+        )
+      );
     ao.migrate(AoFedexTechnology.class);
 
     // Given there are duplicate technologies in the database and servlet writes response on
@@ -121,7 +122,6 @@ public class TechnologyServlete2eTest {
     final AoFedexTechnology aoFedexTechnologyAngular = ao.create(AoFedexTechnology.class);
     aoFedexTechnologyAngular.setTechnology("angular");
     aoFedexTechnologyAngular.save();
-
 
     // When we call the servlet function to retrieve a list of technologies.
     String response = technologyList.getTechList("", mockResponse);
