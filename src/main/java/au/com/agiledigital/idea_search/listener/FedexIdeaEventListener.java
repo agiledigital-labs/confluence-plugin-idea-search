@@ -189,7 +189,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * Listen for page creations events on pages with the correct label, updates the data store with
    * the new idea
    *
-   * <p>If the title of the page is not unique, the blueprint create event is not used, the page
+   * If the title of the page is not unique, the blueprint create event is not used, the page
    * create event is.
    *
    * @param event produced when a page is updated
