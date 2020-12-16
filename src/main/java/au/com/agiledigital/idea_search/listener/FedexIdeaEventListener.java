@@ -245,10 +245,10 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     IdeaContainer row = new IdeaContainer();
     row.title = page.getDisplayTitle();
     Arrays.asList(StructuredCategory.values())
-        .forEach(
-            category ->
-                row.setMacroRepresentations(
-                    category, getMacroFromList(macros, category, serializer)));
+      .forEach(
+        category ->
+          row.setMacroRepresentations(
+            category, getMacroFromList(macros, category, serializer)));
 
     /** Splits the comma seperated string into a list and replaces all html tags */
     List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*")).stream().map(e -> removeTags(e) ).collect(
