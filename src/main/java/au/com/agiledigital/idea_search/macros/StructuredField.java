@@ -2,6 +2,8 @@ package au.com.agiledigital.idea_search.macros;
 
 import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper.render;
 
+import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
+
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
@@ -20,29 +22,23 @@ public class StructuredField implements Macro {
 
   public StructuredField(
     @ComponentImport PageBuilderService pageBuilderService,
-    @ComponentImport XhtmlContent xhtmlContent
-  ) {
+    @ComponentImport XhtmlContent xhtmlContent) {
     this.pageBuilderService = pageBuilderService;
     this.xhtmlContent = xhtmlContent;
   }
 
   @Override
-  public String execute(
-    Map<String, String> map,
-    String s,
-    ConversionContext conversionContext
-  )
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
     pageBuilderService
       .assembler()
       .resources()
       .requireWebResource(
-        "au.com.agiledigital.idea_search:ideaSearch-macro-structuredField-macro-resource"
-      );
-    StructuredCategory category = StructuredCategory.fromKey(
-      map.get("category")
-    );
-    String stripped = s.replace("<p>", "").replace("</p>", "");
+        "au.com.agiledigital.idea_search:ideaSearch-macro-structuredField-macro-resource");
+    StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
+
+    /** Replaces all html tags */
+    String stripped = removeTags(s);
 
     return render(category, stripped);
   }

@@ -7,11 +7,7 @@ import java.util.Arrays;
  */
 public enum StructuredCategory {
   TECHNOLOGIES("technologies", "Technology", "Add your technologies"),
-  DESCRIPTION(
-    "description",
-    "Description",
-    "It is awesome, how could it not be"
-  ),
+  DESCRIPTION("description", "Description", "It is awesome, how could it not be"),
   STATUS("status", "Status", "new"),
   OWNER("owner", "Owner", "No one :("),
   BLUEPRINT_ID("blueprintId", "", ""),
@@ -28,8 +24,7 @@ public enum StructuredCategory {
   }
 
   public static StructuredCategory fromKey(String key) {
-    return Arrays
-      .stream(StructuredCategory.values())
+    return Arrays.stream(StructuredCategory.values())
       .filter(constant -> constant.key.equals(key))
       .findFirst()
       .orElse(null);

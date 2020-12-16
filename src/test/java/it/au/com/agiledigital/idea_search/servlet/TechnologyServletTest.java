@@ -36,29 +36,30 @@ public class TechnologyServletTest {
 
   /**
    * Should get a list of technologies when get request is invoked on test confluence instance.
+   *
    * @throws IOException exception with input or writing outputs in servlet doGet
    */
   @Test
   public void technologyServletTest() throws IOException {
     String expectedTechList =
       this.gson.toJson(
-          Arrays.asList(
-            new TechnologyAPI("java"),
-            new TechnologyAPI("js"),
-            new TechnologyAPI("python"),
-            new TechnologyAPI("ts")
-          )
-        );
+        Arrays.asList(
+          new TechnologyAPI("java"),
+          new TechnologyAPI("js"),
+          new TechnologyAPI("python"),
+          new TechnologyAPI("ts")
+        )
+      );
 
     // Given httpget is constructed with servlet url and there is a response handler.
     HttpGet httpget = new HttpGet(servletUrl);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
-      // add Authorization param
-      String authStr = "admin:admin";
-      byte[] authEncBytes = Base64.encodeBase64(authStr.getBytes());
-      String authStringEnc = new String(authEncBytes);
-      httpget.setHeader("Authorization", "Basic " + authStringEnc);
-      httpget.setHeader("X-Atlassian-Token", "no-check ");
+    // add Authorization param
+    String authStr = "admin:admin";
+    byte[] authEncBytes = Base64.encodeBase64(authStr.getBytes());
+    String authStringEnc = new String(authEncBytes);
+    httpget.setHeader("Authorization", "Basic " + authStringEnc);
+    httpget.setHeader("X-Atlassian-Token", "no-check ");
     // When the request is made.
     String responseBody = httpClient.execute(httpget, responseHandler);
 

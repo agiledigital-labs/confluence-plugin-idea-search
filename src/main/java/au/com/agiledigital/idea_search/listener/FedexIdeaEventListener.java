@@ -2,16 +2,22 @@ package au.com.agiledigital.idea_search.listener;
 
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
+import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
+
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
+import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.pages.AbstractPage;
+import com.atlassian.confluence.pages.Page;
+import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
 import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
+import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
@@ -23,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
@@ -41,17 +48,13 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * Listens to confluence events
- * Connects to event publisher, and sends filtered events to the
- * idea service
+ * Listens to confluence events Connects to event publisher, and sends filtered events to the idea
+ * service
  */
 @Named
-public class FedexIdeaEventListener
-  implements InitializingBean, DisposableBean {
+public class FedexIdeaEventListener implements InitializingBean, DisposableBean {
 
-  private static final Logger log = LoggerFactory.getLogger(
-    FedexIdeaEventListener.class
-  );
+  private static final Logger log = LoggerFactory.getLogger(FedexIdeaEventListener.class);
 
   @ConfluenceImport
   private final EventPublisher eventPublisher;
@@ -59,28 +62,35 @@ public class FedexIdeaEventListener
   private final DefaultFedexIdeaService fedexIdeaService;
   private final XhtmlContent xhtmlContent;
 
-  private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-  private static final ModuleCompleteKey MY_BLUEPRINT_KEY = new ModuleCompleteKey(
-    "au.com.agiledigital.idea_search",
-    "idea-blueprint"
-  );
-  private static final String MY_BLUEPRINT_LABEL = "fedex-ideas";
+  @ConfluenceImport
+  private final IndexPageManager indexPageManager;
+
+  private final DocumentBuilderFactory documentBuilderFactory =
+    DocumentBuilderFactory.newInstance();
+  private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY =
+    new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
+  private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
+  private ContentBlueprint contentBlueprint;
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
-   * @param eventPublisher confluence event publisher
+   *
+   * @param eventPublisher   confluence event publisher
    * @param fedexIdeaService fedex Idea service
-   * @param xhtmlContent used to parse the page content
+   * @param xhtmlContent     used to parse the page content
    */
   @Inject
   public FedexIdeaEventListener(
     EventPublisher eventPublisher,
     DefaultFedexIdeaService fedexIdeaService,
-    @ComponentImport XhtmlContent xhtmlContent
-  ) {
+    @ComponentImport XhtmlContent xhtmlContent,
+    IndexPageManager indexPageManager) {
     this.eventPublisher = eventPublisher;
     this.fedexIdeaService = fedexIdeaService;
     this.xhtmlContent = xhtmlContent;
+    this.indexPageManager = indexPageManager;
+    this.contentBlueprint = new ContentBlueprint();
+    this.contentBlueprint.setModuleCompleteKey(FEDEX_IDEA_BLUEPRINT_KEY.toString());
   }
 
   @Override
@@ -95,12 +105,13 @@ public class FedexIdeaEventListener
 
   /**
    * Parses XML to Java Dom objects
+   *
    * @param xml string of readin XML content
    * @return Object containing the structure of the XML which has functionality for navigating the
    * dom
    * @throws ParserConfigurationException exception
-   * @throws IOException exception
-   * @throws SAXException exception
+   * @throws IOException                  exception
+   * @throws SAXException                 exception
    */
   private Document parseXML(String xml)
     throws ParserConfigurationException, IOException, SAXException {
@@ -111,40 +122,25 @@ public class FedexIdeaEventListener
 
   /**
    * Finds a Structured Field macro with a category from a list of macros
+   *
    * @param macros     Structured Field macro list
    * @param category   The needle for the search
    * @param serializer XML serializer
    * @return Representation of a macro from Confluence Storage format
    */
   private MacroRepresentation getMacroFromList(
-    NodeList macros,
-    StructuredCategory category,
-    LSSerializer serializer
-  ) {
+    NodeList macros, StructuredCategory category, LSSerializer serializer) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
 
-      String nodeName = node
-        .getAttributes()
-        .getNamedItem("ac:name")
-        .getNodeValue();
-      if (
-        nodeName.equals("Idea Structured Field") ||
-        nodeName.equals("Blueprint Id Storage")
-      ) {
+      String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
+      if (nodeName.equals("Idea Structured Field") || nodeName.equals("Blueprint Id Storage")) {
         Node child = node.getFirstChild();
         do {
-          if (
-            child instanceof Element &&
-            child.getNodeName().equals("ac:parameter") &&
-            child.getTextContent().equals(category.getKey())
-          ) {
-            return new MacroRepresentation(
-              node,
-              category,
-              serializer,
-              xhtmlContent
-            );
+          if (child instanceof Element
+            && child.getNodeName().equals("ac:parameter")
+            && child.getTextContent().equals(category.getKey())) {
+            return new MacroRepresentation(node, category, serializer, xhtmlContent);
           }
         } while ((child = child.getNextSibling()) != null);
       }
@@ -155,15 +151,23 @@ public class FedexIdeaEventListener
 
   /**
    * Listen for pages created from blueprints.
+   *
    * @param event created when a pages is created from a blueprint
    */
   @EventListener
   public void onBlueprintCreateEvent(BlueprintPageCreateEvent event) {
+    /** Makes the new page child of the fedex idea index page */
+    makeChildOfIndex(event.getPage());
+
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
 
-    String thing = MY_BLUEPRINT_KEY.getCompleteKey();
+    String blueprintKey = FEDEX_IDEA_BLUEPRINT_KEY.getCompleteKey();
 
-    if (thing.equals(moduleCompleteKey)) {
+    // Gets the blueprintId and sets it as the current one in ao database
+    String blueprintId = String.valueOf(event.getBlueprint().getId());
+    this.fedexIdeaService.setBlueprintId(blueprintId);
+
+    if (blueprintKey.equals(moduleCompleteKey)) {
       try {
         FedexIdea idea = getFedexIdea(event.getPage());
         this.fedexIdeaService.create(idea);
@@ -174,41 +178,54 @@ public class FedexIdeaEventListener
   }
 
   /**
-   * Listen for page update events on pages with the correct label,
-   * updates the data store with the new idea
+   * Listen for page update events on pages with the correct label, updates the data store with the
+   * new idea
+   *
    * @param event produced when a page is updated
    */
   @EventListener
   public void pageUpdated(PageUpdateEvent event) {
-    if (
-      event.getContent().getLabels().toString().contains(MY_BLUEPRINT_LABEL)
-    ) {
-      try {
-        FedexIdea idea = getFedexIdea(event.getPage());
-        this.fedexIdeaService.update(idea, event.getPage().getId());
-      } catch (ParserConfigurationException | IOException | SAXException e) {
-        log.debug(e.getMessage());
-      }
-    }
+    createOrUpdateTechnology(event.getContent(), event.getPage());
   }
 
   /**
-   * Listen for page creations events on pages with the correct label,
-   * updates the data store with the new idea
+   * Listen for page creations events on pages with the correct label, updates the data store with
+   * the new idea
    *
-   * If the title of the page is not unique, the blueprint create event
-   * is not used, the page create event is.
+   * If the title of the page is not unique, the blueprint create event is not used, the page create
+   * event is.
    *
    * @param event produced when a page is updated
    */
   @EventListener
   public void pageCreated(PageCreateEvent event) {
+    createOrUpdateTechnology(event.getContent(), event.getPage());
+  }
+
+  /**
+   * Puts the newly created page as a child of index page
+   *
+   * @param page the new page
+   */
+  private void makeChildOfIndex(Page page) {
+    Page indexPage = this.indexPageManager.findIndexPage(this.contentBlueprint, page.getSpace());
+    indexPage.addChild(page);
+  }
+
+  /**
+   * Creates or updates a fedex technology page
+   *
+   * @param content the content of the event
+   * @param page    the new page
+   */
+  private void createOrUpdateTechnology(ContentEntityObject content, Page page) {
     if (
-      event.getContent().getLabels().toString().contains(MY_BLUEPRINT_LABEL)
+      content.getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
     ) {
       try {
-        FedexIdea idea = getFedexIdea(event.getPage());
-        this.fedexIdeaService.update(idea, event.getPage().getId());
+        makeChildOfIndex(page);
+        FedexIdea idea = getFedexIdea(page);
+        this.fedexIdeaService.update(idea, page.getId());
       } catch (ParserConfigurationException | IOException | SAXException e) {
         log.debug(e.getMessage());
       }
@@ -217,11 +234,12 @@ public class FedexIdeaEventListener
 
   /**
    * Pares structured data from page and return a fedex idea.
-   * @param page  content with structured data
+   *
+   * @param page content with structured data
    * @return FedexIdea model object
    * @throws ParserConfigurationException exception
-   * @throws IOException exception
-   * @throws SAXException exception
+   * @throws IOException                  exception
+   * @throws SAXException                 exception
    */
   private FedexIdea getFedexIdea(AbstractPage page)
     throws ParserConfigurationException, IOException, SAXException {
@@ -231,25 +249,20 @@ public class FedexIdeaEventListener
     LSSerializer serializer = ls.createLSSerializer();
     IdeaContainer row = new IdeaContainer();
     row.title = page.getDisplayTitle();
-    Arrays
-      .asList(StructuredCategory.values())
+    Arrays.asList(StructuredCategory.values())
       .forEach(
         category ->
           row.setMacroRepresentations(
-            category,
-            getMacroFromList(macros, category, serializer)
-          )
-      );
+            category, getMacroFromList(macros, category, serializer)));
 
-    List<String> tech = Arrays.asList(
-      row.getTechnologies().getValue().split("\\s*,\\s*")
-    );
+    /** Splits the comma seperated string into a list and replaces all html tags */
+    List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*")).stream()
+      .map(e -> removeTags(e)).collect(
+        Collectors.toList());
 
     List<FedexTechnology> techList = new ArrayList<>();
 
-    tech.forEach(
-      t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build())
-    );
+    tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 
     return new FedexIdea.Builder()
       .withTechnologies(techList)

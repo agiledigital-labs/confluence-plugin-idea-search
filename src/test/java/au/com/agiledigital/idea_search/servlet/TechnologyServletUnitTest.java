@@ -39,6 +39,7 @@ public class TechnologyServletUnitTest {
 
   /**
    * Should write an empty list in json in response, based on get technology mocks.
+   *
    * @throws IOException exception with input or writing outputs in servlet getTechList
    */
   @Test
@@ -61,6 +62,7 @@ public class TechnologyServletUnitTest {
 
   /**
    * Should write a single tech in response.
+   *
    * @throws IOException exception with input or writing outputs in servlet getTechList
    */
   @Test
@@ -70,7 +72,6 @@ public class TechnologyServletUnitTest {
     TechnologyList technologyList = new TechnologyList(ideaService);
     String singleTech =
       this.gson.toJson(Arrays.asList(new TechnologyAPI("perl")));
-
 
     Mockito
       .when(fedexIdeaDao.queryTechList())
@@ -84,6 +85,7 @@ public class TechnologyServletUnitTest {
 
   /**
    * Should write multiple techs in response.
+   *
    * @throws IOException exception with input or writing outputs in servlet getTechList
    */
   @Test
@@ -93,9 +95,8 @@ public class TechnologyServletUnitTest {
     TechnologyList technologyList = new TechnologyList(ideaService);
     String multipleTech =
       this.gson.toJson(
-          Arrays.asList(new TechnologyAPI("perl"), new TechnologyAPI("python"))
-        );
-
+        Arrays.asList(new TechnologyAPI("perl"), new TechnologyAPI("python"))
+      );
 
     Mockito
       .when(fedexIdeaDao.queryTechList())

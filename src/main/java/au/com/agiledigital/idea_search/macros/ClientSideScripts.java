@@ -14,25 +14,18 @@ public class ClientSideScripts implements Macro {
 
   private PageBuilderService pageBuilderService;
 
-  public ClientSideScripts(
-    @ComponentImport PageBuilderService pageBuilderService
-  ) {
+  public ClientSideScripts(@ComponentImport PageBuilderService pageBuilderService) {
     this.pageBuilderService = pageBuilderService;
   }
 
   @Override
-  public String execute(
-    Map<String, String> map,
-    String s,
-    ConversionContext conversionContext
-  )
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
     pageBuilderService
       .assembler()
       .resources()
       .requireWebResource(
-        "au.com.agiledigital.idea_search:ideaSearch-macro-clientSideScripts-macro-resource"
-      );
+        "au.com.agiledigital.idea_search:ideaSearch-macro-clientSideScripts-macro-resource");
 
     return "";
   }

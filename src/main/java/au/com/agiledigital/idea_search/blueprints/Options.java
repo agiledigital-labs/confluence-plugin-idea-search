@@ -26,7 +26,7 @@ public class Options {
    * @return Options object with the applied flag
    */
   public Options withUser(boolean user) {
-    isUser = user;
+    this.isUser = user;
 
     return this;
   }
@@ -44,7 +44,7 @@ public class Options {
   }
 
   /**
-   *  Sets the flag for a technology value
+   * Sets the flag for a technology value
    *
    * @param technology Is a technology value
    * @return Options object with the applied flag
@@ -67,7 +67,7 @@ public class Options {
       isStatus +
       ", isTechnology=" +
       isTechnology +
-      '}'
+      "}"
     );
   }
 }

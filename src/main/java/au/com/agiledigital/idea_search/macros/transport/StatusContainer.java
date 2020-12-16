@@ -15,6 +15,7 @@ public class StatusContainer {
 
   /**
    * Get the key of the status
+   *
    * @return status key value
    */
   public String getKey() {
@@ -23,6 +24,7 @@ public class StatusContainer {
 
   /**
    * Get human readable Status string
+   *
    * @return human readable string
    */
   public String getHuman() {

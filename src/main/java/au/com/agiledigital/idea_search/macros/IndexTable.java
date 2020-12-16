@@ -56,6 +56,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
+import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 
 /**
  * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space
@@ -70,17 +71,19 @@ public class IndexTable implements Macro {
   private XhtmlContent xhtmlContent;
   private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
   private BlueprintManager blueprintManager;
+  private final DefaultFedexIdeaService fedexIdeaService;
 
   public IndexTable(
     @ComponentImport SearchManager searchManager,
     @ComponentImport PageBuilderService pageBuilderService,
     @ComponentImport SettingsManager settingsManager,
-    @ComponentImport XhtmlContent xhtmlContent
-  ) {
+    @ComponentImport XhtmlContent xhtmlContent,
+    DefaultFedexIdeaService fedexIdeaService) {
     this.searchManager = searchManager;
     this.pageBuilderService = pageBuilderService;
     this.settingsManager = settingsManager;
     this.xhtmlContent = xhtmlContent;
+    this.fedexIdeaService = fedexIdeaService;
 
     documentBuilderFactory.setNamespaceAware(false);
     documentBuilderFactory.setValidating(false);
@@ -112,34 +115,18 @@ public class IndexTable implements Macro {
    * @return Representation of a macro from Confluence Storage format
    */
   private MacroRepresentation getMacroFromList(
-    NodeList macros,
-    StructuredCategory category,
-    LSSerializer serializer
-  ) {
+    NodeList macros, StructuredCategory category, LSSerializer serializer) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
 
-      String nodeName = node
-        .getAttributes()
-        .getNamedItem("ac:name")
-        .getNodeValue();
-      if (
-        nodeName.equals("Idea Structured Field") ||
-        nodeName.equals("Blueprint Id Storage")
-      ) {
+      String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
+      if (nodeName.equals("Idea Structured Field") || nodeName.equals("Blueprint Id Storage")) {
         Node child = node.getFirstChild();
         do {
-          if (
-            child instanceof Element &&
-            child.getNodeName().equals("ac:parameter") &&
-            child.getTextContent().equals(category.getKey())
-          ) {
-            return new MacroRepresentation(
-              node,
-              category,
-              serializer,
-              xhtmlContent
-            );
+          if (child instanceof Element
+            && child.getNodeName().equals("ac:parameter")
+            && child.getTextContent().equals(category.getKey())) {
+            return new MacroRepresentation(node, category, serializer, xhtmlContent);
           }
         } while ((child = child.getNextSibling()) != null);
       }
@@ -155,10 +142,7 @@ public class IndexTable implements Macro {
    * @param spaceKey location of page search in confluence
    * @return Confluence searchable query
    */
-  private BooleanQuery createSearchableQuery(
-    Set<String> labels,
-    String spaceKey
-  ) {
+  private BooleanQuery createSearchableQuery(Set<String> labels, String spaceKey) {
     BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
     booleanQueryFactory.addMust(getLabelQuery(labels));
     booleanQueryFactory.addMust(new ContentTypeQuery(ContentTypeEnum.PAGE));
@@ -168,9 +152,7 @@ public class IndexTable implements Macro {
   }
 
   private Set<String> getMacroLabels(Map<String, String> parameters) {
-    Set<String> labels = new HashSet<String>(
-      splitTrimToSet(parameters.get("labels"), ",")
-    );
+    Set<String> labels = new HashSet<String>(splitTrimToSet(parameters.get("labels"), ","));
     labels.add("fedex-ideas");
 
     return labels;
@@ -184,54 +166,40 @@ public class IndexTable implements Macro {
    */
   private BooleanQuery getLabelQuery(Set<String> labels) {
     BooleanQueryFactory booleanQueryFactory = new BooleanQueryFactory();
-    labels.forEach(
-      label -> booleanQueryFactory.addShould(new LabelQuery(label))
-    );
+    labels.forEach(label -> booleanQueryFactory.addShould(new LabelQuery(label)));
 
     return booleanQueryFactory.toBooleanQuery();
   }
 
   @Override
-  public String execute(
-    Map<String, String> map,
-    String s,
-    ConversionContext conversionContext
-  )
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
     pageBuilderService
       .assembler()
       .resources()
       .requireWebResource(
-        "au.com.agiledigital.idea_search:ideaSearch-macro-indexTable-macro-resource"
-      );
+        "au.com.agiledigital.idea_search:ideaSearch-macro-indexTable-macro-resource");
 
     Map<String, Object> context = new HashMap<>();
 
-    SearchFilter searchFilter = ContentPermissionsSearchFilter
-      .getInstance()
-      .and(SpacePermissionsSearchFilter.getInstance());
-    ContentSearch search = new ContentSearch(
-      createSearchableQuery(
-        getMacroLabels(map),
-        conversionContext.getSpaceKey()
-      ),
-      ModifiedSort.DESCENDING,
-      searchFilter,
-      new SubsetResultFilter(20)
-    );
+    SearchFilter searchFilter =
+      ContentPermissionsSearchFilter.getInstance()
+        .and(SpacePermissionsSearchFilter.getInstance());
+    ContentSearch search =
+      new ContentSearch(
+        createSearchableQuery(getMacroLabels(map), conversionContext.getSpaceKey()),
+        ModifiedSort.DESCENDING,
+        searchFilter,
+        new SubsetResultFilter(20));
 
     List<IdeaContainer> rows = Collections.emptyList();
 
     try {
       List<Searchable> maybePages =
-        this.searchManager.searchEntities(
-            search,
-            EntityVersionPolicy.LATEST_VERSION
-          );
+        this.searchManager.searchEntities(search, EntityVersionPolicy.LATEST_VERSION);
 
       rows =
-        maybePages
-          .stream()
+        maybePages.stream()
           .filter(entity -> entity instanceof AbstractPage)
           .map(
             entity -> {
@@ -240,50 +208,37 @@ public class IndexTable implements Macro {
 
               try {
                 Document bodyParsed = parseXML(wrapBody(content.getBody()));
-                NodeList macros = bodyParsed.getElementsByTagName(
-                  "ac:structured-macro"
-                );
+                NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
                 DOMImplementationLS ls = (DOMImplementationLS) bodyParsed.getImplementation();
                 LSSerializer serializer = ls.createLSSerializer();
 
                 IdeaContainer row = new IdeaContainer();
                 row.title = page.getTitle();
                 row.url =
-                  settingsManager.getGlobalSettings().getBaseUrl() +
-                  page.getUrlPath();
+                  settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath();
 
-                Arrays
-                  .asList(StructuredCategory.values())
+                Arrays.asList(StructuredCategory.values())
                   .forEach(
                     category ->
                       row.setMacroRepresentations(
-                        category,
-                        getMacroFromList(macros, category, serializer)
-                      )
-                  );
+                        category, getMacroFromList(macros, category, serializer)));
 
                 return row;
-              } catch (
-                ParserConfigurationException | IOException | SAXException e
-              ) {
+              } catch (ParserConfigurationException | IOException | SAXException e) {
                 e.printStackTrace();
               }
 
               return null;
-            }
-          )
+            })
           .filter(Objects::nonNull)
           .collect(Collectors.toList());
     } catch (InvalidSearchException e) {
       e.printStackTrace();
     }
 
-    Stream<IdeaContainer> filteredRows = rows
-      .stream()
-      .filter(
-        container ->
-          container.blueprintId != null && !container.blueprintId.isEmpty()
-      );
+    Stream<IdeaContainer> filteredRows =
+      rows.stream()
+        .filter(container -> container.blueprintId != null && !container.blueprintId.isEmpty());
 
     context.put("rows", rows);
     context.put(
@@ -292,22 +247,17 @@ public class IndexTable implements Macro {
         conversionContext.getSpaceKey(),
         settingsManager.getGlobalSettings().getBaseUrl(),
         filteredRows.count() == 0
-          ? ""
-          : Collections
-            .max(
-              filteredRows
-                .collect(
-                  Collectors.groupingBy(
-                    ideaContainer -> ideaContainer.blueprintId,
-                    Collectors.counting()
-                  )
-                )
-                .entrySet(),
-              Comparator.comparing(Entry::getValue)
-            )
-            .getKey()
-      )
-    );
+          // Set the blueprint id to be that of fedex idea blueprint
+          ? this.fedexIdeaService.getBlueprintId()
+          : Collections.max(
+            filteredRows
+              .collect(
+                Collectors.groupingBy(
+                  ideaContainer -> ideaContainer.blueprintId,
+                  Collectors.counting()))
+              .entrySet(),
+            Comparator.comparing(Entry::getValue))
+            .getKey()));
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

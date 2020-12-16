@@ -9,11 +9,7 @@ public class BlueprintContainer {
   private final String baseUrl;
   private final String blueprintId;
 
-  public BlueprintContainer(
-    String spaceKey,
-    String baseUrl,
-    String blueprintId
-  ) {
+  public BlueprintContainer(String spaceKey, String baseUrl, String blueprintId) {
     this.spaceKey = spaceKey;
     this.baseUrl = baseUrl;
     this.blueprintId = blueprintId;

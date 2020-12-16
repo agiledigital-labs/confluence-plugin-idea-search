@@ -375,6 +375,7 @@ $(document).ready(() => {
   $(".list-option").on("click", ({ target }) => {
     const listId = $(target).parent().attr("id");
     addTagToMultiSelect(listToSearch[listId], listId, target);
+    $(`#${listToSearch[listId]}`).val("");
   });
 
   $(".multiselect-container").on("click", "button.close", ({ target }) => {

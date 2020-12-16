@@ -1,6 +1,7 @@
 package au.com.agiledigital.idea_search.helpers;
 
 import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
+import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
 
 import au.com.agiledigital.idea_search.Status;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
@@ -15,8 +16,8 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
 /**
- * Velocity template renderer helper for Structured Fields.
- * Transforms the body into a usable format for the template based off the category
+ * Velocity template renderer helper for Structured Fields. Transforms the body into a usable format
+ * for the template based off the category
  */
 public class StructureFieldRenderHelper {
 
@@ -25,18 +26,15 @@ public class StructureFieldRenderHelper {
   }
 
   public static String render(
-    StructuredCategory category,
-    String body,
-    boolean heading,
-    XhtmlContent xhtmlContent
-  ) {
+    StructuredCategory category, String body, boolean heading, XhtmlContent xhtmlContent) {
     Map<String, Object> context = new HashMap<>();
 
     context.put("heading", heading);
 
     switch (category) {
       case TECHNOLOGIES:
-        context.put("payload", splitTrimToSet(body, ","));
+        /** Splits the comma seperated string into a list and replaces all html tags */
+        context.put("payload", splitTrimToSet(body, ",").stream().map(tech -> removeTags(tech)));
         break;
       case DESCRIPTION:
       case OWNER:
@@ -47,9 +45,7 @@ public class StructureFieldRenderHelper {
           try {
             bodyConverted =
               xhtmlContent.convertStorageToView(
-                body,
-                new DefaultConversionContext(new RenderContext())
-              );
+                body, new DefaultConversionContext(new RenderContext()));
           } catch (XMLStreamException e) {
             e.printStackTrace();
           } catch (XhtmlException e) {
@@ -60,16 +56,10 @@ public class StructureFieldRenderHelper {
         context.put("payload", bodyConverted);
         break;
       case STATUS:
-        context.put(
-          "payload",
-          new StatusContainer(Status.getStatusFromReference(body))
-        );
+        context.put("payload", new StatusContainer(Status.getStatusFromReference(body)));
         break;
     }
 
-    return VelocityUtils.getRenderedTemplate(
-      "vm/" + category.getTemplate(),
-      context
-    );
+    return VelocityUtils.getRenderedTemplate("vm/" + category.getTemplate(), context);
   }
 }

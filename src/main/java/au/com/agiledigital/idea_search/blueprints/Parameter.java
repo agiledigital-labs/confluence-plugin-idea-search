@@ -17,8 +17,7 @@ public enum Parameter {
   }
 
   public static Parameter getParameterFromReference(String referenceName) {
-    return Arrays
-      .stream(Parameter.values())
+    return Arrays.stream(Parameter.values())
       .filter(status -> status.reference.equals(referenceName))
       .findFirst()
       .orElse(null);

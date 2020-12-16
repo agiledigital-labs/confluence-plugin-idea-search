@@ -11,11 +11,7 @@ import java.util.Map;
 public class TemplateId implements Macro {
 
   @Override
-  public String execute(
-    Map<String, String> map,
-    String s,
-    ConversionContext conversionContext
-  )
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
     return "";
   }

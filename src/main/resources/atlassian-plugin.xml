@@ -165,6 +165,7 @@
     >The module configuring the active objects data storage service for this plugin</description>
         <entity>au.com.agiledigital.idea_search.dao.AoFedexIdea</entity>
         <entity>au.com.agiledigital.idea_search.dao.AoFedexTechnology</entity>
+        <entity>au.com.agiledigital.idea_search.dao.AoIdeaBlueprint</entity>
     </ao>
     <component-import
     key="eventPublisher"

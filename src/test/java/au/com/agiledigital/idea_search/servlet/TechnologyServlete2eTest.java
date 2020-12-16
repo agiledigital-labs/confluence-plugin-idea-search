@@ -79,12 +79,12 @@ public class TechnologyServlete2eTest {
   public void sortedTech() throws IOException {
     String sortedTech =
       this.gson.toJson(
-          Arrays.asList(
-            new TechnologyAPI("angular"),
-            new TechnologyAPI("perl"),
-            new TechnologyAPI("python")
-          )
-        );
+        Arrays.asList(
+          new TechnologyAPI("angular"),
+          new TechnologyAPI("perl"),
+          new TechnologyAPI("python")
+        )
+      );
     ao.migrate(AoFedexTechnology.class);
 
     // Given the servlet writes response on supplied response object.
@@ -105,27 +105,23 @@ public class TechnologyServlete2eTest {
   public void distinctTech() throws IOException {
     String distinctTech =
       this.gson.toJson(
-          Arrays.asList(
-            new TechnologyAPI("angular"),
-            new TechnologyAPI("perl"),
-            new TechnologyAPI("python")
-          )
-        );
+        Arrays.asList(
+          new TechnologyAPI("angular"),
+          new TechnologyAPI("perl"),
+          new TechnologyAPI("python")
+        )
+      );
     ao.migrate(AoFedexTechnology.class);
 
-    // Given there are duplicate technologies in the database and servlet writes response on supplied response object.
-    final AoFedexTechnology aoFedexTechnologyPerl = ao.create(
-      AoFedexTechnology.class
-    );
+    // Given there are duplicate technologies in the database and servlet writes response on
+    // supplied response object.
+    final AoFedexTechnology aoFedexTechnologyPerl = ao.create(AoFedexTechnology.class);
     aoFedexTechnologyPerl.setTechnology("perl");
     aoFedexTechnologyPerl.save();
 
-    final AoFedexTechnology aoFedexTechnologyAngular = ao.create(
-      AoFedexTechnology.class
-    );
+    final AoFedexTechnology aoFedexTechnologyAngular = ao.create(AoFedexTechnology.class);
     aoFedexTechnologyAngular.setTechnology("angular");
     aoFedexTechnologyAngular.save();
-
 
     // When we call the servlet function to retrieve a list of technologies.
     String response = technologyList.getTechList("", mockResponse);
@@ -135,31 +131,24 @@ public class TechnologyServlete2eTest {
   }
 
   /**
-   * Class to seed database before test.
-   * Adds python, perl and angular in respective order to the test database.
+   * Class to seed database before test. Adds python, perl and angular in respective order to the
+   * test database.
    */
-  public static class TechnologyServletFuncTestDatabaseUpdater
-    implements DatabaseUpdater {
+  public static class TechnologyServletFuncTestDatabaseUpdater implements DatabaseUpdater {
 
     @Override
     public void update(EntityManager em) throws Exception {
       em.migrate(AoFedexTechnology.class);
 
-      AoFedexTechnology seedAoFedexTechnologyPython = em.create(
-        AoFedexTechnology.class
-      );
+      AoFedexTechnology seedAoFedexTechnologyPython = em.create(AoFedexTechnology.class);
       seedAoFedexTechnologyPython.setTechnology("python");
       seedAoFedexTechnologyPython.save();
 
-      AoFedexTechnology seedAoFedexTechnologyPerl = em.create(
-        AoFedexTechnology.class
-      );
+      AoFedexTechnology seedAoFedexTechnologyPerl = em.create(AoFedexTechnology.class);
       seedAoFedexTechnologyPerl.setTechnology("perl");
       seedAoFedexTechnologyPerl.save();
 
-      AoFedexTechnology seedAoFedexTechnologyAngular = em.create(
-        AoFedexTechnology.class
-      );
+      AoFedexTechnology seedAoFedexTechnologyAngular = em.create(AoFedexTechnology.class);
       seedAoFedexTechnologyAngular.setTechnology("angular");
       seedAoFedexTechnologyAngular.save();
     }

@@ -42,10 +42,7 @@ public class IdeaContainer {
     return owner;
   }
 
-  public void setMacroRepresentations(
-    StructuredCategory category,
-    MacroRepresentation macro
-  ) {
+  public void setMacroRepresentations(StructuredCategory category, MacroRepresentation macro) {
     switch (category) {
       case DESCRIPTION:
         description = macro;
@@ -63,13 +60,11 @@ public class IdeaContainer {
         if (macro != null) {
           Node child = macro.getNode().getFirstChild();
           do {
-            if (
-              child
-                .getAttributes()
-                .getNamedItem("ac:name")
-                .getNodeValue()
-                .equals("blueprintId")
-            ) {
+            if (child
+              .getAttributes()
+              .getNamedItem("ac:name")
+              .getNodeValue()
+              .equals("blueprintId")) {
               blueprintId = child.getTextContent();
               break;
             }

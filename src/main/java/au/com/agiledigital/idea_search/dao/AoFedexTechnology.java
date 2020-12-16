@@ -7,6 +7,7 @@ import net.java.ao.schema.*;
  * Technology table definition, related to AoFedexIdea
  */
 public interface AoFedexTechnology extends RawEntity<Long> {
+
   @AutoIncrement
   @NotNull
   @PrimaryKey
