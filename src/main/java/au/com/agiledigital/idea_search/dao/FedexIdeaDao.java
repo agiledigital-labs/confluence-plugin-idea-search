@@ -263,7 +263,7 @@ public class FedexIdeaDao {
   private FedexIdea asFedexIdea(AoFedexIdea aoFedexIdea) {
     return aoFedexIdea == null
         ? null
-        : (new au.com.agiledigital.idea_search.model.FedexIdea.Builder())
+        : (new FedexIdea.Builder())
             .withGlobalId(aoFedexIdea.getGlobalId())
             .withOwner(aoFedexIdea.getOwner())
             .withContentId(aoFedexIdea.getContentId())
@@ -282,7 +282,7 @@ public class FedexIdeaDao {
   private FedexTechnology asFedexTechnology(AoFedexTechnology aoFedexTechnology) {
     return aoFedexTechnology == null
         ? null
-        : new au.com.agiledigital.idea_search.model.FedexTechnology.Builder()
+        : new FedexTechnology.Builder()
             .withGlobalId(aoFedexTechnology.getGlobalId())
             .withTechnology(aoFedexTechnology.getTechnology())
             .build();

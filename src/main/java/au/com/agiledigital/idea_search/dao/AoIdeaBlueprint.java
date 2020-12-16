@@ -13,7 +13,7 @@ public interface AoIdeaBlueprint extends RawEntity<Long> {
   @PrimaryKey
   long getGlobalId();
 
-  @StringLength(-1)
+  @StringLength(36)
   String getBlueprintId();
 
   void setBlueprintId(String blueprintId);

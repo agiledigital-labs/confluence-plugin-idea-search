@@ -64,9 +64,9 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
   private final DocumentBuilderFactory documentBuilderFactory =
       DocumentBuilderFactory.newInstance();
-  private static final ModuleCompleteKey MY_BLUEPRINT_KEY =
+  private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY =
       new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
-  private static final String MY_BLUEPRINT_LABEL = "fedex-ideas";
+  private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
   private ContentBlueprint contentBlueprint;
 
   /**
@@ -87,7 +87,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     this.xhtmlContent = xhtmlContent;
     this.indexPageManager = indexPageManager;
     this.contentBlueprint = new ContentBlueprint();
-    this.contentBlueprint.setModuleCompleteKey(MY_BLUEPRINT_KEY.toString());
+    this.contentBlueprint.setModuleCompleteKey(FEDEX_IDEA_BLUEPRINT_KEY.toString());
   }
 
   @Override
@@ -158,7 +158,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
 
-    String blueprintKey = MY_BLUEPRINT_KEY.getCompleteKey();
+    String blueprintKey = FEDEX_IDEA_BLUEPRINT_KEY.getCompleteKey();
 
     // Gets the blueprintId and sets it as the current one in ao database
     String blueprintId = String.valueOf(event.getBlueprint().getId());
@@ -215,7 +215,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   private void createOrUpdateTechnology(ContentEntityObject content, Page page) {
     if (
-      content.getLabels().toString().contains(MY_BLUEPRINT_LABEL)
+      content.getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
     ) {
       try {
         makeChildOfIndex(page);
