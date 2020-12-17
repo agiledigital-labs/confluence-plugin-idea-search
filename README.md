@@ -38,8 +38,10 @@ The following tools are required/recommended to develop with this repository
 
 ### Integration test with test confluence instance
 
-Integration testing can be generated, modified and stored in a test instance. This makes creating integration
-text fixtures much quicker and easier and is fully integrated with Atlassian sdk.
+Integration testing data can be generated, modified and stored in a test instance. This makes creating integration test fixtures much quicker and easier and is fully integrated with Atlassian sdk.
+
+Run integration tests by suppling test data path in the following command. Currently the data is stored in `src/test/resources`  
+`atlas-integration-test -Dtest.integration.path=pathToTestData`
 
 To utilise current test fixture and modify test data:
 
