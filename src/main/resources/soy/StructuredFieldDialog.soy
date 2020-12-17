@@ -1,13 +1,6 @@
-#* @vtlvariable name="payload" type="java.lang.reflect.Array" *#
-#if($heading)
-<div>
-  <h2>Technologies</h2>
-  <button class="edit-structured-field" id="edit-technologies">Edit</button>
-</div>
-#end
-#foreach ($technology in $payload)
-<span class="technology">$technology</span>
-#end
+{namespace Confluence.Templates.ideaSearch.macro.structuredField}
+
+{template .dialog}
 <section id="technologies-dialog" class="aui-dialog2 aui-dialog2-medium aui-layer" role="dialog"
          aria-hidden="true">
   <header class="aui-dialog2-header">
@@ -17,13 +10,7 @@
     </a>
   </header>
   <div class="aui-dialog2-content">
-    <div class="field-group d-flex">
-      <label for="technologies">Technologies</label>
-      <input multiple=true
-             name="technologies"
-             id="technologies"
-      />
-    </div>
+    <p>Content for the modal dialog.</p>
   </div>
   <footer class="aui-dialog2-footer">
     <div class="aui-dialog2-footer-actions">
@@ -31,3 +18,5 @@
     </div>
   </footer>
 </section>
+
+{/template}

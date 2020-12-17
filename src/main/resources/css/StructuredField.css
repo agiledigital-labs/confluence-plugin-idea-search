@@ -39,3 +39,15 @@
   color: #ffffff;
   background-color: #6c757d;
 }
+
+.some-color {
+  background-color: #007bff;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.select2-container {
+  flex-grow: 1;
+}
