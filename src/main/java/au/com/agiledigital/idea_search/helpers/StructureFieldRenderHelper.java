@@ -33,7 +33,7 @@ public class StructureFieldRenderHelper {
 
     switch (category) {
       case TECHNOLOGIES:
-        /** Splits the comma seperated string into a list and replaces all html tags */
+        /** Splits the comma separated string into a list and replaces all html tags */
         context.put("payload", splitTrimToSet(body, ",").stream().map(tech -> removeTags(tech)));
         break;
       case DESCRIPTION:
