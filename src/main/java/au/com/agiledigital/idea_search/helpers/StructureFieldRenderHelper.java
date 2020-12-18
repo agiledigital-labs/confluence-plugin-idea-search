@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class StructureFieldRenderHelper {
 
-  public static String render(StructuredCategory category, String body ) {
+  public static String render(StructuredCategory category, String body) {
     return render(category, body, true, null);
   }
 

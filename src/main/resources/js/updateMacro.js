@@ -213,7 +213,9 @@ const switchByCategory = (e, macroNode) => {
           '" href="/confluence/display/~' +
           text +
           '" data-linked-resource-id="65588" data-linked-resource-version="1" data-linked-resource-type="userinfo" ' +
-          'data-base-url="http://localhost:1990/confluence" title="" data-user-hover-bound="true">' +
+          'data-base-url="' +
+          AJS.Confluence.getBaseUrl() +
+          ' title="" data-user-hover-bound="true">' +
           text +
           "</a>"
       )
