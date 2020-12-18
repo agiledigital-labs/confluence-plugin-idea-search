@@ -27,9 +27,6 @@ public class StructuredField implements Macro {
     this.xhtmlContent = xhtmlContent;
   }
 
-
-
-
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
@@ -41,9 +38,9 @@ public class StructuredField implements Macro {
     StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
 
     /** Replaces all html tags */
-//    String stripped = removeTags(s);
+    String stripped = removeTags(s);
 
-    return render(category, s);
+    return render(category, stripped);
   }
 
   @Override

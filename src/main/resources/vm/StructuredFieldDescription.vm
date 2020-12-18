@@ -1,4 +1,4 @@
-#* @vtlvariable name="payidea-structured-fieldload" type="java.lang.String" *#
+#* @vtlvariable name="payload" type="java.lang.String" *#
 #set($payloadWithHtml = $payload)
 #if($heading)
 <h2>Description</h2>

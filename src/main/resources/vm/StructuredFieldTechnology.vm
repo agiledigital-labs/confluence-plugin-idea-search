@@ -1,33 +1,7 @@
 #* @vtlvariable name="payload" type="java.lang.reflect.Array" *#
 #if($heading)
-<div>
-  <h2>Technologies</h2>
-  <button class="edit-structured-field" id="edit-technologies">Edit</button>
-</div>
+<h2>Technologies</h2>
 #end
 #foreach ($technology in $payload)
 <span class="technology">$technology</span>
 #end
-<section id="technologies-dialog" class="aui-dialog2 aui-dialog2-medium aui-layer" role="dialog"
-         aria-hidden="true">
-  <header class="aui-dialog2-header">
-    <h2 class="aui-dialog2-header-main">Edit Technologies</h2>
-    <a class="aui-dialog2-header-close">
-      <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
-    </a>
-  </header>
-  <div class="aui-dialog2-content">
-    <div class="field-group d-flex">
-      <label for="technologies">Technologies</label>
-      <input multiple=true
-             name="technologies"
-             id="technologies"
-      />
-    </div>
-  </div>
-  <footer class="aui-dialog2-footer">
-    <div class="aui-dialog2-footer-actions">
-      <button class="aui-button aui-button-primary">Save</button>
-    </div>
-  </footer>
-</section>
