@@ -231,7 +231,7 @@
                         ${confluence.data.version}
                     </productDataVersion>
                     <productDataPath>
-                        ${basedir}/src/test/resources/generated-test-resources.zip
+                        ${test.integration.path}
                     </productDataPath>
                     <jvmArgs>-Xms2g -Xmx6g -XX:MaxPermSize=6g -XX:-UseGCOverheadLimit -server</jvmArgs>
                     <enableQuickReload>true</enableQuickReload>

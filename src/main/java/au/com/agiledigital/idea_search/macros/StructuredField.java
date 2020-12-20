@@ -35,12 +35,8 @@ public class StructuredField implements Macro {
       .resources()
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-structuredField-macro-resource");
-    StructuredCategory category = StructuredCategory.fromKey(map.get("category"));
 
-    /** Replaces all html tags */
-    String stripped = removeTags(s);
-
-    return render(category, stripped);
+    return render(StructuredCategory.fromKey(map.get("category")), s);
   }
 
   @Override
