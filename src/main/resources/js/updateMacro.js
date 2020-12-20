@@ -72,26 +72,17 @@ const techInput = `
 const userInput = `
 <section id="edit-page-dialog-user" class="aui-dialog2 aui-dialog2-small aui-layer" role="dialog" aria-hidden="true">
   <header class="aui-dialog2-header">
-    <h2 class="aui-dialog2-header-main">Update owner or team for this idea</h2>
+    <h2 class="aui-dialog2-header-main">Sorry, this is not the best time.</h2>
     <a class="aui-dialog2-header-close">
       <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
     </a>
   </header>
   <div class="aui-dialog2-content">
-    <form action="#" class="aui">
-      <fieldset>
-        <div class="tags-input edit-page-dialog-input" id="status-multiselect-container">
-          <label for="idea-owner">Users</label>
-          <input id="status" class="autocomplete-multiuser" type="text" role="textbox" aria-expanded="false" 
-            aria-controls="autocomplete-results" size="5"
-            name="Idea-Owner" data-none-message="No users found"  />
-        </div>
-      </fieldset>
-    </form>
+   You will have a better exp if you edit the user list on the page, we look forward to adding more functionality to this button in the future.
   </div>
   <footer class="aui-dialog2-footer">
     <div class="aui-dialog2-footer-actions">
-      <button id="dialog-submit-button" class="aui-button aui-button-primary">Update</button>
+      <button id="dialog-submit-button" class="aui-button aui-button-primary">Ok</button>
     </div>
   </footer>
 </section>`;
@@ -103,18 +94,14 @@ const userInput = `
  * @param macroNode to be updated
  * @param macroParams existing on the macro that is being updated
  */
-const updateUserList = (getNewUserArray, macroNode, macroParams) => {
+const updateUserList = () => {
   AJS.$("body").append(userInput);
-
-  AJS.Confluence.Binder.autocompleteMultiUser();
 
   AJS.dialog2("#edit-page-dialog-user").show();
 
   AJS.$("#dialog-submit-button").click((e) => {
-    const newUserArray = getNewUserArray();
     e.preventDefault();
     AJS.dialog2("#edit-page-dialog-user").hide();
-    updateMacro(macroNode, macroParams, newUserArray);
     AJS.$("#edit-page-dialog-user").remove();
   });
 };
@@ -160,20 +147,9 @@ const addTechnologies = (
     const oldTechArray = originalBody.split(",");
 
     // Construct the new technology list
-    const newTechText = [...newTechnologies(), ...oldTechArray]
-      //Remove duplicates
-      .reduce((pre, cur) => {
-        if (
-          pre.includes(cur) ||
-          cur.replaceAll(" ", "") ===
-            " Add your technologies ".replaceAll(" ", "")
-        ) {
-          return pre;
-        } else {
-          return [...pre, cur];
-        }
-      }, [])
-      .join(",");
+    const newTechText = Array.from(
+      new Set([...newTechnologies(), ...oldTechArray])
+    ).join(",");
 
     e.preventDefault();
 
@@ -199,35 +175,13 @@ const switchByCategory = (e, macroNode) => {
       .toArray()
       .map((item) => item.innerText);
 
-  /**
-   * Create the link to a user in confluence
-   *
-   * @returns confluence user link
-   */
-  const getNewUserArray = () =>
-    getStringsFromInput()
-      .map(
-        (text) =>
-          '<a class="confluence-userlink user-mention current-user-mention userlink-0" data-username="' +
-          text +
-          '" href="/confluence/display/~' +
-          text +
-          '" data-linked-resource-id="65588" data-linked-resource-version="1" data-linked-resource-type="userinfo" ' +
-          'data-base-url="' +
-          AJS.Confluence.getBaseUrl() +
-          ' title="" data-user-hover-bound="true">' +
-          text +
-          "</a>"
-      )
-      .join(", ");
-
   // The category assigned to the macro
   const categoryArray = macroNode.dataset.macroParameters.split("=");
   // Put the macro params into the correct format
   const macroParams = { [categoryArray[0]]: categoryArray[1] };
 
   const handleFormSubmit = (category, newBodyText) => {
-    const formID = "#edit-page-dialog-" + category;
+    const formID = `#edit-page-dialog-${category}`;
 
     AJS.$("#dialog-submit-button").click(function (e) {
       e.preventDefault();
@@ -274,10 +228,10 @@ const switchByCategory = (e, macroNode) => {
       updateStatus(handleFormSubmit);
       return;
     case "owner":
-      updateUserList(getNewUserArray, macroNode, macroParams);
+      updateUserList();
       return;
     case "team":
-      updateUserList(getNewUserArray, macroNode, macroParams);
+      updateUserList();
       return;
     case "technologies":
       addTechnologies(
