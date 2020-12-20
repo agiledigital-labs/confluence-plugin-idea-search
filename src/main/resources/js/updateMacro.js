@@ -72,13 +72,13 @@ const techInput = `
 const userInput = `
 <section id="edit-page-dialog-user" class="aui-dialog2 aui-dialog2-small aui-layer" role="dialog" aria-hidden="true">
   <header class="aui-dialog2-header">
-    <h2 class="aui-dialog2-header-main">Sorry, this is not the best time.</h2>
+    <h2 class="aui-dialog2-header-main">Sorry, this feature is not available at this time.</h2>
     <a class="aui-dialog2-header-close">
       <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
     </a>
   </header>
   <div class="aui-dialog2-content">
-   You will have a better exp if you edit the user list on the page, we look forward to adding more functionality to this button in the future.
+   You will have a better experience if you edit the user list on the page, we look forward to adding more functionality to this button in the future.
   </div>
   <footer class="aui-dialog2-footer">
     <div class="aui-dialog2-footer-actions">
