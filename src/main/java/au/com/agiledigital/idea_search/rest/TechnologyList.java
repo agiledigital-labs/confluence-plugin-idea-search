@@ -9,6 +9,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * External rest API servlet
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 @Path("/")
 @Component
 public class TechnologyList {
+
+  private static final Logger log = LoggerFactory.getLogger(TechnologyList.class);
 
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
@@ -62,7 +66,12 @@ public class TechnologyList {
       ? this.fedexIdeaService.queryTechList()
       : this.fedexIdeaService.queryTechList(normalizeSearch);
 
-    if (allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
+    log.warn("\n\n\n***All techs are here***\n\n\n");
+    log.warn("The techs are: "+allTechnologies);
+    log.warn("Are you empty? "+allTechnologies.isEmpty());
+    log.warn("Are you null? "+ String.valueOf(allTechnologies == null));
+
+    if (allTechnologies !=null && allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
       TechnologyAPI newTech = new TechnologyAPI(
         normalizeSearch.replace(",", "")
       );
