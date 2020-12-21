@@ -14,8 +14,8 @@
         <url>https://agiledigital.com.au</url>
     </organization>
 
-    <name>Idea Collector</name>
-    <description>A centralised viewing and managing tool for project ideas. This tool makes it easy to see all ideas with description, statuses and who's working on them.</description>
+    <name>Idea Search</name>
+    <description />
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
