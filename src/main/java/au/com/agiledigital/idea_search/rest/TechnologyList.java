@@ -44,13 +44,12 @@ public class TechnologyList {
   }
 
   /**
-   *
    * @param searchString to find technologies that begin with this string
-   * @param response Servlet contest
+   * @param response     Servlet contest
    * @return String in the form of a json list of TechnologyAPI objects
    */
   @Path("/technology")
-  @Produces({ "application/json" })
+  @Produces({"application/json"})
   @GET
   public String getTechList(
     @QueryParam("q") String searchString,
@@ -61,17 +60,13 @@ public class TechnologyList {
       : null;
     this.applyNoCacheHeaders(response);
 
-    List<TechnologyAPI> allTechnologies = normalizeSearch == null ||
-      normalizeSearch.length() == 0
-      ? this.fedexIdeaService.queryTechList()
-      : this.fedexIdeaService.queryTechList(normalizeSearch);
+    boolean searchKeyHasValue = normalizeSearch != null && !normalizeSearch.trim().isEmpty();
 
-    log.warn("\n\n\n***All techs are here***\n\n\n");
-    log.warn("The techs are: "+allTechnologies);
-    log.warn("Are you empty? "+allTechnologies.isEmpty());
-    log.warn("Are you null? "+ String.valueOf(allTechnologies == null));
+    List<TechnologyAPI> allTechnologies = searchKeyHasValue
+      ? this.fedexIdeaService.queryTechList(normalizeSearch)
+      : this.fedexIdeaService.queryTechList();
 
-    if (allTechnologies !=null && allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
+    if (searchKeyHasValue && allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
       TechnologyAPI newTech = new TechnologyAPI(
         normalizeSearch.replace(",", "")
       );
@@ -85,6 +80,7 @@ public class TechnologyList {
 
   /**
    * Added to prevent the search caching the responses
+   *
    * @param response
    */
   private void applyNoCacheHeaders(HttpServletResponse response) {

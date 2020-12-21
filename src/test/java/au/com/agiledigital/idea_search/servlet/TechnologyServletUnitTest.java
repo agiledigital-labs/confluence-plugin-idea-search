@@ -32,8 +32,8 @@ public class TechnologyServletUnitTest {
 
   /*
    * Isolating test cases as test data specific method call mocks are required.
-   * Due to the nature of invokation of getWriter method with HttpServletResponse object,
-   * passing in a mocked printWriter causes nullPointerError during invokation.
+   * Due to the nature of invocation of getWriter method with HttpServletResponse object,
+   * passing in a mocked printWriter causes nullPointerError during invocation.
    * A new printWriter is constructed and passed on as the mocked return of getWriter.
    */
 
@@ -47,13 +47,13 @@ public class TechnologyServletUnitTest {
     FedexIdeaDao fedexIdeaDao = Mockito.mock(FedexIdeaDao.class);
     FedexIdeaService ideaService = new DefaultFedexIdeaService(fedexIdeaDao);
     TechnologyList technologyList = new TechnologyList(ideaService);
-    String noTech = this.gson.toJson(Arrays.asList(new TechnologyAPI("t")));
+    String noTech = "{[]}";
 
     Mockito
       .when(fedexIdeaDao.queryTechList())
       .thenReturn(Collections.emptyList());
 
-    String response = technologyList.getTechList("t,", mockResponse);
+    String response = technologyList.getTechList("", mockResponse);
 
     // Then we should get an empty list.
     assertEquals(noTech, response);
