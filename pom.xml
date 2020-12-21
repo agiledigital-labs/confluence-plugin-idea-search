@@ -4,7 +4,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.com.agiledigital</groupId>
     <artifactId>idea_search</artifactId>
@@ -15,12 +14,11 @@
         <url>https://agiledigital.com.au</url>
     </organization>
 
-    <name>Idea Search</name>
-    <description />
+    <name>Idea Collector</name>
+    <description>A centralised viewing and managing tool for project ideas. This tool makes it easy to see all ideas with description, statuses and who's working on them.</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
