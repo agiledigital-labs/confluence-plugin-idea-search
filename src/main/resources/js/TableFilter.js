@@ -242,6 +242,7 @@ const calculateHiddenRowForColumn = (list) => {
         .each((index, option) => {
           rowList.push($(option).text());
         });
+
       hasOptions = optionsList.map((option) => rowList.includes(option));
     } else {
       hasOptions = [true];

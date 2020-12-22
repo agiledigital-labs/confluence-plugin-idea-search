@@ -15,7 +15,7 @@
   </plugin-info>
 
   <!-- Property Naming from ideaSearch.properties -->
-  <resource location="ideaSearch" name="i18n" type="i18n" />
+  <resource location="ideaSearch" name="i18n" type="i18n"/>
 
   <!-- Page Blueprint -->
   <blueprint
@@ -59,9 +59,9 @@
     key="ideaSearch-page-blueprint-entry"
     section="system.create.dialog/content"
   >
-    <description key="ideaSearch.blueprint.page.create-link.description" />
-    <param name="blueprintKey" value="idea-blueprint" />
-    <resource location="/images/myblueprint.png" name="icon" type="download" />
+    <description key="ideaSearch.blueprint.page.create-link.description"/>
+    <param name="blueprintKey" value="idea-blueprint"/>
+    <resource location="/images/myblueprint.png" name="icon" type="download"/>
   </web-item>
 
   <web-resource
@@ -86,7 +86,7 @@
       name="ideaSearch.soy.js"
       type="download"
     />
-    <resource location="/images" name="images/" type="download" />
+    <resource location="/images" name="images/" type="download"/>
 
     <transformation extension="soy">
       <transformer key="soyTransformer">
@@ -117,9 +117,9 @@
     class="au.com.agiledigital.idea_search.macros.ClientSideScripts"
     key='ideaSearch-macro-clientSideScripts'
   >
-    <description key="ideaSearch.macro.client-side-scripts.desc" />
-    <category name="hidden" />
-    <parameters />
+    <description key="ideaSearch.macro.client-side-scripts.desc"/>
+    <category name="hidden"/>
+    <parameters/>
   </xhtml-macro>
 
   <web-resource
@@ -133,32 +133,54 @@
 
   <!-- Structured Data Macro -->
   <xhtml-macro
-    name="Idea Structured Field"
+    name="idea-structured-field"
     class="au.com.agiledigital.idea_search.macros.StructuredField"
     key='ideaSearch-macro-structuredField'
   >
-    <description key="ideaSearch.macro.structuredField.desc" />
-    <category name="hidden" />
+    <description key="ideaSearch.macro.structuredField.desc"/>
+    <category name="hidden"/>
     <parameters>
       <parameter name="category" type="enum">
-        <value name="description" />
-        <value name="technologies" />
-        <value name="status" />
-        <value name="owner" />
-        <value name="team" />
+        <value name="description"/>
+        <value name="technologies"/>
+        <value name="status"/>
+        <value name="owner"/>
+        <value name="team"/>
       </parameter>
     </parameters>
+    <property-panel>
+      <button id="update" label="Update the content"/>
+    </property-panel>
   </xhtml-macro>
-
+  <web-resource name="Javascript" key="editor_status-light">
+    <context>editor</context>
+    <resource type="download" name="updateMacro.js" location="js/updateMacro.js"/>
+    <dependency>com.atlassian.auiplugin:dialog2</dependency>
+    <dependency>com.atlassian.auiplugin:aui-select2</dependency>
+    <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+  </web-resource>
   <web-resource
     key="ideaSearch-macro-structuredField-macro-resource"
     name="Structured Field Web Resources"
   >
+    <dependency>
+      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
+    </dependency>
+
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>com.atlassian.auiplugin:aui-select</dependency>
+    <dependency>com.atlassian.auiplugin:aui-select2</dependency>
+
+
     <resource
       type="download"
       name="StructuredField.css"
       location="/css/StructuredField.css"
     />
+
   </web-resource>
     <ao key="ao-module" namespace="fedex-idea">
         <description
@@ -172,13 +194,13 @@
     name="Event Publisher components"
     interface="com.atlassian.event.api.EventPublisher"
   >
-        <description>Access to the Active Objects service</description>
-    </component-import>
-    <component
+    <description>Access to the Active Objects service</description>
+  </component-import>
+  <component
     key="fedexIdeaService"
     class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"
   />
-    <component
+  <component
     key="fedexIdeaDao"
     class="au.com.agiledigital.idea_search.dao.FedexIdeaDao"
   />
@@ -189,9 +211,9 @@
     class="au.com.agiledigital.idea_search.macros.IndexTable"
     key='ideaSearch-macro-indexTable'
   >
-    <description key="ideaSearch.macro.indexTable.desc" />
-    <category name="hidden" />
-    <parameters />
+    <description key="ideaSearch.macro.indexTable.desc"/>
+    <category name="hidden"/>
+    <parameters/>
   </xhtml-macro>
 
   <web-resource
@@ -223,12 +245,12 @@
     class="au.com.agiledigital.idea_search.macros.TemplateId"
     key='ideaSearch-macro-templateId'
   >
-    <description key="ideaSearch.macro.templateId.desc" />
-    <category name="hidden" />
+    <description key="ideaSearch.macro.templateId.desc"/>
+    <category name="hidden"/>
     <parameters>
-      <parameter name="blueprintId" type="string" />
+      <parameter name="blueprintId" type="string"/>
       <parameter name="category" type="enum">
-        <value name="blueprintId" />
+        <value name="blueprintId"/>
       </parameter>
     </parameters>
   </xhtml-macro>

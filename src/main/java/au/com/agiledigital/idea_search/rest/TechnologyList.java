@@ -9,6 +9,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * External rest API servlet
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 @Path("/")
 @Component
 public class TechnologyList {
+
+  private static final Logger log = LoggerFactory.getLogger(TechnologyList.class);
 
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
@@ -40,13 +44,12 @@ public class TechnologyList {
   }
 
   /**
-   *
    * @param searchString to find technologies that begin with this string
-   * @param response Servlet contest
+   * @param response     Servlet contest
    * @return String in the form of a json list of TechnologyAPI objects
    */
   @Path("/technology")
-  @Produces({ "application/json" })
+  @Produces({"application/json"})
   @GET
   public String getTechList(
     @QueryParam("q") String searchString,
@@ -57,12 +60,13 @@ public class TechnologyList {
       : null;
     this.applyNoCacheHeaders(response);
 
-    List<TechnologyAPI> allTechnologies = normalizeSearch == null ||
-      normalizeSearch.length() == 0
-      ? this.fedexIdeaService.queryTechList()
-      : this.fedexIdeaService.queryTechList(normalizeSearch);
+    boolean searchKeyHasValue = normalizeSearch != null && !normalizeSearch.trim().isEmpty();
 
-    if (allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
+    List<TechnologyAPI> allTechnologies = searchKeyHasValue
+      ? this.fedexIdeaService.queryTechList(normalizeSearch)
+      : this.fedexIdeaService.queryTechList();
+
+    if (searchKeyHasValue && allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
       TechnologyAPI newTech = new TechnologyAPI(
         normalizeSearch.replace(",", "")
       );
@@ -76,6 +80,7 @@ public class TechnologyList {
 
   /**
    * Added to prevent the search caching the responses
+   *
    * @param response
    */
   private void applyNoCacheHeaders(HttpServletResponse response) {

@@ -1,33 +1,33 @@
 <ac:structured-macro ac:name="Idea Search Client Side Scripts" />
-<ac:structured-macro ac:name="Idea Structured Field">
+<ac:structured-macro ac:name="idea-structured-field">
   <ac:parameter ac:name="category">description</ac:parameter>
   <ac:rich-text-body>
     <at:var at:name="vIdeaDescription" at:rawxhtml="true"/>
   </ac:rich-text-body>
 </ac:structured-macro>
 
-<ac:structured-macro ac:name="Idea Structured Field">
+<ac:structured-macro ac:name="idea-structured-field">
 <ac:parameter ac:name="category">owner</ac:parameter>
 <ac:rich-text-body>
   <at:var at:name="vIdeaOwner" at:rawxhtml="true"/>
 </ac:rich-text-body>
 </ac:structured-macro>
 
-<ac:structured-macro ac:name="Idea Structured Field">
+<ac:structured-macro ac:name="idea-structured-field">
   <ac:parameter ac:name="category">status</ac:parameter>
   <ac:rich-text-body>
     <at:var at:name="vIdeaStatus" />
   </ac:rich-text-body>
 </ac:structured-macro>
 
-<ac:structured-macro ac:name="Idea Structured Field">
+<ac:structured-macro ac:name="idea-structured-field">
 <ac:parameter ac:name="category">team</ac:parameter>
 <ac:rich-text-body>
   <at:var at:name="vIdeaTeam" at:rawxhtml="true"/>
 </ac:rich-text-body>
 </ac:structured-macro>
 
-<ac:structured-macro ac:name="Idea Structured Field">
+<ac:structured-macro ac:name="idea-structured-field">
   <ac:parameter ac:name="category">technologies</ac:parameter>
   <ac:rich-text-body>
       <at:var at:name="vIdeaTechnology" at:rawxhtml="true" />

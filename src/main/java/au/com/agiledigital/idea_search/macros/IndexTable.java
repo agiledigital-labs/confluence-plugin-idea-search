@@ -120,7 +120,7 @@ public class IndexTable implements Macro {
       Node node = macros.item(i);
 
       String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
-      if (nodeName.equals("Idea Structured Field") || nodeName.equals("Blueprint Id Storage")) {
+      if (nodeName.equals("idea-structured-field") || nodeName.equals("Blueprint Id Storage")) {
         Node child = node.getFirstChild();
         do {
           if (child instanceof Element
