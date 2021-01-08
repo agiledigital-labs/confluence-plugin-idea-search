@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.blueprints;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

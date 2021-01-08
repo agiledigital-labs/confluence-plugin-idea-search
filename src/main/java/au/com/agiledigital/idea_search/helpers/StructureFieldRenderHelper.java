@@ -1,8 +1,5 @@
 package au.com.agiledigital.idea_search.helpers;
 
-import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
-import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
-
 import au.com.agiledigital.idea_search.Status;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.StatusContainer;
@@ -11,11 +8,15 @@ import com.atlassian.confluence.content.render.xhtml.XhtmlException;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.renderer.RenderContext;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.stream.XMLStreamException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.stream.XMLStreamException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
+import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
 
 /**
  * Velocity template renderer helper for Structured Fields. Transforms the body into a usable format

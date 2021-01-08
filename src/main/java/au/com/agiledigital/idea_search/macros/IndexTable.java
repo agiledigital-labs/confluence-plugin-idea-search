@@ -1,11 +1,8 @@
 package au.com.agiledigital.idea_search.macros;
 
-import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
-import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
-
-import au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper;
 import au.com.agiledigital.idea_search.macros.transport.BlueprintContainer;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
+import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.bonnie.Searchable;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.core.BodyContent;
@@ -33,23 +30,8 @@ import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -57,9 +39,18 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
-import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
+import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
 /**
  * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space

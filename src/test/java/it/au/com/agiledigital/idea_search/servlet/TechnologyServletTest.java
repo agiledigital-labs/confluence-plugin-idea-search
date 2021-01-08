@@ -1,12 +1,7 @@
 package it.au.com.agiledigital.idea_search.servlet;
 
-import static org.junit.Assert.assertEquals;
-
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -16,6 +11,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 public class TechnologyServletTest {
 

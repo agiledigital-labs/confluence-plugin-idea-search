@@ -1,12 +1,12 @@
 package au.com.agiledigital.idea_search.macros;
 
-import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper.render;
-
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSSerializer;
+
+import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper.render;
 
 /**
  * Represents a Structured Field Macro converted from the Confluence Storage format

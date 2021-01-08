@@ -2,6 +2,7 @@ package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
+
 import java.util.List;
 
 public interface FedexIdeaService {

@@ -1,9 +1,5 @@
 package au.com.agiledigital.idea_search.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-
 import au.com.agiledigital.idea_search.dao.AoFedexTechnology;
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
@@ -14,12 +10,6 @@ import com.atlassian.activeobjects.test.TestActiveObjects;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.java.ao.EntityManager;
 import net.java.ao.test.jdbc.Data;
 import net.java.ao.test.jdbc.DatabaseUpdater;
@@ -30,7 +20,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 @RunWith(ActiveObjectsJUnitRunner.class)
 @Data(TechnologyServlete2eTest.TechnologyServletFuncTestDatabaseUpdater.class)
