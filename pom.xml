@@ -232,8 +232,7 @@
                     <productDataPath>
                         ${test.integration.path}
                     </productDataPath>
-                    <jvmArgs
-          >-Xms2g -Xmx6g -XX:MaxPermSize=6g -XX:-UseGCOverheadLimit -server</jvmArgs>
+                    <jvmArgs>-Xms2g -Xmx6g -XX:MaxPermSize=6g -XX:-UseGCOverheadLimit -server</jvmArgs>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
                     <!-- See here for an explanation of default instructions: -->
@@ -316,8 +315,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spotless.version>2.6.1</spotless.version>
-        <sonar.projectKey
-    >agiledigital-labs_confluence-plugin-idea-search</sonar.projectKey>
+        <sonar.projectKey>agiledigital-labs_confluence-plugin-idea-search</sonar.projectKey>
         <sonar.organization>agiledigital-labs</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
