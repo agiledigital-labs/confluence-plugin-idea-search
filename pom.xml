@@ -15,7 +15,8 @@
     </organization>
 
     <name>Idea Collector</name>
-    <description>A centralised viewing and managing tool for project ideas. This tool makes it easy to see all ideas with description, statuses and who's working on them.</description>
+    <description
+  >A centralised viewing and managing tool for project ideas. This tool makes it easy to see all ideas with description, statuses and who's working on them.</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
@@ -231,7 +232,8 @@
                     <productDataPath>
                         ${test.integration.path}
                     </productDataPath>
-                    <jvmArgs>-Xms2g -Xmx6g -XX:MaxPermSize=6g -XX:-UseGCOverheadLimit -server</jvmArgs>
+                    <jvmArgs
+          >-Xms2g -Xmx6g -XX:MaxPermSize=6g -XX:-UseGCOverheadLimit -server</jvmArgs>
                     <enableQuickReload>true</enableQuickReload>
                     <extractDependencies>false</extractDependencies>
                     <!-- See here for an explanation of default instructions: -->
@@ -285,8 +287,8 @@
                                 <include>pom.xml</include>
                                 <include>settings.xml</include>
                             </includes>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>2</spacesPerTab>
@@ -314,6 +316,10 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spotless.version>2.6.1</spotless.version>
+        <sonar.projectKey
+    >agiledigital-labs_confluence-plugin-idea-search</sonar.projectKey>
+        <sonar.organization>agiledigital-labs</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
 </project>
