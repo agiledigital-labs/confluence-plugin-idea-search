@@ -7,10 +7,10 @@ public class Options {
   private boolean isStatus = false;
   private boolean isTechnology = false;
 
-  public Boolean getIsDefault() {return isDefault;}
-  public Boolean getIsUser() {return isUser;}
-  public Boolean getIsStatus() {return isStatus;}
-  public Boolean getIsTechnology() {return isTechnology;}
+  public boolean getIsDefault() {return isDefault;}
+  public boolean getIsUser() {return isUser;}
+  public boolean getIsStatus() {return isStatus;}
+  public boolean getIsTechnology() {return isTechnology;}
 
   /**
    * Sets the flag for default value

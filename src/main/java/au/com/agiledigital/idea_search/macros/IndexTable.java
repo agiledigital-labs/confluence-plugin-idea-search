@@ -230,7 +230,7 @@ public class IndexTable implements Macro {
           filteredRows.stream()
             .collect(
               Collectors.groupingBy(
-                ideaContainer -> ideaContainer.getBlueprintId(),
+                IdeaContainer::getBlueprintId,
                 Collectors.counting()))
             .entrySet(),
           Entry.comparingByValue())
