@@ -2,10 +2,15 @@ package au.com.agiledigital.idea_search.blueprints;
 
 public class Options {
 
-  public boolean isDefault = false;
-  public boolean isUser = false;
-  public boolean isStatus = false;
-  public boolean isTechnology = false;
+  private boolean isDefault = false;
+  private boolean isUser = false;
+  private boolean isStatus = false;
+  private boolean isTechnology = false;
+
+  public Boolean getIsDefault() {return isDefault;}
+  public Boolean getIsUser() {return isUser;}
+  public Boolean getIsStatus() {return isStatus;}
+  public Boolean getIsTechnology() {return isTechnology;}
 
   /**
    * Sets the flag for default value

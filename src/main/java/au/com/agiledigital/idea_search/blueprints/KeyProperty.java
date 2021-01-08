@@ -2,9 +2,10 @@ package au.com.agiledigital.idea_search.blueprints;
 
 public class KeyProperty {
 
-  public String key;
-  public Object value;
-  public Options options;
+  private String key;
+  private Object value;
+  private Options options;
+
 
   /**
    * Creates a key property which is consumed during the context transformation process. Will set
@@ -39,6 +40,10 @@ public class KeyProperty {
   }
 
   public Object getValue() {
+    return value;
+  }
+  public Object setValue(Object newValue) {
+    value = newValue;
     return value;
   }
 

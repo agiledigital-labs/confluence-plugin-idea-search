@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
-import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
 
 /**
  * Velocity template renderer helper for Structured Fields. Transforms the body into a usable format
@@ -24,7 +23,11 @@ import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
  */
 public class StructureFieldRenderHelper {
 
+  private StructureFieldRenderHelper() {throw new IllegalStateException("Structure Field Render Helper class"); }
+
   private static final Logger log = LoggerFactory.getLogger(StructureFieldRenderHelper.class);
+
+  private static final String PAYLOAD = "payload";
 
   public static String render(StructuredCategory category, String body) {
     return render(category, body, true, null);
@@ -39,7 +42,7 @@ public class StructureFieldRenderHelper {
     switch (category) {
       case TECHNOLOGIES:
         /** Splits the comma separated string into a list and replaces all html tags */
-        context.put("payload", splitTrimToSet(body, ",").stream().map(tech -> removeTags(tech)));
+        context.put(PAYLOAD, splitTrimToSet(body, ",").stream().map(Utilities::removeTags));
         break;
       case DESCRIPTION:
       case OWNER:
@@ -51,17 +54,17 @@ public class StructureFieldRenderHelper {
             bodyConverted =
               xhtmlContent.convertStorageToView(
                 body, new DefaultConversionContext(new RenderContext()));
-          } catch (XMLStreamException e) {
-            log.warn(e.toString());
-          } catch (XhtmlException e) {
+          } catch (XMLStreamException | XhtmlException e) {
             log.warn(e.toString());
           }
         }
 
-        context.put("payload", bodyConverted);
+        context.put(PAYLOAD, bodyConverted);
         break;
       case STATUS:
-        context.put("payload", new StatusContainer(Status.getStatusFromReference(body)));
+        context.put(PAYLOAD, new StatusContainer(Status.getStatusFromReference(body)));
+        break;
+      default:
         break;
     }
 

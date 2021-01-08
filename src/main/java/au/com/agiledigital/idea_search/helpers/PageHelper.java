@@ -2,8 +2,7 @@ package au.com.agiledigital.idea_search.helpers;
 
 public class PageHelper {
 
-  public PageHelper() {
-  }
+  private PageHelper() {throw new IllegalStateException("Page Helper class"); }
 
   /**
    * Wraps Confluence storage format with a root element and doctype defining custom DTD definition

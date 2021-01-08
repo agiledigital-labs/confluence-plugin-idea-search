@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
  */
 public class MacroHelpers {
 
+  private MacroHelpers() {
+    throw new IllegalStateException("Macro Helper class");
+  }
+
   /**
    * Splits a string at a delimiter, then remove the starting and ending whitespace from each piece
    *
@@ -25,7 +29,7 @@ public class MacroHelpers {
     }
 
     return Arrays.stream(str.split(delimiter))
-      .map(value -> value.trim())
+      .map(String::trim)
       .collect(Collectors.toSet());
   }
 }

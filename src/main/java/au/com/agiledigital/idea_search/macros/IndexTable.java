@@ -10,7 +10,6 @@ import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.macro.query.BooleanQueryFactory;
 import com.atlassian.confluence.pages.AbstractPage;
-import com.atlassian.confluence.plugins.createcontent.actions.BlueprintManager;
 import com.atlassian.confluence.search.service.ContentTypeEnum;
 import com.atlassian.confluence.search.v2.ContentSearch;
 import com.atlassian.confluence.search.v2.InvalidSearchException;
@@ -33,8 +32,6 @@ import com.atlassian.webresource.api.assembler.PageBuilderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -51,6 +48,7 @@ import java.util.stream.Collectors;
 
 import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
+import static au.com.agiledigital.idea_search.helpers.Utilities.getMacroRepresentation;
 
 /**
  * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space
@@ -66,7 +64,6 @@ public class IndexTable implements Macro {
   private SettingsManager settingsManager;
   private XhtmlContent xhtmlContent;
   private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-  private BlueprintManager blueprintManager;
   private final DefaultFedexIdeaService fedexIdeaService;
 
   public IndexTable(
@@ -112,23 +109,7 @@ public class IndexTable implements Macro {
    */
   private MacroRepresentation getMacroFromList(
     NodeList macros, StructuredCategory category, LSSerializer serializer) {
-    for (int i = 0; i < macros.getLength(); i++) {
-      Node node = macros.item(i);
-
-      String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
-      if (nodeName.equals("idea-structured-field") || nodeName.equals("Blueprint Id Storage")) {
-        Node child = node.getFirstChild();
-        do {
-          if (child instanceof Element
-            && child.getNodeName().equals("ac:parameter")
-            && child.getTextContent().equals(category.getKey())) {
-            return new MacroRepresentation(node, category, serializer, xhtmlContent);
-          }
-        } while ((child = child.getNextSibling()) != null);
-      }
-    }
-
-    return null;
+    return getMacroRepresentation(macros, category, serializer, xhtmlContent);
   }
 
   /**
@@ -148,7 +129,7 @@ public class IndexTable implements Macro {
   }
 
   private Set<String> getMacroLabels(Map<String, String> parameters) {
-    Set<String> labels = new HashSet<String>(splitTrimToSet(parameters.get("labels"), ","));
+    Set<String> labels = new HashSet<>(splitTrimToSet(parameters.get("labels"), ","));
     labels.add("fedex-ideas");
 
     return labels;
@@ -209,9 +190,9 @@ public class IndexTable implements Macro {
                 LSSerializer serializer = ls.createLSSerializer();
 
                 IdeaContainer row = new IdeaContainer();
-                row.title = page.getTitle();
-                row.url =
-                  settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath();
+                row.setTitle( page.getTitle());
+                row.setUrl(
+                  settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath());
 
                 Arrays.asList(StructuredCategory.values())
                   .forEach(
@@ -234,7 +215,7 @@ public class IndexTable implements Macro {
 
     List<IdeaContainer> filteredRows =
       rows.stream()
-        .filter(container -> container.blueprintId != null && !container.blueprintId.isEmpty()).collect(Collectors.toList());
+        .filter(container -> container.getBlueprintId() != null && !container.getBlueprintId().isEmpty()).collect(Collectors.toList());
 
     context.put("rows", rows);
     context.put(
@@ -242,14 +223,14 @@ public class IndexTable implements Macro {
       new BlueprintContainer(
         conversionContext.getSpaceKey(),
         settingsManager.getGlobalSettings().getBaseUrl(),
-        filteredRows.size() == 0
+        filteredRows.isEmpty()
           // Set the blueprint id to be that of fedex idea blueprint
           ? this.fedexIdeaService.getBlueprintId()
           : Collections.max(
           filteredRows.stream()
             .collect(
               Collectors.groupingBy(
-                ideaContainer -> ideaContainer.blueprintId,
+                ideaContainer -> ideaContainer.getBlueprintId(),
                 Collectors.counting()))
             .entrySet(),
           Entry.comparingByValue())

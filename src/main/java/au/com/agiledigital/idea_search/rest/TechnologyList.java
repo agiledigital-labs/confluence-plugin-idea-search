@@ -23,8 +23,6 @@ import java.util.List;
 @Component
 public class TechnologyList {
 
-  private static final Logger log = LoggerFactory.getLogger(TechnologyList.class);
-
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
 

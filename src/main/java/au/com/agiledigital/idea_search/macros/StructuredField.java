@@ -3,7 +3,6 @@ package au.com.agiledigital.idea_search.macros;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
-import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
@@ -17,13 +16,10 @@ import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper
 public class StructuredField implements Macro {
 
   private PageBuilderService pageBuilderService;
-  private XhtmlContent xhtmlContent;
 
   public StructuredField(
-    @ComponentImport PageBuilderService pageBuilderService,
-    @ComponentImport XhtmlContent xhtmlContent) {
+    @ComponentImport PageBuilderService pageBuilderService) {
     this.pageBuilderService = pageBuilderService;
-    this.xhtmlContent = xhtmlContent;
   }
 
   @Override

@@ -19,7 +19,7 @@ public interface AoFedexTechnology extends RawEntity<Long> {
   @StringLength(-1)
   String getTechnology();
 
-  void setTechnology(String Technology);
+  void setTechnology(String technology);
 
   void setIdea(AoFedexIdea aoFedexIdea);
 }
