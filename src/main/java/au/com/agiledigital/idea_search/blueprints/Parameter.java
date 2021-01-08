@@ -10,7 +10,11 @@ public enum Parameter {
   IDEA_STATUS("vIdeaStatus"),
   IDEA_TECHNOLOGY("vIdeaTechnology");
 
-  public String reference;
+  private String reference;
+
+  public String getReference() {
+    return this.reference;
+  }
 
   Parameter(String reference) {
     this.reference = reference;

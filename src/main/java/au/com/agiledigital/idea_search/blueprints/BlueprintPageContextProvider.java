@@ -16,15 +16,15 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
   public final List<KeyProperty> ideaFieldsDefaults =
     Arrays.asList(
       new KeyProperty(
-        Parameter.IDEA_TITLE.reference, "I totally forgot to put one in the form"),
+        Parameter.IDEA_TITLE.getReference(), "I totally forgot to put one in the form"),
       new KeyProperty(
-        Parameter.IDEA_DESCRIPTION.reference, "It is awesome, how could it not be"),
+        Parameter.IDEA_DESCRIPTION.getReference(), "It is awesome, how could it not be"),
       new KeyProperty(
-        Parameter.IDEA_OWNER.reference,
+        Parameter.IDEA_OWNER.getReference(),
         "@me"
       ),
-      new KeyProperty(Parameter.IDEA_TECHNOLOGY.reference, "Add your technologies"),
-      new KeyProperty(Parameter.IDEA_TEAM.reference, "none set"));
+      new KeyProperty(Parameter.IDEA_TECHNOLOGY.getReference(), "Add your technologies"),
+      new KeyProperty(Parameter.IDEA_TEAM.getReference(), "none set"));
 
   /**
    * Renders a value based on a template using the options object as the determiner.
