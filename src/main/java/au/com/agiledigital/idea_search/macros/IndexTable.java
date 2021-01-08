@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.macros;
 import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
+import au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper;
 import au.com.agiledigital.idea_search.macros.transport.BlueprintContainer;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import com.atlassian.bonnie.Searchable;
@@ -57,6 +58,8 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space
@@ -64,6 +67,8 @@ import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
  * table to display said data.
  */
 public class IndexTable implements Macro {
+
+  private static final Logger log = LoggerFactory.getLogger(IndexTable.class);
 
   private SearchManager searchManager;
   private PageBuilderService pageBuilderService;
@@ -225,7 +230,7 @@ public class IndexTable implements Macro {
 
                 return row;
               } catch (ParserConfigurationException | IOException | SAXException e) {
-                e.printStackTrace();
+                log.warn(e.toString());
               }
 
               return null;
@@ -233,7 +238,7 @@ public class IndexTable implements Macro {
           .filter(Objects::nonNull)
           .collect(Collectors.toList());
     } catch (InvalidSearchException e) {
-      e.printStackTrace();
+      log.warn(e.toString());
     }
 
     Stream<IdeaContainer> filteredRows =

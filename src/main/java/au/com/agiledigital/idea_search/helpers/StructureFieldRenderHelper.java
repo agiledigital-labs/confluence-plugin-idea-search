@@ -14,12 +14,16 @@ import com.atlassian.renderer.RenderContext;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Velocity template renderer helper for Structured Fields. Transforms the body into a usable format
  * for the template based off the category
  */
 public class StructureFieldRenderHelper {
+
+  private static final Logger log = LoggerFactory.getLogger(StructureFieldRenderHelper.class);
 
   public static String render(StructuredCategory category, String body) {
     return render(category, body, true, null);
@@ -47,9 +51,9 @@ public class StructureFieldRenderHelper {
               xhtmlContent.convertStorageToView(
                 body, new DefaultConversionContext(new RenderContext()));
           } catch (XMLStreamException e) {
-            e.printStackTrace();
+            log.warn(e.toString());
           } catch (XhtmlException e) {
-            e.printStackTrace();
+            log.warn(e.toString());
           }
         }
 
