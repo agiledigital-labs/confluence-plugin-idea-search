@@ -241,9 +241,9 @@ public class IndexTable implements Macro {
       log.warn(e.toString());
     }
 
-    Stream<IdeaContainer> filteredRows =
+    List<IdeaContainer> filteredRows =
       rows.stream()
-        .filter(container -> container.blueprintId != null && !container.blueprintId.isEmpty());
+        .filter(container -> container.blueprintId != null && !container.blueprintId.isEmpty()).collect(Collectors.toList());
 
     context.put("rows", rows);
     context.put(
@@ -251,18 +251,18 @@ public class IndexTable implements Macro {
       new BlueprintContainer(
         conversionContext.getSpaceKey(),
         settingsManager.getGlobalSettings().getBaseUrl(),
-        filteredRows.count() == 0
+        filteredRows.size() == 0
           // Set the blueprint id to be that of fedex idea blueprint
           ? this.fedexIdeaService.getBlueprintId()
           : Collections.max(
-            filteredRows
-              .collect(
-                Collectors.groupingBy(
-                  ideaContainer -> ideaContainer.blueprintId,
-                  Collectors.counting()))
-              .entrySet(),
-            Comparator.comparing(Entry::getValue))
-            .getKey()));
+          filteredRows.stream()
+            .collect(
+              Collectors.groupingBy(
+                ideaContainer -> ideaContainer.blueprintId,
+                Collectors.counting()))
+            .entrySet(),
+          Entry.comparingByValue())
+          .getKey()));
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

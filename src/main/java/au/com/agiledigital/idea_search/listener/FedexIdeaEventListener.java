@@ -2,8 +2,7 @@ package au.com.agiledigital.idea_search.listener;
 
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
-import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
-
+import au.com.agiledigital.idea_search.helpers.utilities;
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
@@ -70,7 +69,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY =
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
-  private ContentBlueprint contentBlueprint;
+  private final ContentBlueprint contentBlueprint;
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
@@ -156,7 +155,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   @EventListener
   public void onBlueprintCreateEvent(BlueprintPageCreateEvent event) {
-    /** Makes the new page child of the fedex idea index page */
+    // Makes the new page child of the fedex idea index page
     makeChildOfIndex(event.getPage());
 
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
@@ -255,9 +254,9 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
           row.setMacroRepresentations(
             category, getMacroFromList(macros, category, serializer)));
 
-    /** Splits the comma seperated string into a list and replaces all html tags */
-    List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*")).stream()
-      .map(e -> removeTags(e)).collect(
+    // Splits the comma seperated string into a list and replaces all html tags
+    List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
+      .map(utilities::removeTags).collect(
         Collectors.toList());
 
     List<FedexTechnology> techList = new ArrayList<>();
