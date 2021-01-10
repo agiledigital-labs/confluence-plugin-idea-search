@@ -2,4 +2,4 @@
 #if($heading)
 <h2>Status</h2>
 #end
-<span class="status status-$payload.key">$payload.human</span>
+<span class="status status-$payload.getKey()">$payload.getHuman()</span>

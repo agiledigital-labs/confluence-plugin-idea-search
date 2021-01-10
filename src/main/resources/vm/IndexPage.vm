@@ -79,17 +79,17 @@
   <tbody class="table-content">
       #foreach($row in $rows)
       <tr>
-        <td class="cell-title">$row.title</td>
-        <td class="cell-description">$row.description.getRenderedValue()</td>
-        <td class="cell-technology">$row.technologies.getRenderedValue()</td>
-        <td class="cell-status">$row.status.getRenderedValue()</td>
+        <td class="cell-title">$row.getTitle()</td>
+        <td class="cell-description">$row.getDescription().getRenderedValue()</td>
+        <td class="cell-technology">$row.getTechnologies().getRenderedValue()</td>
+        <td class="cell-status">$row.getStatus().getRenderedValue()</td>
         <td class="cell-confluence-userlink">
-          #if($row.owner.getRenderedValue())
-            $row.owner.getRenderedValue()
+          #if($row.getOwner().getRenderedValue())
+            $row.getOwner().getRenderedValue()
           #end
         </td>
         <td class="cell-link">
-          <a href="$row.url" title="Link to $row.title">View $row.title</a>
+          <a href="$row.getUrl()" title="Link to $row.getTitle()">View $row.getTitle()</a>
         </td>
       </tr>
       #end

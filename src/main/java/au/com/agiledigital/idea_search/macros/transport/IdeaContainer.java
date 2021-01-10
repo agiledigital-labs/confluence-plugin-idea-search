@@ -18,12 +18,13 @@ public class IdeaContainer {
   private MacroRepresentation status;
   private MacroRepresentation owner;
 
+
   public String getTitle() {
-    return title;
+    return this.title;
   }
 
   public String getUrl() {
-    return url;
+    return this.url;
   }
 
   public String getBlueprintId() {
@@ -36,7 +37,7 @@ public class IdeaContainer {
   }
 
   public String setTitle(String newTitle) {
-    this.url = newTitle;
+    this.title = newTitle;
     return  newTitle;
   }
 

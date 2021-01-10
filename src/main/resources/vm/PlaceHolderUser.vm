@@ -1,1 +1,1 @@
-<ac:placeholder ac:type="mention">$message.value</ac:placeholder>
+<ac:placeholder ac:type="mention">$message.getValue()</ac:placeholder>
