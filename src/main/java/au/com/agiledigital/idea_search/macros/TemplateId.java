@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.macros;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
+
 import java.util.Map;
 
 /**

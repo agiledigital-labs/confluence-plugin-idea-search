@@ -1,15 +1,20 @@
 package au.com.agiledigital.idea_search.helpers;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Helpers to do data transformation for macros
  */
 public class MacroHelpers {
+
+  private MacroHelpers() {
+    throw new IllegalStateException("Macro Helper class");
+  }
 
   /**
    * Splits a string at a delimiter, then remove the starting and ending whitespace from each piece
@@ -24,7 +29,7 @@ public class MacroHelpers {
     }
 
     return Arrays.stream(str.split(delimiter))
-      .map(value -> value.trim())
+      .map(String::trim)
       .collect(Collectors.toSet());
   }
 }

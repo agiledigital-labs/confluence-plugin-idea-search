@@ -1,9 +1,6 @@
 package au.com.agiledigital.idea_search.listener;
 
-import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
-
-import static au.com.agiledigital.idea_search.helpers.utilities.removeTags;
-
+import au.com.agiledigital.idea_search.helpers.Utilities;
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
@@ -24,28 +21,30 @@ import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.ModuleCompleteKey;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ConfluenceImport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.SAXException;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
-import org.xml.sax.SAXException;
+
+import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
+import static au.com.agiledigital.idea_search.helpers.Utilities.getMacroRepresentation;
 
 /**
  * Listens to confluence events Connects to event publisher, and sends filtered events to the idea
@@ -70,7 +69,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY =
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
-  private ContentBlueprint contentBlueprint;
+  private final ContentBlueprint contentBlueprint;
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
@@ -130,24 +129,9 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   private MacroRepresentation getMacroFromList(
     NodeList macros, StructuredCategory category, LSSerializer serializer) {
-    for (int i = 0; i < macros.getLength(); i++) {
-      Node node = macros.item(i);
-
-      String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
-      if (nodeName.equals("idea-structured-field") || nodeName.equals("Blueprint Id Storage")) {
-        Node child = node.getFirstChild();
-        do {
-          if (child instanceof Element
-            && child.getNodeName().equals("ac:parameter")
-            && child.getTextContent().equals(category.getKey())) {
-            return new MacroRepresentation(node, category, serializer, xhtmlContent);
-          }
-        } while ((child = child.getNextSibling()) != null);
-      }
-    }
-
-    return null;
+    return getMacroRepresentation(macros, category, serializer, xhtmlContent);
   }
+
 
   /**
    * Listen for pages created from blueprints.
@@ -156,7 +140,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   @EventListener
   public void onBlueprintCreateEvent(BlueprintPageCreateEvent event) {
-    /** Makes the new page child of the fedex idea index page */
+    // Makes the new page child of the fedex idea index page
     makeChildOfIndex(event.getPage());
 
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
@@ -191,7 +175,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   /**
    * Listen for page creations events on pages with the correct label, updates the data store with
    * the new idea
-   *
+   * <p>
    * If the title of the page is not unique, the blueprint create event is not used, the page create
    * event is.
    *
@@ -248,16 +232,16 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     DOMImplementationLS ls = (DOMImplementationLS) bodyParsed.getImplementation();
     LSSerializer serializer = ls.createLSSerializer();
     IdeaContainer row = new IdeaContainer();
-    row.title = page.getDisplayTitle();
+    row.setTitle(page.getDisplayTitle());
     Arrays.asList(StructuredCategory.values())
       .forEach(
         category ->
           row.setMacroRepresentations(
             category, getMacroFromList(macros, category, serializer)));
 
-    /** Splits the comma seperated string into a list and replaces all html tags */
-    List<String> tech = Arrays.asList(row.getTechnologies().getValue().split("\\s*,\\s*")).stream()
-      .map(e -> removeTags(e)).collect(
+    // Splits the comma separated string into a list and replaces all html tags
+    List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
+      .map(Utilities::removeTags).collect(
         Collectors.toList());
 
     List<FedexTechnology> techList = new ArrayList<>();

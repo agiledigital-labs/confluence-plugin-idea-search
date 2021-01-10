@@ -1,17 +1,18 @@
 package au.com.agiledigital.idea_search.service;
 
-import static org.junit.Assert.assertEquals;
-
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class IdeaServiceTest {

@@ -1,22 +1,23 @@
 package au.com.agiledigital.idea_search.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import au.com.agiledigital.idea_search.rest.TechnologyList;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
 import com.google.gson.Gson;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class TechnologyServletUnitTest {
 

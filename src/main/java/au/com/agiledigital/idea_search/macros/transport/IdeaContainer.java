@@ -9,21 +9,36 @@ import org.w3c.dom.Node;
  */
 public class IdeaContainer {
 
-  public String title;
-  public String url;
-  public String blueprintId;
+  private String title;
+  private String url;
+  private String blueprintId;
 
-  public MacroRepresentation technologies;
-  public MacroRepresentation description;
-  public MacroRepresentation status;
-  public MacroRepresentation owner;
+  private MacroRepresentation technologies;
+  private MacroRepresentation description;
+  private MacroRepresentation status;
+  private MacroRepresentation owner;
+
 
   public String getTitle() {
-    return title;
+    return this.title;
   }
 
   public String getUrl() {
-    return url;
+    return this.url;
+  }
+
+  public String getBlueprintId() {
+    return blueprintId;
+  }
+
+  public String setUrl(String newUrl) {
+    this.url = newUrl;
+    return newUrl;
+  }
+
+  public String setTitle(String newTitle) {
+    this.title = newTitle;
+    return  newTitle;
   }
 
   public MacroRepresentation getTechnologies() {
@@ -71,6 +86,8 @@ public class IdeaContainer {
           } while ((child = child.getNextSibling()) != null);
         }
 
+        break;
+      default:
         break;
     }
   }

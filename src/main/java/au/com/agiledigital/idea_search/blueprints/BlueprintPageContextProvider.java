@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.blueprints;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +17,15 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
   public final List<KeyProperty> ideaFieldsDefaults =
     Arrays.asList(
       new KeyProperty(
-        Parameter.IDEA_TITLE.reference, "I totally forgot to put one in the form"),
+        Parameter.IDEA_TITLE.getReference(), "I totally forgot to put one in the form"),
       new KeyProperty(
-        Parameter.IDEA_DESCRIPTION.reference, "It is awesome, how could it not be"),
+        Parameter.IDEA_DESCRIPTION.getReference(), "It is awesome, how could it not be"),
       new KeyProperty(
-        Parameter.IDEA_OWNER.reference,
+        Parameter.IDEA_OWNER.getReference(),
         "@me"
       ),
-      new KeyProperty(Parameter.IDEA_TECHNOLOGY.reference, "Add your technologies"),
-      new KeyProperty(Parameter.IDEA_TEAM.reference, "none set"));
+      new KeyProperty(Parameter.IDEA_TECHNOLOGY.getReference(), "Add your technologies"),
+      new KeyProperty(Parameter.IDEA_TEAM.getReference(), "none set"));
 
   /**
    * Renders a value based on a template using the options object as the determiner.
@@ -33,25 +34,25 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
    * @return the rendered value as xhtml
    */
   private String renderValue(KeyProperty property) {
-    if (property.key.startsWith("v")) {
+    if (property.getKey().startsWith("v")) {
       String templatePath = "vm/";
       StringBuilder builder = new StringBuilder(templatePath);
 
-      if (property.options.isDefault) {
+      if (property.getOptions().getIsDefault()) {
         builder.append("PlaceHolder");
       }
 
-      if (property.options.isUser) {
+      if (property.getOptions().getIsUser()) {
         builder.append("User");
 
-        property.value = (property.value.toString()).split(",");
+        property.setValue(  (property.getValue().toString()).split(","));
       }
 
-      if (property.options.isTechnology) {
+      if (property.getOptions().getIsTechnology()) {
         builder.append("Technology");
       }
 
-      if (property.options.isStatus) {
+      if (property.getOptions().getIsStatus()) {
         builder.append("Status");
       }
 
@@ -64,7 +65,7 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       }
     }
 
-    return property.value.toString();
+    return property.getValue().toString();
   }
 
   /**
@@ -120,7 +121,7 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
             (key, value) ->
               value == null || (value instanceof String && ((String) value).length() == 0)
                 ? ideaFieldsDefaults.stream()
-                .filter(property -> property.key.equals(key))
+                .filter(property -> property.getKey().equals(key))
                 .findFirst()
                 .orElse(
                   new KeyProperty(
