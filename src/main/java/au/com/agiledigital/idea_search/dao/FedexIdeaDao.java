@@ -332,6 +332,8 @@ public class FedexIdeaDao {
    * Collect a list of technologies in ascending order from the database. overloaded to take a
    * search string Filter technology list from dao to avoid technology duplication.
    *
+   * @param searchString used to find technologies in the database
+   *
    * @return list of strings (technology names)
    */
   public List<TechnologyAPI> queryTechList(String searchString) {
