@@ -77,6 +77,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * @param eventPublisher   confluence event publisher
    * @param fedexIdeaService fedex Idea service
    * @param xhtmlContent     used to parse the page content
+   * @param indexPageManager class for the index page
    */
   @Inject
   public FedexIdeaEventListener(
