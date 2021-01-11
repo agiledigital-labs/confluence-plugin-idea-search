@@ -1,0 +1,44 @@
+name: on-push-main-generate-doc
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-doc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Cache maven modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-maven-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.m2
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Create javadoc
+        run: mvn -gs ./settings.xml javadoc:javadoc
+      - name: push-documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: agiledigital-labs/agiledigital-labs.github.io
+          publish_branch: main
+          publish_dir: target/site/apidocs
+          destination_dir: confluence-plugin-idea-search
+        # Creating with GitHub Actions for GitHub Pages: https://github.com/peaceiris/actions-gh-pages
+        # This push will create a .nojekyll file in the root directory if it is not already there.
+        # jekyll is turned off by default to avoid special resources not being copied to the final site.
+        # For more information, see: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll .
+        # Authentication is being done by deploy key, corresponding public key is saved in external repository.

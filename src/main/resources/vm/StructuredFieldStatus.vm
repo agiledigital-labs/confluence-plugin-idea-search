@@ -1,0 +1,5 @@
+#* @vtlvariable name="payload" type="au.com.agiledigital.idea_search.macros.transport.StatusContainer" *#
+#if($heading)
+<h2>Status</h2>
+#end
+<span class="status status-$payload.getKey()">$payload.getHuman()</span>

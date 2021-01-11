@@ -2,10 +2,14 @@ package au.com.agiledigital.idea_search;
 
 import java.util.Arrays;
 
+/**
+ * Status of an Idea
+ */
 public enum Status {
   NEW("New", "new"),
   IN_PROGRESS("In progress", "inProgress"),
-  COMPLETED("Completed", "completed");
+  COMPLETED("Completed", "completed"),
+  ABANDONED("Abandoned", "abandoned");
 
   private String humanName;
   private String referenceName;
@@ -16,8 +20,7 @@ public enum Status {
   }
 
   public static Status getStatusFromReference(String referenceName) {
-    return Arrays
-      .stream(Status.values())
+    return Arrays.stream(Status.values())
       .filter(status -> status.referenceName.equals(referenceName))
       .findFirst()
       .orElse(null);
