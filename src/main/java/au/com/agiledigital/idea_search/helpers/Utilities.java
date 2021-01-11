@@ -13,7 +13,7 @@ public class Utilities {
   private Utilities() {throw new IllegalStateException("Utility class"); }
 
   /**
-   * Remove tags (\<tagName\>\<\/tagName\>) and give only wrapped text
+   * Remove tags and give only wrapped text
    *
    * @param rawData the string to be stripped off tags
    * @return string without any tags wrapping it
