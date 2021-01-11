@@ -2,13 +2,14 @@ package au.com.agiledigital.idea_search.blueprints;
 
 public class KeyProperty {
 
-  public String key;
-  public Object value;
-  public Options options;
+  private String key;
+  private Object value;
+  private Options options;
+
 
   /**
-   * Creates a key property which is consumed during the context
-   * transformation process. Will set option isDefault to true.
+   * Creates a key property which is consumed during the context transformation process. Will set
+   * option isDefault to true.
    *
    * @param key   property key used in the context
    * @param value property value used in the context
@@ -18,8 +19,7 @@ public class KeyProperty {
   }
 
   /**
-   * Creates a key property which is consumed during the context
-   * transformation process.
+   * Creates a key property which is consumed during the context transformation process.
    *
    * @param key     property key used in the context
    * @param value   property value used in the context
@@ -42,19 +42,21 @@ public class KeyProperty {
   public Object getValue() {
     return value;
   }
+  public Object setValue(Object newValue) {
+    value = newValue;
+    return value;
+  }
 
   @Override
   public String toString() {
-    return (
-      "KeyProperty{" +
-      "key='" +
-      key +
-      '\'' +
-      ", value='" +
-      value +
-      "', options=" +
-      options +
-      '}'
-    );
+    return ("KeyProperty{"
+      + "key='"
+      + key
+      + '\''
+      + ", value='"
+      + value
+      + "', options="
+      + options
+      + '}');
   }
 }

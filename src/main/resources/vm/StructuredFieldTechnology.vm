@@ -1,6 +1,6 @@
 #* @vtlvariable name="payload" type="java.lang.reflect.Array" *#
 #if($heading)
-    <h2>Technologies</h2>
+<h2>Technologies</h2>
 #end
 #foreach ($technology in $payload)
 <span class="technology">$technology</span>

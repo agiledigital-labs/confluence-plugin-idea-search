@@ -1,9 +1,7 @@
 package au.com.agiledigital.idea_search.blueprints;
 
-import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
-import java.util.Map;
 
 /**
  * Context provider for Idea index blueprint

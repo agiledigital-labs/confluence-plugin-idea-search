@@ -1,12 +1,12 @@
 package au.com.agiledigital.idea_search.macros;
 
-import static au.com.agiledigital.idea_search.macros.StructureFieldRenderHelper.render;
-
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSSerializer;
+
+import static au.com.agiledigital.idea_search.helpers.StructureFieldRenderHelper.render;
 
 /**
  * Represents a Structured Field Macro converted from the Confluence Storage format
@@ -20,10 +20,8 @@ public class MacroRepresentation {
   private String value;
   private String renderedValue;
 
-  public MacroRepresentation(Node node,
-    StructuredCategory category,
-    LSSerializer serializer,
-    XhtmlContent xhtmlContent) {
+  public MacroRepresentation(
+    Node node, StructuredCategory category, LSSerializer serializer, XhtmlContent xhtmlContent) {
     this.node = node;
     this.serializer = serializer;
 
@@ -33,7 +31,6 @@ public class MacroRepresentation {
 
     Node child = node.getFirstChild();
     do {
-
       if (child instanceof Element && child.getNodeName().equals("ac:rich-text-body")) {
         value = serialiseNode(child);
         renderedValue = render(category, value, false, xhtmlContent);
@@ -45,8 +42,7 @@ public class MacroRepresentation {
   private String serialiseNode(Node node) {
     String serialised = serializer.writeToString(node);
 
-    return serialised
-      .substring(serialised.indexOf("body>") + 5, serialised.indexOf("</ac:rich"));
+    return serialised.substring(serialised.indexOf("body>") + 5, serialised.indexOf("</ac:rich"));
   }
 
   public Node getNode() {

@@ -13,10 +13,20 @@ public class StatusContainer {
     this.status = status;
   }
 
+  /**
+   * Get the key of the status
+   *
+   * @return status key value
+   */
   public String getKey() {
     return status.getReferenceName();
   }
 
+  /**
+   * Get human readable Status string
+   *
+   * @return human readable string
+   */
   public String getHuman() {
     return status.getHumanName();
   }

@@ -20,8 +20,7 @@ public enum Status {
   }
 
   public static Status getStatusFromReference(String referenceName) {
-    return Arrays
-      .stream(Status.values())
+    return Arrays.stream(Status.values())
       .filter(status -> status.referenceName.equals(referenceName))
       .findFirst()
       .orElse(null);

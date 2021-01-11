@@ -2,9 +2,15 @@ package au.com.agiledigital.idea_search.blueprints;
 
 public class Options {
 
-  public boolean isDefault = false;
-  public boolean isUser = false;
-  public boolean isStatus = false;
+  private boolean isDefault = false;
+  private boolean isUser = false;
+  private boolean isStatus = false;
+  private boolean isTechnology = false;
+
+  public boolean getIsDefault() {return isDefault;}
+  public boolean getIsUser() {return isUser;}
+  public boolean getIsStatus() {return isStatus;}
+  public boolean getIsTechnology() {return isTechnology;}
 
   /**
    * Sets the flag for default value
@@ -25,7 +31,7 @@ public class Options {
    * @return Options object with the applied flag
    */
   public Options withUser(boolean user) {
-    isUser = user;
+    this.isUser = user;
 
     return this;
   }
@@ -33,7 +39,7 @@ public class Options {
   /**
    * Sets the flag for a status value
    *
-   * @param user Is a status value
+   * @param status Is a status value
    * @return Options object with the applied flag
    */
   public Options withStatus(boolean status) {
@@ -42,17 +48,31 @@ public class Options {
     return this;
   }
 
+  /**
+   * Sets the flag for a technology value
+   *
+   * @param technology Is a technology value
+   * @return Options object with the applied flag
+   */
+  public Options withTechnology(boolean technology) {
+    this.isTechnology = technology;
+
+    return this;
+  }
+
   @Override
   public String toString() {
     return (
       "Options{" +
-        "isDefault=" +
-        isDefault +
-        ", isUser=" +
-        isUser +
-        ", isStatus=" +
-        isStatus +
-        '}'
+      "isDefault=" +
+      isDefault +
+      ", isUser=" +
+      isUser +
+      ", isStatus=" +
+      isStatus +
+      ", isTechnology=" +
+      isTechnology +
+      "}"
     );
   }
 }

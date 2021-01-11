@@ -3,6 +3,7 @@ package au.com.agiledigital.idea_search.blueprints;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -13,24 +14,18 @@ import java.util.Map;
  */
 public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
 
-  public final List<KeyProperty> ideaFieldsDefaults = Arrays.asList(
-    new KeyProperty(
-      Parameter.IDEA_TITLE.reference,
-      "I totally forgot to put one in the form"
-    ),
-    new KeyProperty(
-      Parameter.IDEA_DESCRIPTION.reference,
-      "It is awesome, how could it not be"
-    ),
-    new KeyProperty(
-      Parameter.IDEA_OWNER.reference,
-      "@me",
-      new Options().withDefault(true).withUser(true)
-    ),
-    new KeyProperty(Parameter.IDEA_TEAM.reference, "none set")
-  );
-
-  private final String templatePath = "vm/";
+  public final List<KeyProperty> ideaFieldsDefaults =
+    Arrays.asList(
+      new KeyProperty(
+        Parameter.IDEA_TITLE.getReference(), "I totally forgot to put one in the form"),
+      new KeyProperty(
+        Parameter.IDEA_DESCRIPTION.getReference(), "It is awesome, how could it not be"),
+      new KeyProperty(
+        Parameter.IDEA_OWNER.getReference(),
+        "@me"
+      ),
+      new KeyProperty(Parameter.IDEA_TECHNOLOGY.getReference(), "Add your technologies"),
+      new KeyProperty(Parameter.IDEA_TEAM.getReference(), "none set"));
 
   /**
    * Renders a value based on a template using the options object as the determiner.
@@ -39,35 +34,38 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
    * @return the rendered value as xhtml
    */
   private String renderValue(KeyProperty property) {
-    if (property.key.startsWith("v")) {
+    if (property.getKey().startsWith("v")) {
+      String templatePath = "vm/";
       StringBuilder builder = new StringBuilder(templatePath);
 
-      if (property.options.isDefault) {
+      if (property.getOptions().getIsDefault()) {
         builder.append("PlaceHolder");
       }
 
-      if (property.options.isUser) {
+      if (property.getOptions().getIsUser()) {
         builder.append("User");
 
-        property.value = ((String) property.value).split(",");
+        property.setValue(  (property.getValue().toString()).split(","));
       }
 
-      if (property.options.isStatus) {
+      if (property.getOptions().getIsTechnology()) {
+        builder.append("Technology");
+      }
+
+      if (property.getOptions().getIsStatus()) {
         builder.append("Status");
       }
 
       if (builder.length() > templatePath.length()) {
+        // Using a hashmap as Confluence may modify this map (Needs to be mutable otherwise error)
         HashMap<String, Object> context = new HashMap<>();
         context.put("message", property);
 
-        return VelocityUtils.getRenderedTemplate(
-          builder.append(".vm").toString(),
-          context
-        );
+        return VelocityUtils.getRenderedTemplate(builder.append(".vm").toString(), context);
       }
     }
 
-    return property.value.toString();
+    return property.getValue().toString();
   }
 
   /**
@@ -89,6 +87,9 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
         case IDEA_TEAM:
           options.withUser(true);
           break;
+        case IDEA_TECHNOLOGY:
+          options.withTechnology(true);
+          break;
         default:
           break;
       }
@@ -105,12 +106,8 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
    * @return Update context
    */
   @Override
-  protected BlueprintContext updateBlueprintContext(
-    BlueprintContext blueprintContext
-  ) {
+  protected BlueprintContext updateBlueprintContext(BlueprintContext blueprintContext) {
     Map<String, Object> contextMap = blueprintContext.getMap();
-
-    System.out.println("Idea Owner: " + contextMap.get(Parameter.IDEA_OWNER.reference));
 
     blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());
 
@@ -119,29 +116,26 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
       .entrySet()
       .forEach(
         entry ->
-          contextMap.compute(entry.getKey(),
+          contextMap.compute(
+            entry.getKey(),
             (key, value) ->
               value == null || (value instanceof String && ((String) value).length() == 0)
-                ? ideaFieldsDefaults
-                .stream()
-                .filter(property -> property.key.equals(key))
+                ? ideaFieldsDefaults.stream()
+                .filter(property -> property.getKey().equals(key))
                 .findFirst()
                 .orElse(
-                  new KeyProperty(key, "Something went very wrong here",
+                  new KeyProperty(
+                    key,
+                    "Something went very wrong here",
                     setupOptions(key, new Options().withDefault(true))))
-                : new KeyProperty(key, entry.getValue(),
-                  setupOptions(key, new Options().withDefault(false))
-                )
-          ));
+                : new KeyProperty(
+                  key,
+                  entry.getValue(),
+                  setupOptions(key, new Options().withDefault(false)))));
 
     contextMap
       .entrySet()
-      .forEach(
-        entry -> entry.setValue(
-          renderValue((KeyProperty) entry.getValue()))
-      );
-
-    System.out.println(contextMap.get(Parameter.IDEA_OWNER.reference));
+      .forEach(entry -> entry.setValue(renderValue((KeyProperty) entry.getValue())));
 
     contextMap.put("blueprintId", blueprintContext.getBlueprintId());
 
