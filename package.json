@@ -10,11 +10,7 @@
   },
   "release": {
     "branches": [
-      "main",
-      {
-        "name": "qa",
-        "prerelease": true
-      }
+      "main"
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
