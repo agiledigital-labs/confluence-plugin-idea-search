@@ -167,7 +167,7 @@ public class IndexTable implements Macro {
         createSearchableQuery(getMacroLabels(map), conversionContext.getSpaceKey()),
         ModifiedSort.DESCENDING,
         searchFilter,
-        new SubsetResultFilter(20));
+        new SubsetResultFilter(100));
 
     List<IdeaContainer> rows = Collections.emptyList();
 
