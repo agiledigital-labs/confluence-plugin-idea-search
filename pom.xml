@@ -7,7 +7,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>au.com.agiledigital</groupId>
     <artifactId>idea_search</artifactId>
-    <version>1.2.0</version>
+
+    <version>1.2.1-SNAPSHOT</version>
 
     <organization>
         <name>Agile Digital</name>
