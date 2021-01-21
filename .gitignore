@@ -11,4 +11,4 @@ node_modules
 log.log
 target/
 .idea
-idea_search.iml
+backend/idea_search.iml
