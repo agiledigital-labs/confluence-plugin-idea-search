@@ -1,8 +1,16 @@
 package au.com.agiledigital.idea_search.rest;
 
+import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
+import com.atlassian.confluence.search.v2.SearchManager;
+import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.web.filter.CachingHeaders;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.gson.Gson;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +21,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.util.List;
+import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * External rest API servlet
@@ -20,13 +31,16 @@ import java.util.List;
 @Path("/")
 @Component
 public class TechnologyList {
-
+  private SearchManager searchManager;
+  private SettingsManager settingsManager;
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
 
 
   @Autowired
-  public TechnologyList(FedexIdeaService fedexIdeaService) {
+  public TechnologyList(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager) {
+    this.searchManager = searchManager;
+    this.settingsManager = settingsManager;
     this.fedexIdeaService = fedexIdeaService;
   }
 
@@ -76,6 +90,41 @@ public class TechnologyList {
     return allTechnologies.isEmpty()
       ? "{[]}"
       : this.gson.toJson(allTechnologies);
+  }
+
+  /**
+   * @param searchString to find technologies that begin with this string
+   * @param response     Servlet contest
+   * @return String in the form of a json list of TechnologyAPI objects
+   */
+  @Path("/ideaPages")
+  @Produces({"application/json"})
+  @GET
+  public String getIdeaPages(
+    @QueryParam("q") String searchString,
+    @Context HttpServletResponse response
+  ) {
+    this.applyNoCacheHeaders(response);
+
+    Set<String> newSet = new HashSet<>();
+    newSet.add("fedex-ideas");
+
+    List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
+
+    List<Map> preConvert = allIdeas.stream().map( idea -> {
+      Map preJsonIdea = new HashMap<String, String>();
+      preJsonIdea.put("title", idea.getTitle());
+      preJsonIdea.put("url", idea.getUrl());
+      preJsonIdea.put("description", idea.getDescription());
+      preJsonIdea.put("technologies", idea.getTechnologies());
+      preJsonIdea.put("owner", idea.getOwner());
+      preJsonIdea.put("status", idea.getStatus());
+      return preJsonIdea;
+    }).collect(Collectors.toList());
+
+    return allIdeas.isEmpty()
+      ? "{[]}"
+      : this.gson.toJson(preConvert);
   }
 
   /**
