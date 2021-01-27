@@ -254,12 +254,12 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 
     return new FedexIdea.Builder()
-      .withTechnologies(techList)
-      .withContentId(page.getId())
-      .withCreator(page.getCreator().getName())
-      .withDescription(row.getDescription().getValue())
-      .withStatus(row.getStatus().getValue())
-      .withOwner(row.getOwner().getValue())
+//      .withTechnologies(techList)
+      .withContentId(page.getId()).withSchemaId(4)
+//      .withCreator(page.getCreator().getName())
+//      .withDescription(row.getDescription().getValue())
+//      .withStatus(row.getStatus().getValue())
+//      .withOwner(row.getOwner().getValue())
       .build();
   }
 }

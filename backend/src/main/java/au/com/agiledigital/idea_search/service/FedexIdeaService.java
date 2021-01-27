@@ -15,6 +15,9 @@ public interface FedexIdeaService {
    * @return created fedexIdea
    */
   FedexIdea createIdea(FedexIdea fedexIdea);
+  FedexSchema createSchema(FedexSchema fedexSchema);
+
+  List<FedexSchema> listSchemas();
 
   /**
    * Update an idea in the data store by the contentID
@@ -26,6 +29,8 @@ public interface FedexIdeaService {
   FedexIdea updateIdea(FedexIdea fedexIdea, long contentId);
 
   FedexSchema getSchema(long id);
+
+  FedexIdea getByContentId(long contentId);
 
   /**
    * Filter technology list from dao to avoid technology duplication

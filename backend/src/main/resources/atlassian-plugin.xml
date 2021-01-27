@@ -165,8 +165,7 @@
     <dependency>com.atlassian.auiplugin:aui-select2</dependency>
     <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
     <transformation extension="js">
-      <transformer key="jsI18n"/>
-    </transformation>
+      <transformer key="jsI18n"/> 
   </web-resource>
   <web-resource
     key="ideaSearch-macro-structuredField-macro-resource"

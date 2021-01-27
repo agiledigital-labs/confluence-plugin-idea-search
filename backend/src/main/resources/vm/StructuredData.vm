@@ -2,7 +2,9 @@
 ## A hack!!!
 <div class="field-group hidden">
   <input class="text" type="text" id="contextPath" name="contextPath" value="$contextPath">
-  <input class="text" type="text" id="schema" name="schema" value="{'title':'An idea','type':'object','required':['firstName','lastName'],'properties':{'password':{'type':'string','title':'Password'},'lastName':{'type':'string','title':'Last name'},'bio':{'type':'string','title':'Bio'},'firstName':{'type':'string','title':'First name'},'age':{'type':'integer','title':'Age'}}}">
+  <input class="text" type="text" id="schema" name="schema" value="$schema">
+##  <input class="text" type="text" id="schema" name="uiSchema" value="$uiSchema">
+##  <input class="text" type="text" id="uiSchema" name="formData" value="$formData">
 </div>
 <div id="maincontainer">
   <div id="container-idea">

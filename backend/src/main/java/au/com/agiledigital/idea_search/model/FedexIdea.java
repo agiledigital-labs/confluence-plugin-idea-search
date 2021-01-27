@@ -18,7 +18,7 @@ public class FedexIdea {
   private final String title;
   private final String description;
   private final String status;
-  private final long schema;
+  private final long schemaId;
   private final String formData;
 
   @JsonCreator
@@ -31,7 +31,7 @@ public class FedexIdea {
     @JsonProperty("title") String title,
     @JsonProperty("status") String status,
     @JsonProperty("description") String description,
-    @JsonProperty("schema") long schema,
+    @JsonProperty("schema") long schemaId,
     @JsonProperty("formData") String formData
   ) {
     this.globalId = globalId;
@@ -42,7 +42,7 @@ public class FedexIdea {
     this.title = title;
     this.description = description;
     this.status = status;
-    this.schema = schema;
+    this.schemaId = schemaId;
     this.formData = formData;
   }
 
@@ -78,7 +78,7 @@ public class FedexIdea {
     return this.description;
   }
 
-  public long getSchema() {return this.schema;}
+  public long getSchemaId() {return this.schemaId;}
 
   public String getFormData() {return this.formData;}
 
@@ -112,7 +112,7 @@ public class FedexIdea {
     private String title;
     private String status;
     private String description;
-    private long  schema;
+    private long  schemaId;
     private String formData;
 
     public Builder() {
@@ -127,7 +127,7 @@ public class FedexIdea {
       this.title = fedexIdea.title;
       this.status = fedexIdea.status;
       this.description = fedexIdea.description;
-      this.schema = fedexIdea.schema;
+      this.schemaId = fedexIdea.schemaId;
       this.formData = fedexIdea.formData;
     }
 
@@ -165,8 +165,8 @@ public class FedexIdea {
       this.status = status;
       return this;
     }
-    public FedexIdea.Builder withSchema(long schema) {
-      this.schema = schema;
+    public FedexIdea.Builder withSchemaId(long schema) {
+      this.schemaId = schemaId;
       return this;
     }
     public FedexIdea.Builder withFormData(String formData) {
@@ -184,7 +184,7 @@ public class FedexIdea {
         this.title,
         this.status,
         this.description,
-        this.schema,
+        this.schemaId,
         this.formData);
     }
   }

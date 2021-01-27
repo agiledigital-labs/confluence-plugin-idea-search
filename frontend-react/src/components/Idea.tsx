@@ -133,7 +133,7 @@ const OuterIdea = () => {
 
   useEffect(() => {
     axios.get(`${context}/rest/idea/1/schema`).then((data) => {
-      setRestSchema(data.data);
+      setRestSchema(JSON.parse(data.data.schema));
     });
     setHack(true);
   }, [hack]);

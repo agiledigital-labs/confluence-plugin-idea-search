@@ -24,6 +24,9 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return FedexIdea that was created
    */
   public FedexIdea createIdea(FedexIdea fedexIdea) {
+
+    fedexIdea.getContentId();
+
     return this.fedexIdeaDao.createIdea(fedexIdea);
   }  /**
 
@@ -38,6 +41,14 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
 
   public  FedexSchema getSchema(long id) {
     return this.fedexIdeaDao.findOneSchema(id);
+  }
+
+  public List<FedexSchema> listSchemas() {
+    return this.fedexIdeaDao.findAllSchema();
+  }
+
+  public FedexIdea getByContentId(long contentId){
+    return this.fedexIdeaDao.getByContentId(contentId);
   }
 
   /**

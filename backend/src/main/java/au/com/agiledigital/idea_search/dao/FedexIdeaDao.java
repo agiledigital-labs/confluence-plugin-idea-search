@@ -13,8 +13,7 @@ import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +53,7 @@ public class FedexIdeaDao {
     // Save the changes to the active object
     aoFedexIdea.save();
     // Set the relation of the technology to the idea and save
-    setTechnologies(getAoFedexTechnologies(fedexIdea), aoFedexIdea);
+//    setTechnologies(getAoFedexTechnologies(fedexIdea), aoFedexIdea);
 
     return this.asFedexIdea(aoFedexIdea);
   }
@@ -159,6 +158,24 @@ public class FedexIdeaDao {
   }
 
   /**
+   * Update a FedexIdea by the page content id
+   *
+   * @param contentId of the page containing the idea
+   * @return FedexIdea saved to the data store
+   */
+  public FedexIdea getByContentId(long contentId) {
+
+    List<AoFedexIdea> test = Arrays.stream(this.ao.find(
+      AO_FEDEX_IDEA_TYPE,
+      Query.select().where("CONTENT_ID = ?", contentId)
+    )).collect(Collectors.toList());
+
+    FedexIdea other = test.stream().map(this::asFedexIdea).collect(Collectors.toList()).get(0);
+
+    return other;
+  }
+
+  /**
    * Extract technologies from FedexIdea and create an active object for each
    *
    * @param fedexIdea from model
@@ -209,11 +226,90 @@ public class FedexIdeaDao {
     return this.asSchema(aoSchema);
   }
 
+  private static String DEFAULT_SCHEMA = "{\n" +
+    "  \"title\": \"A fedex Idea or puzzle\",\n" +
+    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
+    "  \"type\": \"object\",\n" +
+    "  \"required\": [\n" +
+    "    \"ideaTitle\"\n" +
+    "  ],\n" +
+    "  \"properties\": {\n" +
+    "    \"ideaTitle\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Idea Title (or how it should be know)\",\n" +
+    "      \"default\": \"Other things\"\n" +
+    "    },\n" +
+    "    \"description\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Description\"\n" +
+    "    },\n" +
+    "    \"owner\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Idea owner\"\n" +
+    "    },\n" +
+    "    \"status\":{\n" +
+    "          \"type\": \"string\",\n" +
+    "          \"enum\": [\n" +
+    "            \"new\",\n" +
+    "            \"inProgress\",\n" +
+    "            \"completed\",\n" +
+    "            \"abandoned\"\n" +
+    "          ],\"enumNames\": [\"New\", \"In Progress\", \"Completed\", \"Abandoned\"],\n" +
+    "          \"default\": \"New\"\n" +
+    "        \n" +
+    "    },\n" +
+    "        \"team\": {\n" +
+    "      \"type\": \"array\",\n" +
+    "      \"title\": \"The team\",\n" +
+    "      \"items\":{\n" +
+    "        \"type\": \"string\"\n" +
+    "      }\n" +
+    "    },\n" +
+    "       \"technologies\": {\n" +
+    "      \"type\": \"array\",\n" +
+    "      \"title\": \"The tech\",\n" +
+    "      \"items\":{\n" +
+    "        \"type\": \"string\"\n" +
+    "      }\n" +
+    "    },\n" +
+    "           \"links\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Links to resources for this idea\"\n" +
+    "    },\n" +
+    "           \"tickets\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Links to issues or tickets that track this\"\n" +
+    "    },\n" +
+    "           \"talks\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Presentations on the idea\"\n" +
+    "    }\n" +
+    "  }\n" +
+    "}";
+
+  public AoSchema findRawOneSchema(long id) {
+
+    AoSchema[] listSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select().where("GLOBAL_ID = ?", id));
+    if (listSchema.length > 0) {
+      return listSchema[0];
+    }
+
+    AoSchema aoSchema = this.ao.create(AO_IDEA_SCHEMA);
+
+    aoSchema.setSchema(DEFAULT_SCHEMA);
+
+    aoSchema.save();
+
+    return aoSchema;
+
+  }
+
   public List<FedexSchema> findAllSchema() {
     AoSchema[] aoSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select());
 
     return this.asListFedexSchema(aoSchema);
   }
+
 
   /**
    * Convert array of active objects to a list of model objects
@@ -237,6 +333,7 @@ public class FedexIdeaDao {
       .map(this::asFedexTechnology)
       .collect(Collectors.toList());
   }
+
   /**
    * Convert array of active objects to a list of model objects
    *
@@ -304,6 +401,8 @@ public class FedexIdeaDao {
     aoFedexIdea.setOwner(fedexIdea.getOwner());
     aoFedexIdea.setStatus(fedexIdea.getStatus());
     aoFedexIdea.setDescription(fedexIdea.getDescription());
+    aoFedexIdea.setSchemaIdManual(fedexIdea.getSchemaId());
+    aoFedexIdea.setSchema(this.findRawOneSchema(fedexIdea.getSchemaId()));
   }
 
   /**
@@ -337,8 +436,41 @@ public class FedexIdeaDao {
       .withDescription(aoFedexIdea.getDescription())
       .withStatus(aoFedexIdea.getStatus())
       .withFormData(aoFedexIdea.getFormData())
-      .withSchema(aoFedexIdea.getSchema())
+      .withSchemaId(this.getSchemaFromIdea(aoFedexIdea.getContentId()))
       .build();
+  }
+
+  private long getSchemaFromDb(long contentId) {
+
+    List<Map> test = new ArrayList<>();
+
+    Arrays.stream(this.ao.find(AO_IDEA_SCHEMA))
+      .map(s -> Arrays.stream(s.getIdeas()).map(i -> {
+          Map container = new HashMap<String, String>();
+          container.put("schemaId", s.getGlobalId());
+          container.put("idea", i);
+          test.add(container);
+          return null;
+        })
+      );
+
+    Map other = test.stream().filter((r) -> {
+
+      AoFedexIdea idea = (AoFedexIdea) r.get("idea");
+      return idea.getContentId() == contentId;
+    }).collect(Collectors.toList()).get(0);
+
+    long thing = (long) other.get("schemaId");
+
+    return thing;
+  }
+
+  private long getSchemaFromIdea(long contentId) {
+
+    return Arrays.stream(this.ao.find(
+      AO_FEDEX_IDEA_TYPE,
+      Query.select().where("CONTENT_ID = ?", contentId)
+    )).map(AoFedexIdea::getSchemaIdManual).collect(Collectors.toList()).get(0);
   }
 
   /**

@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+import au.com.agiledigital.idea_search.model.FedexSchema;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -34,7 +35,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * External rest API servlet
@@ -101,76 +105,100 @@ public class TechnologyList {
       : this.gson.toJson(allTechnologies);
   }
 
+  private static String DEFAULT_SCHEMA = "{\n" +
+    "  \"title\": \"A fedex Idea or puzzle\",\n" +
+    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
+    "  \"type\": \"object\",\n" +
+    "  \"required\": [\n" +
+    "    \"ideaTitle\"\n" +
+    "  ],\n" +
+    "  \"properties\": {\n" +
+    "    \"ideaTitle\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Idea Title (or how it should be know)\",\n" +
+    "      \"default\": \"Other things\"\n" +
+    "    },\n" +
+    "    \"description\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Description\"\n" +
+    "    },\n" +
+    "    \"owner\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Idea owner\"\n" +
+    "    },\n" +
+    "    \"status\":{\n" +
+    "          \"type\": \"string\",\n" +
+    "          \"enum\": [\n" +
+    "            \"new\",\n" +
+    "            \"inProgress\",\n" +
+    "            \"completed\",\n" +
+    "            \"abandoned\"\n" +
+    "          ],\"enumNames\": [\"New\", \"In Progress\", \"Completed\", \"Abandoned\"],\n" +
+    "          \"default\": \"New\"\n" +
+    "        \n" +
+    "    },\n" +
+    "        \"team\": {\n" +
+    "      \"type\": \"array\",\n" +
+    "      \"title\": \"The team\",\n" +
+    "      \"items\":{\n" +
+    "        \"type\": \"string\"\n" +
+    "      }\n" +
+    "    },\n" +
+    "       \"technologies\": {\n" +
+    "      \"type\": \"array\",\n" +
+    "      \"title\": \"The tech\",\n" +
+    "      \"items\":{\n" +
+    "        \"type\": \"string\"\n" +
+    "      }\n" +
+    "    },\n" +
+    "           \"links\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Links to resources for this idea\"\n" +
+    "    },\n" +
+    "           \"tickets\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Links to issues or tickets that track this\"\n" +
+    "    },\n" +
+    "           \"talks\": {\n" +
+    "      \"type\": \"string\",\n" +
+    "      \"title\": \"Presentations on the idea\"\n" +
+    "    }\n" +
+    "  }\n" +
+    "}";
+
 
   @Path("/schema")
   @Produces({"application/json"})
   @GET
   public String getSchema( @Context HttpServletResponse response){
-    FedexSchema schemaById = this.fedexIdeaService.getSchema(1);
+    FedexSchema schemaById = this.fedexIdeaService.listSchemas().get(0);
 
-    log.warn(schemaById.getSchema());
+    Map schema = new HashMap<String , String>();
 
-    return "{\n" +
-      "  \"title\": \"A fedex Idea or puzzle\",\n" +
-      "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
-      "  \"type\": \"object\",\n" +
-      "  \"required\": [\n" +
-      "    \"ideaTitle\"\n" +
-      "  ],\n" +
-      "  \"properties\": {\n" +
-      "    \"ideaTitle\": {\n" +
-      "      \"type\": \"string\",\n" +
-      "      \"title\": \"Idea Title (or how it should be know)\",\n" +
-      "      \"default\": \"Other things\"\n" +
-      "    },\n" +
-      "    \"description\": {\n" +
-      "      \"type\": \"string\",\n" +
-      "      \"title\": \"Description\"\n" +
-      "    },\n" +
-      "    \"owner\": {\n" +
-      "      \"type\": \"string\",\n" +
-      "      \"title\": \"Idea owner\"\n" +
-      "    },\n" +
-      "    \"status\":{\n" +
-      "          \"type\": \"string\",\n" +
-      "          \"enum\": [\n" +
-      "            \"new\",\n" +
-      "            \"inProgress\",\n" +
-      "            \"completed\",\n" +
-      "            \"abandoned\"\n" +
-      "          ],\"enumNames\": [\"New\", \"In Progress\", \"Completed\", \"Abandoned\"],\n" +
-      "          \"default\": \"New\"\n" +
-      "        \n" +
-      "    },\n" +
-      "        \"team\": {\n" +
-      "      \"type\": \"array\",\n" +
-      "      \"title\": \"The team\",\n" +
-      "      \"items\":{\n" +
-      "        \"type\": \"string\"\n" +
-      "      }\n" +
-      "    },\n" +
-      "       \"technologies\": {\n" +
-      "      \"type\": \"array\",\n" +
-      "      \"title\": \"The tech\",\n" +
-      "      \"items\":{\n" +
-      "        \"type\": \"string\"\n" +
-      "      }\n" +
-      "    },\n" +
-      "           \"links\": {\n" +
-      "      \"type\": \"string\",\n" +
-      "      \"title\": \"Links to resources for this idea\"\n" +
-      "    },\n" +
-      "           \"tickets\": {\n" +
-      "      \"type\": \"string\",\n" +
-      "      \"title\": \"Links to issues or tickets that track this\"\n" +
-      "    },\n" +
-      "           \"talks\": {\n" +
-      "      \"type\": \"string\",\n" +
-      "      \"title\": \"Presentations on the idea\"\n" +
-      "    }\n" +
-      "  }\n" +
-      "}";
+      schema.put("schema", DEFAULT_SCHEMA);
+      schema.put("uiSchema", schemaById.getUiSchema());
+
+    return this.gson.toJson(schema);
   }
+
+  @Path("/schema/ids")
+  @Produces({"application/json"})
+  @GET
+  public String getSchemaIds( @Context HttpServletResponse response){
+    List<Map> schemaIds = this.fedexIdeaService.listSchemas().stream().map(schema -> {
+      Map schemaReturn = new HashMap<String, String>();
+      schemaReturn.put("id",  schema.getGlobalId());
+      schemaReturn.put("name",  schema.getName());
+      schemaReturn.put("version",  schema.getVersion());
+      schemaReturn.put("description",  schema.getDescription());
+      return  schemaReturn;
+    }).collect(Collectors.toList());
+
+    return this.gson.toJson( schemaIds);
+  }
+
+
+
   /**
    * Added to prevent the search caching the responses
    *

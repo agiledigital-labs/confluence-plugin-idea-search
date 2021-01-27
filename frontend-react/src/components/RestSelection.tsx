@@ -35,7 +35,7 @@ export const RestSelection = (props: any) => {
       axios
         .get(`${props.uiSchema.context}/${props.uiSchema.endpoint}${restInput}`)
         .then((res) => setRestList(res.data.result));
-    }, 2500),
+    }, 1000),
     []
   );
 

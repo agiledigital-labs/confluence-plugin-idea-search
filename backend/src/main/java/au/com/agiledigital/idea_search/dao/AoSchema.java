@@ -44,5 +44,5 @@ public interface AoSchema extends RawEntity<Long> {
   void setSchema(String Schema);
 
   @OneToMany
-  AoFedexIdea getIdea();
+  AoFedexIdea[] getIdeas();
 }

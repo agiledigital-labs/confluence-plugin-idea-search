@@ -281,7 +281,7 @@ const attachUpdateButton = () => {
     AJS.Confluence.PropertyPanel.Macro.registerButtonHandler !== undefined
   ) {
     AJS.Confluence.PropertyPanel.Macro.registerButtonHandler(
-      "update",
+      "updated",
       switchByCategory
     );
   } else {

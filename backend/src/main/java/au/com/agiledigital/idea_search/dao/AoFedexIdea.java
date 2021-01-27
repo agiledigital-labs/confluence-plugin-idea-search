@@ -50,7 +50,10 @@ public interface AoFedexIdea extends RawEntity<Long> {
   void setCreatorUserKey(String creatorUserKey);
 
   void setSchema(AoSchema aoSchema);
-  long getSchema();
+
+  long getSchemaIdManual();
+
+  void setSchemaIdManual(long schemaIdManual);
 
   @StringLength(-1)
   String getFormData();

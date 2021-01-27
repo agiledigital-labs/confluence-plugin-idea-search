@@ -57,7 +57,7 @@ export const UserSelection = (props: any) => {
             )
           )
         );
-    }, 2500),
+    }, 1000),
     []
   );
 
