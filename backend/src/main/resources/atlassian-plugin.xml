@@ -166,11 +166,13 @@
     <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
     <transformation extension="js">
       <transformer key="jsI18n"/> 
+    </transformation>
   </web-resource>
   <web-resource
     key="ideaSearch-macro-structuredField-macro-resource"
     name="Structured Field Web Resources"
   >
+
     <dependency>
       com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
     </dependency>
