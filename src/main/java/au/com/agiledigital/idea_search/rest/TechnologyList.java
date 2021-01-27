@@ -115,10 +115,10 @@ public class TechnologyList {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", idea.getUrl());
-      preJsonIdea.put("description", idea.getDescription());
-      preJsonIdea.put("technologies", idea.getTechnologies());
-      preJsonIdea.put("owner", idea.getOwner());
-      preJsonIdea.put("status", idea.getStatus());
+      preJsonIdea.put("description", idea.getDescription().getRenderedValue());
+      preJsonIdea.put("technologies", idea.getTechnologies().getValue());
+      preJsonIdea.put("owner", idea.getOwner().getRenderedValue());
+      preJsonIdea.put("status", idea.getStatus().getRenderedValue());
       return preJsonIdea;
     }).collect(Collectors.toList());
 
