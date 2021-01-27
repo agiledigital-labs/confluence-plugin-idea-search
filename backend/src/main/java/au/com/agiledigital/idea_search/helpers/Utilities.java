@@ -55,6 +55,9 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 public class Utilities {
+  private static final Logger log = LoggerFactory.getLogger(Utilities.class);
+  private static XhtmlContent xhtmlContent;
+  private static DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
   private Utilities() {throw new IllegalStateException("Utility class"); }
 

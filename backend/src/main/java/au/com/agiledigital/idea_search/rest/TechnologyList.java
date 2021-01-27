@@ -71,6 +71,8 @@ import java.util.Map;
 @Path("/")
 @Component
 public class TechnologyList {
+  private SearchManager searchManager;
+  private SettingsManager settingsManager;
   private static final Logger log = LoggerFactory.getLogger(TechnologyList.class);
 
   private final FedexIdeaService fedexIdeaService;
@@ -79,6 +81,8 @@ public class TechnologyList {
 
   @Autowired
   public TechnologyList(FedexIdeaService fedexIdeaService) {
+    this.searchManager = searchManager;
+    this.settingsManager = settingsManager;
     this.fedexIdeaService = fedexIdeaService;
   }
 
