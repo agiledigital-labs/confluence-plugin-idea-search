@@ -19,6 +19,16 @@
     tslib "^1.9.3"
     use-memo-one "^1.1.1"
 
+"@atlaskit/analytics-next@^8.0.0":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-8.1.1.tgz#d0b0e91be59417129ea4296b3b6984f2e58e32d2"
+  integrity sha512-cawCqnrSz/mjBGmlY1hz4mMGMdP+rkcEGQ1YHVz8LmeO+fm3OVWYDETSSMCYBrmwRVrOhCbiTQtbs38vKUHYrw==
+  dependencies:
+    "@atlaskit/analytics-next-stable-react-context" "1.0.1"
+    "@babel/runtime" "^7.0.0"
+    prop-types "^15.5.10"
+    use-memo-one "^1.1.1"
+
 "@atlaskit/avatar@^17.1.11":
   version "17.1.11"
   resolved "https://registry.yarnpkg.com/@atlaskit/avatar/-/avatar-17.1.11.tgz#3b34a216250dc65026a994b657bd8ea9cbb867ec"
@@ -29,7 +39,7 @@
     "@atlaskit/tooltip" "^15.2.7"
     tslib "^1.9.3"
 
-"@atlaskit/button@^13.3.7", "@atlaskit/button@^13.4.0":
+"@atlaskit/button@^13.4.0":
   version "13.4.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-13.4.2.tgz#c0afe579465d16949432a42d8d73d8f6aa650ad0"
   integrity sha512-qLxbnnuSDr+arM8NIRva9J2H3YU6kvpWYw0lzQiW59iCQIjsRlo5EQqrGPd9l4nDL/shvdNzAuEQTVC+21t/pg==
@@ -40,6 +50,17 @@
     "@emotion/core" "^10.0.9"
     memoize-one "^5.1.0"
     tslib "^1.9.3"
+
+"@atlaskit/button@^15.1.0":
+  version "15.1.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-15.1.4.tgz#d802c6284915bede449edb44f22e860b771fb995"
+  integrity sha512-QlnI8db6a69LgNWjvle2ydoIuAqBBSxRNaOKO5WOzeARJV2H5pWnBU9dKBy+R9173ggPOOF6CXiWG8Hlv6nj7w==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/spinner" "^15.0.0"
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
 
 "@atlaskit/dropdown-menu@^9.0.6":
   version "9.0.6"
@@ -73,17 +94,17 @@
     "@babel/runtime" "^7.0.0"
     prop-types "^15.5.10"
 
-"@atlaskit/dynamic-table@^13.7.9":
-  version "13.7.9"
-  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-13.7.9.tgz#54fec94dcc594479a55889089230eb0e192325ad"
-  integrity sha512-jqaO3+pkHZiHuXZdJicsrr7vxbac+4uhCjoQmGqcYaONCzhWiRBq0TxmAGj7l77bIYmzPrrKkZSUCk4cgnjfug==
+"@atlaskit/dynamic-table@^14.1.5":
+  version "14.1.5"
+  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.1.5.tgz#ac8ccdefa10706ee177a2b2469084be87a397d99"
+  integrity sha512-KUV4/Uy5aPybkRlYaXn/uqUH3UYgzxwkKJ4MvClJZMpasA/IjXB5oft2+ppd1SfWN4kTgBp4yS2CEx1ZpVMINg==
   dependencies:
-    "@atlaskit/analytics-next" "^6.3.6"
-    "@atlaskit/pagination" "^12.0.19"
-    "@atlaskit/spinner" "^14.0.0"
-    "@atlaskit/theme" "^9.5.3"
+    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/pagination" "^13.0.0"
+    "@atlaskit/spinner" "^15.0.0"
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
     react-beautiful-dnd "^12.1.1"
-    tslib "^1.9.3"
 
 "@atlaskit/form@^7.4.1":
   version "7.4.1"
@@ -99,13 +120,22 @@
     tiny-invariant "^0.0.3"
     tslib "^1.9.3"
 
-"@atlaskit/icon@^20.1.1", "@atlaskit/icon@^20.1.2":
+"@atlaskit/icon@^20.1.1":
   version "20.1.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-20.1.2.tgz#1054196d5442cb818faefe17a47c3e528bc15ae7"
   integrity sha512-cDpE6kfiCxv4VNY4LKtRUPAdXTcx4t2eEU1K5Htm/5i6/rmJMHMITIvpZaRqF2R7XdBH5kE2MLxSfexBHC0DjQ==
   dependencies:
     "@atlaskit/theme" "^9.5.1"
     tslib "^1.9.3"
+    uuid "^3.1.0"
+
+"@atlaskit/icon@^21.0.0":
+  version "21.2.3"
+  resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-21.2.3.tgz#bcf50a5994049b11d24fcd2bb9177f315847b63e"
+  integrity sha512-bCKiMkNoOYSXOlGO+WrvBnj8unwZoilgWeSB8z7w+5VCtM9zo9ZdYiCJ4D70Q+mU8+AIwL0tMaV1rvPgNeFQRA==
+  dependencies:
+    "@atlaskit/theme" "^11.0.0"
+    tslib "^2.0.0"
     uuid "^3.1.0"
 
 "@atlaskit/item@^11.0.2":
@@ -129,16 +159,16 @@
     raf-schd "^2.1.0"
     react-scrolllock "^5.0.1"
 
-"@atlaskit/pagination@^12.0.19":
-  version "12.0.21"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pagination/-/pagination-12.0.21.tgz#8d46fbee62c6b409155e80f3d1c3f4116a373915"
-  integrity sha512-IPW7JbE+rwY8S6negzASjaWE3oxNvT/Uafyb8Z6S4bOKD4W90yKPEDSQzSI2qrZt4bfHdxtSuIdpdNF3fyCz0w==
+"@atlaskit/pagination@^13.0.0":
+  version "13.0.9"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pagination/-/pagination-13.0.9.tgz#81ba4ff4a008dbdcc9bf4af7f18640788b29b56b"
+  integrity sha512-+toh2AIK4Ew2+VLC2uCjSJneT7+Spug8h6VAKCLGWsL+nR5dWRoyW18HYV7UFgShj4I1tHKFlwNB3a0rVglhXQ==
   dependencies:
-    "@atlaskit/analytics-next" "^6.3.5"
-    "@atlaskit/button" "^13.3.7"
-    "@atlaskit/icon" "^20.1.2"
-    "@atlaskit/theme" "^9.5.1"
-    tslib "^1.9.3"
+    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/button" "^15.1.0"
+    "@atlaskit/icon" "^21.0.0"
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
 
 "@atlaskit/popper@^3.1.12":
   version "3.1.13"
@@ -168,6 +198,15 @@
     "@emotion/core" "^10.0.9"
     tslib "^1.9.3"
 
+"@atlaskit/spinner@^15.0.0":
+  version "15.0.6"
+  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.0.6.tgz#3b8d95fcdba196e28ca712002f9ac3b81fc6e4f5"
+  integrity sha512-yi/32OT8cU0HRywjgw2EAvdb+ILt+9lopY4B61F/pdlZCra45srAHTM3Wj4KvqhCLeZ5UNiBaSPFC21G6UZjVA==
+  dependencies:
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
+
 "@atlaskit/textarea@^2.2.10":
   version "2.2.10"
   resolved "https://registry.yarnpkg.com/@atlaskit/textarea/-/textarea-2.2.10.tgz#2f68863d3e969737fe6b5f49f2487575b3faa2f4"
@@ -186,6 +225,15 @@
     "@atlaskit/theme" "^9.5.1"
     "@emotion/core" "^10.0.9"
     tslib "^1.9.3"
+
+"@atlaskit/theme@^11.0.0":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-11.0.2.tgz#e657763905853e23ad385ae84e5bd49c2571863e"
+  integrity sha512-1lUyifZGPBFfsTBmlsL9gRVWDS1h+75qqpWJHuMN3x9TwWs9KB5lA8yLhX5/FavNcyLIDa/GIRM4DfAilhvi5w==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    exenv "^1.2.2"
+    prop-types "^15.5.10"
 
 "@atlaskit/theme@^9.5.1", "@atlaskit/theme@^9.5.3":
   version "9.5.6"
@@ -5585,6 +5633,11 @@ forwarded@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
+
+fp-ts@^2.9.3:
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.9.3.tgz#419b9103018ddf7c785acf2b3fecb2662afab5af"
+  integrity sha512-NjzcHYgigcbPQ6yJ52zwgsVDwKz3vwy9sjbxyzcvfXQm+j1BGeOPRuzLKEwsLyE4Xut6gG1FXJtsU9/gUB7tXg==
 
 fragment-cache@^0.2.1:
   version "0.2.1"

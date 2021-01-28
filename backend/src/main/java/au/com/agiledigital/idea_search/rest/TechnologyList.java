@@ -1,69 +1,36 @@
 package au.com.agiledigital.idea_search.rest;
 
-import au.com.agiledigital.idea_search.helpers.StructureDataRenderHelper;
-import au.com.agiledigital.idea_search.model.FedexSchema;
-import au.com.agiledigital.idea_search.service.FedexIdeaService;
-import com.atlassian.confluence.core.BodyContent;
-import com.atlassian.confluence.macro.query.BooleanQueryFactory;
-import com.atlassian.confluence.pages.AbstractPage;
-import com.atlassian.confluence.search.service.ContentTypeEnum;
-import com.atlassian.confluence.search.v2.ContentSearch;
-import com.atlassian.confluence.search.v2.SearchManager;
-import com.atlassian.confluence.search.v2.filter.SubsetResultFilter;
-import com.atlassian.confluence.search.v2.query.BooleanQuery;
-import com.atlassian.confluence.search.v2.query.ContentTypeQuery;
-import com.atlassian.confluence.search.v2.query.InSpaceQuery;
-import com.atlassian.confluence.search.v2.query.LabelQuery;
-import com.atlassian.confluence.search.v2.sort.ModifiedSort;
-import com.atlassian.confluence.web.filter.CachingHeaders;
-import com.google.gson.Gson;
-import net.java.ao.Searchable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
-import au.com.agiledigital.idea_search.model.FedexSchema;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
 
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
+import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
+import com.atlassian.confluence.api.model.people.User;
 import com.atlassian.confluence.search.v2.SearchManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.user.DefaultUserAccessor;
+import com.atlassian.confluence.user.DefaultUserDetailsManager;
+import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.web.filter.CachingHeaders;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.user.UserKey;
+import com.atlassian.sal.api.user.UserManager;
+import com.atlassian.user.impl.DefaultUser;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import java.util.List;
-import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * External rest API servlet
@@ -73,17 +40,18 @@ import java.util.Map;
 public class TechnologyList {
   private SearchManager searchManager;
   private SettingsManager settingsManager;
-  private static final Logger log = LoggerFactory.getLogger(TechnologyList.class);
+  private UserAccessor userAccessor;
 
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
 
 
   @Autowired
-  public TechnologyList(FedexIdeaService fedexIdeaService) {
+  public TechnologyList(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager, @ComponentImport UserAccessor userAccessor) {
     this.searchManager = searchManager;
     this.settingsManager = settingsManager;
     this.fedexIdeaService = fedexIdeaService;
+    this.userAccessor = userAccessor;
   }
 
   /**
@@ -133,6 +101,7 @@ public class TechnologyList {
       ? "{[]}"
       : this.gson.toJson(allTechnologies);
   }
+  public static String userKey = "2c9d829d6e61f011016e61f143ff0000";
 
   private static String DEFAULT_SCHEMA = "{\n" +
     "  \"title\": \"A fedex Idea or puzzle\",\n" +
@@ -251,7 +220,12 @@ public class TechnologyList {
       preJsonIdea.put("url", idea.getUrl());
       preJsonIdea.put("description", idea.getDescription().getRenderedValue());
       preJsonIdea.put("technologies", idea.getTechnologies().getValue());
-      preJsonIdea.put("owner", idea.getOwner().getRenderedValue());
+
+
+      preJsonIdea.put("owner", this.userAccessor.getUserByKey(new UserKey("2c9d829d6e61f011016e61f143ff0000")).getLowerName());
+
+      //preJsonIdea.put("owner", idea.getOwner().getRenderedValue());
+
       preJsonIdea.put("status", idea.getStatus().getRenderedValue());
       return preJsonIdea;
     }).collect(Collectors.toList());

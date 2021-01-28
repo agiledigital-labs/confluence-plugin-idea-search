@@ -1,13 +1,5 @@
 package au.com.agiledigital.idea_search.helpers;
 
-import au.com.agiledigital.idea_search.macros.MacroRepresentation;
-import au.com.agiledigital.idea_search.macros.StructuredCategory;
-import com.atlassian.confluence.xhtml.api.XhtmlContent;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.LSSerializer;
-
 import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
@@ -32,6 +24,7 @@ import com.atlassian.confluence.search.v2.searchfilter.ContentPermissionsSearchF
 import com.atlassian.confluence.search.v2.searchfilter.SpacePermissionsSearchFilter;
 import com.atlassian.confluence.search.v2.sort.ModifiedSort;
 import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.user.DefaultUserAccessor;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -215,6 +208,7 @@ public class Utilities {
     NodeList macros, StructuredCategory category, LSSerializer serializer) {
     return getMacroRepresentation(macros, category, serializer, xhtmlContent);
   }
+
 
   public static List<IdeaContainer> getRows(Set<String> labels, String spaceKey, SearchManager searchManager, SettingsManager settingsManager){
     SearchFilter searchFilter =

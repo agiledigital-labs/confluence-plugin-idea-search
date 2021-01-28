@@ -12,6 +12,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "fp-ts": "^2.9.3",
     "lodash": "^4.17.20",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -41,7 +42,7 @@
   "devDependencies": {
     "@atlaskit/avatar": "^17.1.11",
     "@atlaskit/dropdown-menu": "^9.0.6",
-    "@atlaskit/dynamic-table": "^13.7.9",
+    "@atlaskit/dynamic-table": "^14.1.5",
     "@atlaskit/form": "^7.4.1",
     "@atlaskit/textarea": "^2.2.10",
     "@atlaskit/textfield": "^3.1.13",
