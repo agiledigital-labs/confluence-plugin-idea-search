@@ -396,11 +396,15 @@ public class FedexIdeaDao {
    * @param fedexIdea   with data to be added to the active object
    */
   private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
+    // TODO: Uncomment event and put actual values
     aoFedexIdea.setContentId(fedexIdea.getContentId());
     aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
-    aoFedexIdea.setOwner(fedexIdea.getOwner());
-    aoFedexIdea.setStatus(fedexIdea.getStatus());
-    aoFedexIdea.setDescription(fedexIdea.getDescription());
+    aoFedexIdea.setOwner("admin");
+    // aoFedexIdea.setOwner(fedexIdea.getOwner());
+    aoFedexIdea.setStatus("inProgress");
+    // aoFedexIdea.setStatus(fedexIdea.getStatus());
+    aoFedexIdea.setDescription("Demo description");
+    // aoFedexIdea.setDescription(fedexIdea.getDescription());
     aoFedexIdea.setSchemaIdManual(fedexIdea.getSchemaId());
     aoFedexIdea.setSchema(this.findRawOneSchema(fedexIdea.getSchemaId()));
   }

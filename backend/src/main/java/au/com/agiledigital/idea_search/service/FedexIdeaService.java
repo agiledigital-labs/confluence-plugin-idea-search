@@ -61,4 +61,6 @@ public interface FedexIdeaService {
    * @return String json array of TechnologyAPI objects
    */
   List<TechnologyAPI> queryTechList(String searchString);
+
+  public List<FedexIdea> queryAllFedexIdea();
 }

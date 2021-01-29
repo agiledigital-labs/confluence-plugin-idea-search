@@ -3,6 +3,8 @@ package au.com.agiledigital.idea_search.rest;
 import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
 
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
+import au.com.agiledigital.idea_search.model.FedexIdea;
+
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
 import com.atlassian.confluence.api.model.people.User;
@@ -212,21 +214,28 @@ public class TechnologyList {
     Set<String> newSet = new HashSet<>();
     newSet.add("fedex-ideas");
 
-    List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
+    //List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
+    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea();
+
+    String thing = allIdeas.get(0).toString();
+
+    System.out.println(thing);
 
     List<Map> preConvert = allIdeas.stream().map( idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", idea.getUrl());
-      preJsonIdea.put("description", idea.getDescription().getRenderedValue());
-      preJsonIdea.put("technologies", idea.getTechnologies().getValue());
+      preJsonIdea.put("description", idea.getDescription());
+      preJsonIdea.put("technologies", idea.getTechnologies());
 
 
-      preJsonIdea.put("owner", this.userAccessor.getUserByKey(new UserKey("2c9d829d6e61f011016e61f143ff0000")).getLowerName());
+      // preJsonIdea.put("owner", this.userAccessor.getUserByKey(new UserKey("2c9d829d6e61f011016e61f143ff0000")).getLowerName());
 
-      //preJsonIdea.put("owner", idea.getOwner().getRenderedValue());
+      preJsonIdea.put("owner", idea.getOwner());
 
-      preJsonIdea.put("status", idea.getStatus().getRenderedValue());
+      // preJsonIdea.put("owner", idea.getOwner().getRenderedValue());
+
+      preJsonIdea.put("status", idea.getStatus());
       return preJsonIdea;
     }).collect(Collectors.toList());
 

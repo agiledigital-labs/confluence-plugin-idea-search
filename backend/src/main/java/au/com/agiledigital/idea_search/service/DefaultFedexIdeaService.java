@@ -28,8 +28,9 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     fedexIdea.getContentId();
 
     return this.fedexIdeaDao.createIdea(fedexIdea);
-  }  /**
+  }
 
+  /**
    * Create a new FedexIdea
    *
    * @param fedexSchema to be created
@@ -98,4 +99,6 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   public List<TechnologyAPI> queryTechList() {
     return fedexIdeaDao.queryTechList();
   }
+
+  public List<FedexIdea> queryAllFedexIdea() { return fedexIdeaDao.findAll(); }
 }
