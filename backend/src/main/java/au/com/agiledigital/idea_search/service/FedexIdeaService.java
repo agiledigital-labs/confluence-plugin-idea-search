@@ -62,5 +62,5 @@ public interface FedexIdeaService {
    */
   List<TechnologyAPI> queryTechList(String searchString);
 
-  public List<FedexIdea> queryAllFedexIdea();
+  List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner);
 }

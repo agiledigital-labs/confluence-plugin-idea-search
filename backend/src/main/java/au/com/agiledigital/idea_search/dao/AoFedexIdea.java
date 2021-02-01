@@ -26,13 +26,18 @@ public interface AoFedexIdea extends RawEntity<Long> {
 
   void setVersion(String version);
 
+  @StringLength(-1)
+  String getTitle();
+
+  void setTitle(String ideaTitle);
+
   @Indexed
   long getContentId();
 
   void setContentId(long contentId);
 
   @OneToMany
-  AoFedexTechnology getTechnology();
+  AoFedexTechnology[] getTechnologies();
 
   @StringLength(-1)
   String getStatus();

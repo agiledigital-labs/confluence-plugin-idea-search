@@ -100,5 +100,5 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     return fedexIdeaDao.queryTechList();
   }
 
-  public List<FedexIdea> queryAllFedexIdea() { return fedexIdeaDao.findAll(); }
+  public List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner) { return fedexIdeaDao.findAll(title, description, status, owner); }
 }

@@ -206,7 +206,10 @@ public class TechnologyList {
   @Produces({"application/json"})
   @GET
   public String getIdeaPages(
-    @QueryParam("q") String searchString,
+    @QueryParam("title") String title,
+    @QueryParam("description") String description,
+    @QueryParam("status") String status,
+    @QueryParam("owner") String owner,
     @Context HttpServletResponse response
   ) {
     this.applyNoCacheHeaders(response);
@@ -214,33 +217,32 @@ public class TechnologyList {
     Set<String> newSet = new HashSet<>();
     newSet.add("fedex-ideas");
 
+    title = title != null ? title : "";
+    description = description != null ? description : "";
+    status = status != null ? status : "";
+    owner = owner != null ? owner : "";
+
+
     //List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
-    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea();
-
-    String thing = allIdeas.get(0).toString();
-
-    System.out.println(thing);
+    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea(title, description, status, owner);
 
     List<Map> preConvert = allIdeas.stream().map( idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", idea.getUrl());
-      preJsonIdea.put("description", idea.getDescription());
-      preJsonIdea.put("technologies", idea.getTechnologies());
-
-
-      // preJsonIdea.put("owner", this.userAccessor.getUserByKey(new UserKey("2c9d829d6e61f011016e61f143ff0000")).getLowerName());
+      preJsonIdea.put("description", idea.getDescription().isEmpty() ? "":idea.getDescription());
+      preJsonIdea.put("technologies", idea.getTechnologies().isEmpty() ? "" : idea.getTechnologies().stream().map(tech-> tech.getTechnology()).collect(
+        Collectors.toList()));
 
       preJsonIdea.put("owner", idea.getOwner());
 
-      // preJsonIdea.put("owner", idea.getOwner().getRenderedValue());
-
       preJsonIdea.put("status", idea.getStatus());
+
       return preJsonIdea;
     }).collect(Collectors.toList());
 
     return allIdeas.isEmpty()
-      ? "{[]}"
+      ? "[{}]"
       : this.gson.toJson(preConvert);
   }
 

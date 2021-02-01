@@ -45,7 +45,7 @@
     "@atlaskit/dynamic-table": "^14.1.5",
     "@atlaskit/form": "^7.4.1",
     "@atlaskit/textarea": "^2.2.10",
-    "@atlaskit/textfield": "^3.1.13",
+    "@atlaskit/textfield": "^5.0.0",
     "@atlaskit/toggle": "^8.1.9",
     "@atlassian/wrm-react-i18n": "^0.7.0",
     "@babel/core": "^7.11.6",

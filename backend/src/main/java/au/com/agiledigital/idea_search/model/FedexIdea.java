@@ -78,7 +78,13 @@ public class FedexIdea {
   }
 
   public String getDescription() {
+    if ( this.description == null){
+      return "";
+    }
+
     return this.description;
+
+
   }
 
   public long getSchemaId() {return this.schemaId;}
@@ -140,6 +146,11 @@ public class FedexIdea {
 
     public FedexIdea.Builder withTechnologies(List<FedexTechnology> technologies) {
       this.technologies = technologies;
+      return this;
+    }
+
+    public FedexIdea.Builder withTitle(String title) {
+      this.title = title;
       return this;
     }
 
