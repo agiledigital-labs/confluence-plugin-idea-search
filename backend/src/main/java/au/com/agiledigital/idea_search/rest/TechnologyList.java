@@ -19,14 +19,19 @@ import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.user.impl.DefaultUser;
 import com.google.gson.Gson;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -244,6 +249,71 @@ public class TechnologyList {
     return allIdeas.isEmpty()
       ? "[{}]"
       : this.gson.toJson(preConvert);
+  }
+
+  private static String extractPostRequestBody(HttpServletRequest request) throws IOException {
+    if ("PUT".equalsIgnoreCase(request.getMethod())) {
+      try {
+        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+      } catch (Exception e){
+        return "Error in getting input stream";
+      }
+    }
+    return "Nothing to see here";
+  }
+
+  /**
+   * @param searchString to find technologies that begin with this string
+   * @param response     Servlet contest
+   * @return String in the form of a json list of TechnologyAPI objects
+   */
+  @Path("/schema")
+  @Consumes({"application/json"})
+  @PUT
+  public String putSchema(
+    @Context HttpServletRequest request,
+    @Context HttpServletResponse response
+  ) {
+    this.applyNoCacheHeaders(response);
+    String schemaBody = "";
+
+    try {
+      schemaBody = this.gson.toJson(extractPostRequestBody(request));
+    } catch (Exception e){
+      throw new Error("Error parsing request body");
+    }
+
+    FedexSchema createdSchema = this.fedexIdeaService.createSchema((new FedexSchema.Builder()).withSchema(schemaBody).build());
+//    Set<String> newSet = new HashSet<>();
+//    newSet.add("fedex-ideas");
+//
+//
+//    //List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
+//    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea("","","","");
+//
+//    List<Map> preConvert = allIdeas.stream().map( idea -> {
+//      Map preJsonIdea = new HashMap<String, String>();
+//      preJsonIdea.put("title", idea.getTitle());
+//      preJsonIdea.put("url", idea.getUrl());
+//      preJsonIdea.put("description", idea.getDescription().isEmpty() ? "":idea.getDescription());
+//      preJsonIdea.put("technologies", idea.getTechnologies().isEmpty() ? "" : idea.getTechnologies().stream().map(tech-> tech.getTechnology()).collect(
+//        Collectors.toList()));
+//
+//      preJsonIdea.put("owner", idea.getOwner());
+//
+//      preJsonIdea.put("status", idea.getStatus());
+//
+//      return preJsonIdea;
+//    }).collect(Collectors.toList());
+
+//    return allIdeas.isEmpty()
+//      ? "[{}]"
+    try {
+      return this.gson.toJson(createdSchema.getSchema());
+    } catch (Exception e){
+      return this.gson.toJson("There is an error");
+    }
   }
 
   /**

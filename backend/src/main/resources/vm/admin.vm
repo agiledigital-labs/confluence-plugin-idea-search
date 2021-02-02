@@ -2,29 +2,9 @@
   <head>
     <title>$i18n.getText("idea.admin.label")</title>
     <meta name="decorator" content="atl.admin">
-    $webResourceManager.requireResource("au.com.agiledigital.idea_search:ideaAdminResource")
   </head>
   <body>
-    <form id="admin" class="aui">
-      <div class="field-group">
-        <label for="name">$i18n.getText("idea.admin.name.label")</label>
-        <input type="text" id="name" name="name" class="text">
-       </div>
-       <div class="field-group">
-         <label for="time">$i18n.getText("idea.admin.time.label")</label>
-         <input type="text" id="time" name="time" class="text">
-       </div>
-       <div class="field-group">
-         <input type="submit" value="$i18n.getText("idea.admin.save.label")" class="button">
-       </div>
-    </form>
-  </body>
-
-  <table>
-    <div id="maincontainer">
-      <div id="container">
-      </div>
+    <div id="admincontainer">
     </div>
-  </table>
-
+  </body>
 </html>

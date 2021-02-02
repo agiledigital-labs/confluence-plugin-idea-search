@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.atlassian.webresource.api.assembler.PageBuilderService;
+
 public class AdminServlet extends HttpServlet
 {
   @ComponentImport
@@ -21,18 +23,27 @@ public class AdminServlet extends HttpServlet
   private final LoginUriProvider loginUriProvider;
   @ComponentImport
   private final TemplateRenderer renderer;
+  @ComponentImport
+  private PageBuilderService pageBuilderService;
 
   @Inject
-  public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer)
+  public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, PageBuilderService pageBuilderService)
   {
     this.userManager = userManager;
     this.loginUriProvider = loginUriProvider;
     this.renderer = renderer;
+    this.pageBuilderService = pageBuilderService;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
   {
+    pageBuilderService
+      .assembler()
+      .resources()
+      .requireWebResource(
+        "au.com.agiledigital.idea_search:ideaSearch-macro-indexTable-macro-resource");
+
     String username = userManager.getRemoteUsername(request);
     if (username == null || !userManager.isSystemAdmin(username))
     {
