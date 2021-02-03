@@ -72,6 +72,9 @@ public class FedexIdeaDao {
     // Save the changes to the active object
     aoSchema.save();
 
+    String schema = aoSchema.getSchema();
+    String uiSchema = aoSchema.getUiSchema();
+
     return this.asSchema(aoSchema);
   }
 
@@ -427,7 +430,8 @@ public class FedexIdeaDao {
    */
   private void prepareAOSchema(AoSchema aoSchema, FedexSchema fedexSchema) {
     aoSchema.setSchema(fedexSchema.getSchema());
-    aoSchema.setUiSchema(this.getUserKey(fedexSchema.getUiSchema()));
+    aoSchema.setUiSchema(fedexSchema.getUiSchema());   //(this.getUserKey(fedexSchema.getUiSchema()));
+    aoSchema.setIndexSchema(fedexSchema.getIndexSchema());
     aoSchema.setDescription(fedexSchema.getDescription());
     aoSchema.setName(fedexSchema.getName());
     aoSchema.setVersion(fedexSchema.getVersion());
@@ -502,6 +506,7 @@ public class FedexIdeaDao {
         .withGlobalId(aoSchema.getGlobalId())
         .withSchema(aoSchema.getSchema())
         .withUiSchema(aoSchema.getUiSchema())
+        .withIndexSchema(aoSchema.getIndexSchema())
         .withName(aoSchema.getName())
         .withDescription(aoSchema.getDescription())
         .withVersion(aoSchema.getVersion())

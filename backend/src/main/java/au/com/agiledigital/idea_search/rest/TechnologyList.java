@@ -18,6 +18,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.user.impl.DefaultUser;
+import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.HashMap;
@@ -176,14 +177,10 @@ public class TechnologyList {
   @Produces({"application/json"})
   @GET
   public String getSchema( @Context HttpServletResponse response){
-    FedexSchema schemaById = this.fedexIdeaService.listSchemas().get(0);
+    List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
+    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
 
-    Map schema = new HashMap<String , String>();
-
-      schema.put("schema", DEFAULT_SCHEMA);
-      schema.put("uiSchema", schemaById.getUiSchema());
-
-    return this.gson.toJson(schema);
+    return this.gson.toJson(latestSchema);
   }
 
   @Path("/schema/ids")
@@ -272,6 +269,7 @@ public class TechnologyList {
   @Consumes({"application/json"})
   @PUT
   public String putSchema(
+    @QueryParam("type") String type,
     @Context HttpServletRequest request,
     @Context HttpServletResponse response
   ) {
@@ -279,38 +277,34 @@ public class TechnologyList {
     String schemaBody = "";
 
     try {
-      schemaBody = this.gson.toJson(extractPostRequestBody(request));
+      schemaBody = extractPostRequestBody(request);
     } catch (Exception e){
       throw new Error("Error parsing request body");
     }
 
-    FedexSchema createdSchema = this.fedexIdeaService.createSchema((new FedexSchema.Builder()).withSchema(schemaBody).build());
-//    Set<String> newSet = new HashSet<>();
-//    newSet.add("fedex-ideas");
-//
-//
-//    //List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
-//    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea("","","","");
-//
-//    List<Map> preConvert = allIdeas.stream().map( idea -> {
-//      Map preJsonIdea = new HashMap<String, String>();
-//      preJsonIdea.put("title", idea.getTitle());
-//      preJsonIdea.put("url", idea.getUrl());
-//      preJsonIdea.put("description", idea.getDescription().isEmpty() ? "":idea.getDescription());
-//      preJsonIdea.put("technologies", idea.getTechnologies().isEmpty() ? "" : idea.getTechnologies().stream().map(tech-> tech.getTechnology()).collect(
-//        Collectors.toList()));
-//
-//      preJsonIdea.put("owner", idea.getOwner());
-//
-//      preJsonIdea.put("status", idea.getStatus());
-//
-//      return preJsonIdea;
-//    }).collect(Collectors.toList());
+    Map<String, String> mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
 
-//    return allIdeas.isEmpty()
-//      ? "[{}]"
+    List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
+    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
+
+    switch (type){
+      case "index-schema":
+        latestSchema.setIndexSchema(mappedSchemaBody.get("data"));
+        break;
+      case "ui-schema":
+        latestSchema.setUiSchema(mappedSchemaBody.get("data"));
+        break;
+      case "idea-schema":
+        latestSchema.setSchema(mappedSchemaBody.get("data"));
+        break;
+      default:
+        break;
+    }
+
+    FedexSchema createdSchema = this.fedexIdeaService.createSchema(latestSchema);
+
     try {
-      return this.gson.toJson(createdSchema.getSchema());
+      return this.gson.toJson(createdSchema.getUiSchema());
     } catch (Exception e){
       return this.gson.toJson("There is an error");
     }
