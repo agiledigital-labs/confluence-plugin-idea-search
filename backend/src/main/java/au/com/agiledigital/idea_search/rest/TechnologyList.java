@@ -1,40 +1,17 @@
 package au.com.agiledigital.idea_search.rest;
 
-import au.com.agiledigital.idea_search.helpers.StructureDataRenderHelper;
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
-import com.atlassian.confluence.core.BodyContent;
-import com.atlassian.confluence.macro.query.BooleanQueryFactory;
-import com.atlassian.confluence.pages.AbstractPage;
-import com.atlassian.confluence.search.service.ContentTypeEnum;
-import com.atlassian.confluence.search.v2.ContentSearch;
-import com.atlassian.confluence.search.v2.SearchManager;
-import com.atlassian.confluence.search.v2.filter.SubsetResultFilter;
-import com.atlassian.confluence.search.v2.query.BooleanQuery;
-import com.atlassian.confluence.search.v2.query.ContentTypeQuery;
-import com.atlassian.confluence.search.v2.query.InSpaceQuery;
-import com.atlassian.confluence.search.v2.query.LabelQuery;
-import com.atlassian.confluence.search.v2.sort.ModifiedSort;
 import com.atlassian.confluence.web.filter.CachingHeaders;
 import com.google.gson.Gson;
-import net.java.ao.Searchable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
-import au.com.agiledigital.idea_search.model.FedexSchema;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,36 +144,66 @@ public class TechnologyList {
     "}";
 
 
+  private static String DEFAULT_UI_SCHEMA = "{\n" +
+    "  team: {\n" +
+    "    items: {\n" +
+    "      endpoint: \"rest/prototype/1/search/user.json?max-results=6&query=\",\n" +
+    "      \"ui:widget\": UserSelection,\n" +
+    "    },\n" +
+    "  },\n" +
+    "  owner: {\n" +
+    "    endpoint: \"rest/prototype/1/search/user.json?max-results=6&query=\",\n" +
+    "    \"ui:widget\": UserSelection,\n" +
+    "  },\n" +
+    "  technologies: {\n" +
+    "    items: {\n" +
+    "      endpoint: \"rest/idea/1/technology?q=\",\n" +
+    "      \"ui:widget\": RestSelection,\n" +
+    "    },\n" +
+    "  }";
+
   @Path("/schema")
   @Produces({"application/json"})
   @GET
-  public String getSchema( @Context HttpServletResponse response){
+  public String getSchema(@Context HttpServletResponse response) {
     FedexSchema schemaById = this.fedexIdeaService.listSchemas().get(0);
 
-    Map schema = new HashMap<String , String>();
+    Map schema = new HashMap<String, String>();
 
-      schema.put("schema", DEFAULT_SCHEMA);
-      schema.put("uiSchema", schemaById.getUiSchema());
-
+    schema.put("schema", (schemaById.getSchema()));
+    schema.put("uiSchema", schemaById.getUiSchema());
     return this.gson.toJson(schema);
   }
+
+  @Path("/schema/reset")
+  @Produces({"application/json"})
+  @POST
+  public void resetSchema(@Context HttpServletResponse response) {
+    FedexSchema schema = new FedexSchema.Builder()
+      .withSchema(DEFAULT_SCHEMA)
+      .withUiSchema(DEFAULT_UI_SCHEMA).build();
+    this.fedexIdeaService.createSchema(schema);
+
+    response.setStatus(204);
+
+  }
+
 
   @Path("/schema/ids")
   @Produces({"application/json"})
   @GET
-  public String getSchemaIds( @Context HttpServletResponse response){
+  public String getSchemaIds(@Context HttpServletResponse response) {
     List<Map> schemaIds = this.fedexIdeaService.listSchemas().stream().map(schema -> {
       Map schemaReturn = new HashMap<String, String>();
-      schemaReturn.put("id",  schema.getGlobalId());
-      schemaReturn.put("name",  schema.getName());
-      schemaReturn.put("version",  schema.getVersion());
-      schemaReturn.put("description",  schema.getDescription());
-      return  schemaReturn;
+      schemaReturn.put("id", schema.getGlobalId());
+      schemaReturn.put("name", schema.getName());
+      schemaReturn.put("version", schema.getVersion());
+      schemaReturn.put("description", schema.getDescription());
+      return schemaReturn;
     }).collect(Collectors.toList());
 
-    return this.gson.toJson( schemaIds);
+    return this.gson.toJson(schemaIds);
   }
-
 
 
   /**

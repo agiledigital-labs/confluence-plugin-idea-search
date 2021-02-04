@@ -18,7 +18,6 @@ public class FedexIdea {
   private final String title;
   private final String description;
   private final String status;
-  private final long schemaId;
   private final String formData;
 
   @JsonCreator
@@ -31,7 +30,6 @@ public class FedexIdea {
     @JsonProperty("title") String title,
     @JsonProperty("status") String status,
     @JsonProperty("description") String description,
-    @JsonProperty("schema") long schemaId,
     @JsonProperty("formData") String formData
   ) {
     this.globalId = globalId;
@@ -42,7 +40,6 @@ public class FedexIdea {
     this.title = title;
     this.description = description;
     this.status = status;
-    this.schemaId = schemaId;
     this.formData = formData;
   }
 
@@ -77,8 +74,6 @@ public class FedexIdea {
   public String getDescription() {
     return this.description;
   }
-
-  public long getSchemaId() {return this.schemaId;}
 
   public String getFormData() {return this.formData;}
 
@@ -127,7 +122,6 @@ public class FedexIdea {
       this.title = fedexIdea.title;
       this.status = fedexIdea.status;
       this.description = fedexIdea.description;
-      this.schemaId = fedexIdea.schemaId;
       this.formData = fedexIdea.formData;
     }
 
@@ -165,10 +159,6 @@ public class FedexIdea {
       this.status = status;
       return this;
     }
-    public FedexIdea.Builder withSchemaId(long schema) {
-      this.schemaId = schemaId;
-      return this;
-    }
     public FedexIdea.Builder withFormData(String formData) {
       this.formData = formData;
       return this;
@@ -184,7 +174,6 @@ public class FedexIdea {
         this.title,
         this.status,
         this.description,
-        this.schemaId,
         this.formData);
     }
   }

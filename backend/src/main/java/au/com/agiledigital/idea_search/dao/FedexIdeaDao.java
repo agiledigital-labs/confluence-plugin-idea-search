@@ -401,8 +401,6 @@ public class FedexIdeaDao {
     aoFedexIdea.setOwner(fedexIdea.getOwner());
     aoFedexIdea.setStatus(fedexIdea.getStatus());
     aoFedexIdea.setDescription(fedexIdea.getDescription());
-    aoFedexIdea.setSchemaIdManual(fedexIdea.getSchemaId());
-    aoFedexIdea.setSchema(this.findRawOneSchema(fedexIdea.getSchemaId()));
   }
 
   /**
@@ -436,42 +434,9 @@ public class FedexIdeaDao {
       .withDescription(aoFedexIdea.getDescription())
       .withStatus(aoFedexIdea.getStatus())
       .withFormData(aoFedexIdea.getFormData())
-      .withSchemaId(this.getSchemaFromIdea(aoFedexIdea.getContentId()))
       .build();
   }
 
-  private long getSchemaFromDb(long contentId) {
-
-    List<Map> test = new ArrayList<>();
-
-    Arrays.stream(this.ao.find(AO_IDEA_SCHEMA))
-      .map(s -> Arrays.stream(s.getIdeas()).map(i -> {
-          Map container = new HashMap<String, String>();
-          container.put("schemaId", s.getGlobalId());
-          container.put("idea", i);
-          test.add(container);
-          return null;
-        })
-      );
-
-    Map other = test.stream().filter((r) -> {
-
-      AoFedexIdea idea = (AoFedexIdea) r.get("idea");
-      return idea.getContentId() == contentId;
-    }).collect(Collectors.toList()).get(0);
-
-    long thing = (long) other.get("schemaId");
-
-    return thing;
-  }
-
-  private long getSchemaFromIdea(long contentId) {
-
-    return Arrays.stream(this.ao.find(
-      AO_FEDEX_IDEA_TYPE,
-      Query.select().where("CONTENT_ID = ?", contentId)
-    )).map(AoFedexIdea::getSchemaIdManual).collect(Collectors.toList()).get(0);
-  }
 
   /**
    * Convert fedex idea active object to a fedex idea model object

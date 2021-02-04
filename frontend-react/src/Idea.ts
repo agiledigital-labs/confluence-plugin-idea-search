@@ -1,1 +1,0 @@
-export { Idea } from "./components";

@@ -1,6 +1,8 @@
 declare global {
   interface Window {
     AJS?: {
+      dialog2: any;
+      $: any;
       Confluence: {
         PropertyPanel: {
           Macro: {
@@ -15,5 +17,4 @@ declare global {
   }
 }
 
-export { default as Form } from "./Table";
 export { default as Idea } from "./Idea";

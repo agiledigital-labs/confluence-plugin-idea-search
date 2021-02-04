@@ -1,5 +1,6 @@
 package au.com.agiledigital.idea_search.helpers;
 
+import au.com.agiledigital.idea_search.macros.DataMacroRepresentation;
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
@@ -21,9 +22,6 @@ public class Utilities {
   public static String removeTags(String rawData) {
     return rawData.replaceAll("\\<[^>]+>\\>", "");
   }
-
-
-
 
   public static MacroRepresentation getMacroRepresentation(NodeList macros, StructuredCategory category, LSSerializer serializer, XhtmlContent xhtmlContent) {
     for (int i = 0; i < macros.getLength(); i++) {

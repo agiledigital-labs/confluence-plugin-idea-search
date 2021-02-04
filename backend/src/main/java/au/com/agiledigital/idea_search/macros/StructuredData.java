@@ -1,7 +1,5 @@
 package au.com.agiledigital.idea_search.macros;
 
-import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
@@ -38,12 +36,6 @@ public class StructuredData implements Macro {
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
 
-    long macroContent = conversionContext.getEntity().getContentId().asLong();
-
-//    FedexIdea currentIdea = this.fedexIdeaService.getByContentId(macroContent);
-
-//    FedexSchema schema = this.fedexIdeaService.getSchema(currentIdea.getSchemaId());
-
     pageBuilderService
       .assembler()
       .resources()
@@ -52,8 +44,6 @@ public class StructuredData implements Macro {
     Map<String, Object> context = new HashMap<>();
     context.put("contextPath", bootstrapManager.getWebAppContextPath());
     context.put("schema", DEFAULT_SCHEMA);
-//    context.put("uiSchema", schema.getUiSchema());
-//    context.put("formData", currentIdea.getFormData());
     return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
   }
 

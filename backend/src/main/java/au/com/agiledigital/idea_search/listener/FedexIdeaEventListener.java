@@ -1,12 +1,14 @@
 package au.com.agiledigital.idea_search.listener;
 
 import au.com.agiledigital.idea_search.helpers.Utilities;
+import au.com.agiledigital.idea_search.macros.DataMacroRepresentation;
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
+import com.atlassian.confluence.core.BodyContent;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
@@ -15,6 +17,7 @@ import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
 import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
 import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
+import com.atlassian.confluence.xhtml.api.MacroDefinition;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
@@ -123,12 +126,13 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     return builder.parse(new ByteArrayInputStream(xml.getBytes()));
   }
 
+
   /**
    * Finds a Structured Field macro with a category from a list of macros
    *
    * @param macros     Structured Field macro list
    * @param category   The needle for the search
-   * @param serializer XML serializer
+   * @param serializer XML serialiser
    * @return Representation of a macro from Confluence Storage format
    */
   private MacroRepresentation getMacroFromList(
@@ -137,58 +141,38 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   }
 
 
-  /**
-   * Listen for pages created from blueprints.
-   *
-   * @param event created when a pages is created from a blueprint
-   */
+//  /**
+//   * Listen for page update events on pages with the correct label, updates the data store with the
+//   * new idea
+//   *
+//   * @param event produced when a page is updated
+//   */
   @EventListener
-  public void onBlueprintCreateEvent(BlueprintPageCreateEvent event) {
-    // Makes the new page child of the fedex idea index page
-    makeChildOfIndex(event.getPage());
+  public void pageUpdated(PageUpdateEvent event) throws IOException, SAXException, ParserConfigurationException {
+    Document bodyParsed =  event.getPage().getBodyContents();
+//      .stream().map(body -> body.getContent())
+//      .collect(Collectors.toList());
+    NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
 
-    String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
 
-    String blueprintKey = FEDEX_IDEA_BLUEPRINT_KEY.getCompleteKey();
+    new DataMacroRepresentation(macros);
 
-    // Gets the blueprintId and sets it as the current one in ao database
-    String blueprintId = String.valueOf(event.getBlueprint().getId());
-    this.fedexIdeaService.setBlueprintId(blueprintId);
-
-    if (blueprintKey.equals(moduleCompleteKey)) {
-      try {
-        FedexIdea idea = getFedexIdea(event.getPage());
-        this.fedexIdeaService.createIdea(idea);
-      } catch (ParserConfigurationException | IOException | SAXException e) {
-        log.debug(e.getMessage());
-      }
-    }
   }
+//
+//  /**
+//   * Listen for page creations events on pages with the correct label, updates the data store with
+//   * the new idea
+//   * <p>
+//   * If the title of the page is not unique, the blueprint create event is not used, the page create
+//   * event is.
+//   *
+//   * @param event produced when a page is updated
+//   */
+//  @EventListener
+//  public void pageCreated(PageCreateEvent event) {
+//
+//  }
 
-  /**
-   * Listen for page update events on pages with the correct label, updates the data store with the
-   * new idea
-   *
-   * @param event produced when a page is updated
-   */
-  @EventListener
-  public void pageUpdated(PageUpdateEvent event) {
-    createOrUpdateTechnology(event.getContent(), event.getPage());
-  }
-
-  /**
-   * Listen for page creations events on pages with the correct label, updates the data store with
-   * the new idea
-   * <p>
-   * If the title of the page is not unique, the blueprint create event is not used, the page create
-   * event is.
-   *
-   * @param event produced when a page is updated
-   */
-  @EventListener
-  public void pageCreated(PageCreateEvent event) {
-    createOrUpdateTechnology(event.getContent(), event.getPage());
-  }
 
   /**
    * Puts the newly created page as a child of index page
@@ -197,28 +181,38 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   private void makeChildOfIndex(Page page) {
     Page indexPage = this.indexPageManager.findIndexPage(this.contentBlueprint, page.getSpace());
+
     indexPage.addChild(page);
   }
 
-  /**
-   * Creates or updates a fedex technology page
-   *
-   * @param content the content of the event
-   * @param page    the new page
-   */
-  private void createOrUpdateTechnology(ContentEntityObject content, Page page) {
-    if (
-      content.getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
-    ) {
-      try {
-        makeChildOfIndex(page);
-        FedexIdea idea = getFedexIdea(page);
-        this.fedexIdeaService.updateIdea(idea, page.getId());
-      } catch (ParserConfigurationException | IOException | SAXException e) {
-        log.debug(e.getMessage());
-      }
-    }
+  @EventListener
+  public void macroUpdateEvent(PageUpdateEvent pageUpdateEvent){
+//
+//    pageUpdateEvent.getPage().getBodyContent().
+//
+    pageUpdateEvent.getPage().getBodyContents().stream().map(content -> content);
   }
+
+//
+//  /**
+//   * Creates or updates a fedex technology page
+//   *
+//   * @param content the content of the event
+//   * @param page    the new page
+//   */
+//  private void createOrUpdateTechnology(ContentEntityObject content, Page page) {
+//    if (
+//      content.getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
+//    ) {
+//      try {
+//        makeChildOfIndex(page);
+////        FedexIdea idea = getFedexIdea(page);
+////        this.fedexIdeaService.updateIdea(idea, page.getId());
+//      } catch (ParserConfigurationException | IOException | SAXException e) {
+//        log.debug(e.getMessage());
+//      }
+//    }
+//  }
 
   /**
    * Pares structured data from page and return a fedex idea.
@@ -230,36 +224,10 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * @throws SAXException                 exception
    */
   @Deprecated
-  private FedexIdea getFedexIdea(AbstractPage page)
+  private void getFedexIdea(AbstractPage page)
     throws ParserConfigurationException, IOException, SAXException {
-    Document bodyParsed = parseXML(wrapBody(page.getBodyAsString()));
-    NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
-    DOMImplementationLS ls = (DOMImplementationLS) bodyParsed.getImplementation();
-    LSSerializer serializer = ls.createLSSerializer();
-    IdeaContainer row = new IdeaContainer();
-    row.setTitle(page.getDisplayTitle());
-    Arrays.asList(StructuredCategory.values())
-      .forEach(
-        category ->
-          row.setMacroRepresentations(
-            category, getMacroFromList(macros, category, serializer)));
 
-    // Splits the comma separated string into a list and replaces all html tags
-    List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
-      .map(Utilities::removeTags).collect(
-        Collectors.toList());
 
-    List<FedexTechnology> techList = new ArrayList<>();
 
-    tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
-
-    return new FedexIdea.Builder()
-//      .withTechnologies(techList)
-      .withContentId(page.getId()).withSchemaId(4)
-//      .withCreator(page.getCreator().getName())
-//      .withDescription(row.getDescription().getValue())
-//      .withStatus(row.getStatus().getValue())
-//      .withOwner(row.getOwner().getValue())
-      .build();
   }
 }

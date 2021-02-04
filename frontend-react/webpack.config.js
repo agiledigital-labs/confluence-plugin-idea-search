@@ -15,8 +15,7 @@ module.exports = {
   },
   // watch : true,
   entry: {
-    form: "./src/Form.ts",
-    idea: "./src/Idea.ts",
+    modal: "./src/UpdateFormModal.tsx",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
