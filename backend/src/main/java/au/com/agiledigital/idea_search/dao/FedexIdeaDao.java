@@ -454,7 +454,7 @@ public class FedexIdeaDao {
         .withDescription(aoFedexIdea.getDescription())
         .withStatus(aoFedexIdea.getStatus())
         .withFormData(aoFedexIdea.getFormData())
-        .withSchemaId(this.getSchemaFromIdea(aoFedexIdea.getContentId()))
+//        .withSchemaId(this.getSchemaFromIdea(aoFedexIdea.getContentId()))
         .build();
   }
 

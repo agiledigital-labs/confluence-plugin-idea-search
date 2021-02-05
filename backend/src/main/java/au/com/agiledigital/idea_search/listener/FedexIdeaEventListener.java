@@ -1,24 +1,18 @@
 package au.com.agiledigital.idea_search.listener;
 
-import au.com.agiledigital.idea_search.helpers.Utilities;
-import au.com.agiledigital.idea_search.macros.DataMacroRepresentation;
+//import au.com.agiledigital.idea_search.macros.DataMacroRepresentation;
 import au.com.agiledigital.idea_search.macros.MacroRepresentation;
 import au.com.agiledigital.idea_search.macros.StructuredCategory;
-import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
-import au.com.agiledigital.idea_search.model.FedexIdea;
+  import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
-import com.atlassian.confluence.core.BodyContent;
-import com.atlassian.confluence.core.ContentEntityObject;
-import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
+  import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.pages.AbstractPage;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
-import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
-import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
-import com.atlassian.confluence.xhtml.api.MacroDefinition;
-import com.atlassian.confluence.xhtml.api.XhtmlContent;
+  import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
+  import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.ModuleCompleteKey;
@@ -30,8 +24,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
+  import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import javax.inject.Inject;
@@ -42,12 +35,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+  import java.util.List;
 
-import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
-import static au.com.agiledigital.idea_search.helpers.Utilities.getMacroRepresentation;
+  import static au.com.agiledigital.idea_search.helpers.Utilities.getMacroRepresentation;
 
 /**
  * Listens to confluence events Connects to event publisher, and sends filtered events to the idea
@@ -147,17 +137,17 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 //   *
 //   * @param event produced when a page is updated
 //   */
-  @EventListener
-  public void pageUpdated(PageUpdateEvent event) throws IOException, SAXException, ParserConfigurationException {
-    Document bodyParsed =  event.getPage().getBodyContents();
-//      .stream().map(body -> body.getContent())
-//      .collect(Collectors.toList());
-    NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
-
-
-    new DataMacroRepresentation(macros);
-
-  }
+//  @EventListener
+//  public void pageUpdated(PageUpdateEvent event) throws IOException, SAXException, ParserConfigurationException {
+//    Document bodyParsed =  event.getPage().getBodyContents();
+////      .stream().map(body -> body.getContent())
+////      .collect(Collectors.toList());
+//    NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
+//
+//
+//    new DataMacroRepresentation(macros);
+//
+//  }
 //
 //  /**
 //   * Listen for page creations events on pages with the correct label, updates the data store with
@@ -184,9 +174,11 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * @param event produced when a page is updated
    */
   @EventListener
-  public void pageCreated(PageCreateEvent event) {
+  public void pageCreated(PageCreateEvent event) throws IOException, SAXException, ParserConfigurationException {
     event.getUpdateTrigger();
-    createOrUpdateTechnology(event.getContent(), event.getPage());
+//    createOrUpdateTechnology(event.getContent(), event.getPage());
+    this.fedexIdeaService.createIdea(getFedexIdea(event.getPage()));
+
   }
 
   /**
@@ -205,7 +197,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 //
 //    pageUpdateEvent.getPage().getBodyContent().
 //
-    pageUpdateEvent.getPage().getBodyContents().stream().map(content -> content);
+//    pageUpdateEvent.getPage().getBodyContents().stream().map(content -> content);
   }
 
 //
@@ -239,7 +231,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    * @throws SAXException                 exception
    */
   @Deprecated
-  private void getFedexIdea(AbstractPage page)
+  private FedexIdea getFedexIdea(AbstractPage page)
     throws ParserConfigurationException, IOException, SAXException {
 
     // Splits the comma separated string into a list and replaces all html tags
@@ -260,8 +252,8 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     return new FedexIdea.Builder()
       .withTitle("Title from builder")
       .withTechnologies(techList)
-      .withContentId(page.getId()).withSchemaId(4)
-//      .withCreator(page.getCreator().getName())
+//      .withContentId(page.getId()).withSchemaId(4)
+      .withCreator(page.getCreator().getName())
       .withDescription("Demo description from builder after reload")
       .withStatus("Boss")
       .withOwner("admin")
