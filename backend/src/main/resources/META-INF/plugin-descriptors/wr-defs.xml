@@ -15,7 +15,7 @@
     <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
     <resource type="download" name="bundled.idea.js" location="frontend/bundled.idea.js"/>
   </web-resource>
-  <web-resource key="assets-1058fafa-6a07-44b1-a909-5042b0d30888">
+  <web-resource key="assets-14aea16b-31de-407e-bdb3-455cfe266814">
     <transformation extension="js">
       <transformer key="jsI18n"/>
     </transformation>
