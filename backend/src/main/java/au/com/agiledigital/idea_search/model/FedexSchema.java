@@ -10,8 +10,9 @@ public class FedexSchema {
 
   private final long globalId;
   private final String name;
-  private final String uiSchema;
-  private final String schema;
+  private String uiSchema;
+  private String schema;
+  private String indexSchema;
   private final String description;
   private final Integer version;
 
@@ -21,6 +22,7 @@ public class FedexSchema {
     @JsonProperty("name") String name,
     @JsonProperty("uiSchema") String uiSchema,
     @JsonProperty("schema") String schema,
+    @JsonProperty("indexSchema") String indexSchema,
     @JsonProperty("version") Integer version,
     @JsonProperty("description") String description
   ) {
@@ -28,6 +30,7 @@ public class FedexSchema {
     this.name = name;
     this.uiSchema = uiSchema;
     this.schema = schema;
+    this.indexSchema = indexSchema;
     this.version = version;
     this.description = description;
   }
@@ -42,14 +45,31 @@ public class FedexSchema {
   public String getDescription() {
     return this.description;
   }
+  public String getIndexSchema() {
+    return this.indexSchema;
+  }
+
+  public void setIndexSchema(String indexSchema) {
+    this.indexSchema = indexSchema;
+  }
+
   public String getSchema() {
     return this.schema;
   }
+
+  public void setSchema(String schema) {
+    this.schema = schema;
+  }
+
   public Integer getVersion() {
     return this.version;
   }
   public String getUiSchema() {
     return this.uiSchema;
+  }
+
+  public void setUiSchema(String uiSchema){
+    this.uiSchema = uiSchema;
   }
 
   public static class Builder {
@@ -59,18 +79,20 @@ public class FedexSchema {
     private Integer version;
     private String uiSchema;
     private String schema;
+    private String indexSchema;
     private String description;
 
     public Builder() {
     }
 
-    public Builder(FedexSchema fedexTechnology) {
-      this.name = fedexTechnology.name;
-      this.globalId = fedexTechnology.globalId;
-      this.schema = fedexTechnology.schema;
-      this.uiSchema = fedexTechnology.uiSchema;
-      this.version = fedexTechnology.version;
-      this.description = fedexTechnology.description;
+    public Builder(FedexSchema fedexSchema) {
+      this.name = fedexSchema.name;
+      this.globalId = fedexSchema.globalId;
+      this.schema = fedexSchema.schema;
+      this.uiSchema = fedexSchema.uiSchema;
+      this.indexSchema = fedexSchema.indexSchema;
+      this.version = fedexSchema.version;
+      this.description = fedexSchema.description;
     }
 
     public FedexSchema.Builder withName(String name) {
@@ -93,6 +115,11 @@ public class FedexSchema {
       return this;
     }
 
+    public FedexSchema.Builder withIndexSchema(String indexSchema) {
+      this.indexSchema = indexSchema;
+      return this;
+    }
+
     public FedexSchema.Builder withDescription(String description) {
       this.description = description;
       return this;
@@ -104,7 +131,7 @@ public class FedexSchema {
     }
 
     public FedexSchema build() {
-      return new FedexSchema(this.globalId, this.name, this.uiSchema, this.schema, this.version, this.description);
+      return new FedexSchema(this.globalId, this.name, this.uiSchema, this.schema, this.indexSchema, this.version, this.description);
     }
   }
 }

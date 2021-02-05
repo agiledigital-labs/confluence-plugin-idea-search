@@ -60,6 +60,30 @@
     <resource location="/images/myblueprint.png" name="icon" type="download"/>
   </web-item>
 
+  <web-item key="conf-menu-item" i18n-name-key="idea.admin.label" section="system.admin/configuration" weight="10">
+    <description>Link to idea-admin page.</description>
+    <label key="idea.admin.label" />
+    <link linkId="idea-admin-link">/plugins/servlet/idea/admin</link>
+  </web-item>
+
+  <servlet key="admin-servlet" class="au.com.agiledigital.idea_search.adminui.AdminServlet">
+    <url-pattern>/idea/admin</url-pattern>
+  </servlet>
+
+
+  <web-resource
+    key="ideaAdminResource"
+    name="Idea admin page resource"
+  >
+    <context>atl.admin</context>
+    <resource
+      location="/frontend/bundled.form.js"
+      name="bundled.form.js"
+      type="download"
+    />
+  </web-resource>
+
+
   <web-resource
     key="ideaSearch.blueprint.page.wizard"
     name="Fedex create blueprint wizard">
@@ -144,10 +168,21 @@
       <button id="updater" label="Update the content"/>
     </property-panel>
   </xhtml-macro>
-
+  <web-resource name="Javascript" key="editor_status-light">
+    <context>editor</context>
+    <resource type="download" name="updateMacro.js" location="js/updateMacro.js"/>
+    <dependency>com.atlassian.auiplugin:dialog2</dependency>
+    <dependency>com.atlassian.auiplugin:aui-select2</dependency>
+    <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
+    <transformation extension="js">
+      <transformer key="jsI18n"/> 
+    </transformation>
+  </web-resource>
   <web-resource
     key="ideaSearch-macro-structuredField-macro-resource"
-    name="Structured Field Web Resources">
+    name="Structured Field Web Resources"
+  >
+
     <dependency>
       com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
     </dependency>
@@ -240,11 +275,7 @@
     <resource
       location="/frontend/bundled.form.js"
       name="bundled.form.js"
-      type="download"/>
-    <resource
       type="download"
-      name="TableFilter.js"
-      location="/js/TableFilter.js"
     />
   </web-resource>
 

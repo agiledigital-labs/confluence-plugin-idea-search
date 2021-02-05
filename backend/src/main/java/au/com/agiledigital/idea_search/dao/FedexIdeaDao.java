@@ -72,6 +72,9 @@ public class FedexIdeaDao {
     // Save the changes to the active object
     aoSchema.save();
 
+    String schema = aoSchema.getSchema();
+    String uiSchema = aoSchema.getUiSchema();
+
     return this.asSchema(aoSchema);
   }
 
@@ -142,16 +145,19 @@ public class FedexIdeaDao {
     // If the idea exists, remove the existing technologies so they can be updated
     if (!newIdea) {
       List<AoFedexTechnology> aoFedexTechnology = Arrays.asList(
-        aoFedexIdea.getTechnology()
+        aoFedexIdea.getTechnologies()
       );
       // Deletes the technology item from the table
       aoFedexTechnology.forEach(this.ao::delete);
     }
+    if (fedexIdea.getTechnologies() != null) {
 
-    List<AoFedexTechnology> aoTechList = getAoFedexTechnologies(fedexIdea);
+      List<AoFedexTechnology> aoTechList = getAoFedexTechnologies(fedexIdea);
+      setTechnologies(aoTechList, aoFedexIdea);
 
+    }
     this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
-    setTechnologies(aoTechList, aoFedexIdea);
+
     aoFedexIdea.save();
 
     return this.asFedexIdea(aoFedexIdea);
@@ -204,8 +210,13 @@ public class FedexIdeaDao {
    *
    * @return a list of all available FedexIdea
    */
-  public List<FedexIdea> findAll() {
-    AoFedexIdea[] aoFedexIdeas = this.ao.find(AO_FEDEX_IDEA_TYPE);
+  public List<FedexIdea> findAll(String title, String description, String status, String owner) {
+     Query query = Query
+       .select()
+       .where("lower(description) LIKE ? AND lower(title) LIKE ? AND lower(status) LIKE ? AND lower(owner) LIKE ?",
+         description.toLowerCase() + "%", title.toLowerCase() + "%", status.toLowerCase() + "%", owner.toLowerCase() + "%");
+
+    AoFedexIdea[] aoFedexIdeas = this.ao.find(AO_FEDEX_IDEA_TYPE, query);
     return this.asListFedexIdea(aoFedexIdeas);
   }
 
@@ -228,7 +239,8 @@ public class FedexIdeaDao {
 
   private static String DEFAULT_SCHEMA = "{\n" +
     "  \"title\": \"A fedex Idea or puzzle\",\n" +
-    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
+    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n"
+    +
     "  \"type\": \"object\",\n" +
     "  \"required\": [\n" +
     "    \"ideaTitle\"\n" +
@@ -385,7 +397,7 @@ public class FedexIdeaDao {
    */
   private AoFedexTechnology prepareAOFedexTechnology(String technology) {
     AoFedexTechnology aoFedexTechnology = this.ao.create(AoFedexTechnology.class);
-    aoFedexTechnology.setTechnology(technology);
+    aoFedexTechnology.setTechnology(technology == null ? "" : technology);
     return aoFedexTechnology;
   }
 
@@ -396,10 +408,15 @@ public class FedexIdeaDao {
    * @param fedexIdea   with data to be added to the active object
    */
   private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
+    // TODO: Uncomment event and put actual values
     aoFedexIdea.setContentId(fedexIdea.getContentId());
     aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
+    // aoFedexIdea.setOwner("admin");
     aoFedexIdea.setOwner(fedexIdea.getOwner());
+    // aoFedexIdea.setStatus("inProgress");
     aoFedexIdea.setStatus(fedexIdea.getStatus());
+    aoFedexIdea.setTitle(fedexIdea.getTitle());
+    // aoFedexIdea.setDescription("Demo description");
     aoFedexIdea.setDescription(fedexIdea.getDescription());
   }
 
@@ -411,7 +428,8 @@ public class FedexIdeaDao {
    */
   private void prepareAOSchema(AoSchema aoSchema, FedexSchema fedexSchema) {
     aoSchema.setSchema(fedexSchema.getSchema());
-    aoSchema.setUiSchema(this.getUserKey(fedexSchema.getUiSchema()));
+    aoSchema.setUiSchema(fedexSchema.getUiSchema());   //(this.getUserKey(fedexSchema.getUiSchema()));
+    aoSchema.setIndexSchema(fedexSchema.getIndexSchema());
     aoSchema.setDescription(fedexSchema.getDescription());
     aoSchema.setName(fedexSchema.getName());
     aoSchema.setVersion(fedexSchema.getVersion());
@@ -427,14 +445,17 @@ public class FedexIdeaDao {
     return aoFedexIdea == null
       ? null
       : (new FedexIdea.Builder())
-      .withGlobalId(aoFedexIdea.getGlobalId())
-      .withOwner(aoFedexIdea.getOwner())
-      .withContentId(aoFedexIdea.getContentId())
-      .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
-      .withDescription(aoFedexIdea.getDescription())
-      .withStatus(aoFedexIdea.getStatus())
-      .withFormData(aoFedexIdea.getFormData())
-      .build();
+        .withGlobalId(aoFedexIdea.getGlobalId())
+        .withTitle(aoFedexIdea.getTitle())
+        .withOwner(aoFedexIdea.getOwner())
+        .withContentId(aoFedexIdea.getContentId())
+        .withTechnologies(asListFedexTechnology(aoFedexIdea.getTechnologies()))
+        .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
+        .withDescription(aoFedexIdea.getDescription())
+        .withStatus(aoFedexIdea.getStatus())
+        .withFormData(aoFedexIdea.getFormData())
+        .withSchemaId(this.getSchemaFromIdea(aoFedexIdea.getContentId()))
+        .build();
   }
 
 
@@ -448,13 +469,14 @@ public class FedexIdeaDao {
     return aoSchema == null
       ? null
       : (new FedexSchema.Builder())
-      .withGlobalId(aoSchema.getGlobalId())
-      .withSchema(aoSchema.getSchema())
-      .withUiSchema(aoSchema.getUiSchema())
-      .withName(aoSchema.getName())
-      .withDescription(aoSchema.getDescription())
-      .withVersion(aoSchema.getVersion())
-      .build();
+        .withGlobalId(aoSchema.getGlobalId())
+        .withSchema(aoSchema.getSchema())
+        .withUiSchema(aoSchema.getUiSchema())
+        .withIndexSchema(aoSchema.getIndexSchema())
+        .withName(aoSchema.getName())
+        .withDescription(aoSchema.getDescription())
+        .withVersion(aoSchema.getVersion())
+        .build();
   }
 
   /**
@@ -467,9 +489,9 @@ public class FedexIdeaDao {
     return aoFedexTechnology == null
       ? null
       : new FedexTechnology.Builder()
-      .withGlobalId(aoFedexTechnology.getGlobalId())
-      .withTechnology(aoFedexTechnology.getTechnology())
-      .build();
+        .withGlobalId(aoFedexTechnology.getGlobalId())
+        .withTechnology(aoFedexTechnology.getTechnology())
+        .build();
   }
 
   /**

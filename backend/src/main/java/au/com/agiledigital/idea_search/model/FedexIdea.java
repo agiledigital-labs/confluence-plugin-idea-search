@@ -19,6 +19,7 @@ public class FedexIdea {
   private final String description;
   private final String status;
   private final String formData;
+  private final String url;
 
   @JsonCreator
   private FedexIdea(
@@ -30,7 +31,9 @@ public class FedexIdea {
     @JsonProperty("title") String title,
     @JsonProperty("status") String status,
     @JsonProperty("description") String description,
-    @JsonProperty("formData") String formData
+    @JsonProperty("schema") long schemaId,
+    @JsonProperty("formData") String formData,
+    @JsonProperty("url") String url
   ) {
     this.globalId = globalId;
     this.owner = owner;
@@ -41,6 +44,7 @@ public class FedexIdea {
     this.description = description;
     this.status = status;
     this.formData = formData;
+    this.url = url;
   }
 
   public long getGlobalId() {
@@ -72,10 +76,18 @@ public class FedexIdea {
   }
 
   public String getDescription() {
+    if ( this.description == null){
+      return "";
+    }
+
     return this.description;
+
+
   }
 
   public String getFormData() {return this.formData;}
+
+  public String getUrl() {return this.url;}
 
   public String toString() {
     return ("Idea [globalId="
@@ -109,6 +121,7 @@ public class FedexIdea {
     private String description;
     private long  schemaId;
     private String formData;
+    private String url;
 
     public Builder() {
     }
@@ -123,10 +136,16 @@ public class FedexIdea {
       this.status = fedexIdea.status;
       this.description = fedexIdea.description;
       this.formData = fedexIdea.formData;
+      this.url = fedexIdea.url;
     }
 
     public FedexIdea.Builder withTechnologies(List<FedexTechnology> technologies) {
       this.technologies = technologies;
+      return this;
+    }
+
+    public FedexIdea.Builder withTitle(String title) {
+      this.title = title;
       return this;
     }
 
@@ -163,6 +182,10 @@ public class FedexIdea {
       this.formData = formData;
       return this;
     }
+    public FedexIdea.Builder withUrl(String url) {
+      this.url = url;
+      return this;
+    }
 
     public FedexIdea build() {
       return new FedexIdea(
@@ -174,7 +197,9 @@ public class FedexIdea {
         this.title,
         this.status,
         this.description,
-        this.formData);
+        this.schemaId,
+        this.formData,
+        this.url);
     }
   }
 }

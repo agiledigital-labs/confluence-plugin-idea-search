@@ -39,6 +39,11 @@ public interface AoSchema extends RawEntity<Long> {
   void setUiSchema(String uiSchema);
 
   @StringLength(-1)
+  String getIndexSchema();
+
+  void setIndexSchema(String indexSchema);
+
+  @StringLength(-1)
   String getSchema();
 
   void setSchema(String Schema);

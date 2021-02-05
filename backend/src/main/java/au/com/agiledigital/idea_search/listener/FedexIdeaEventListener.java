@@ -175,6 +175,21 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
 
   /**
+   * Listen for page creations events on pages with the correct label, updates the data store with
+   * the new idea
+   * <p>
+   * If the title of the page is not unique, the blueprint create event is not used, the page create
+   * event is.
+   *
+   * @param event produced when a page is updated
+   */
+  @EventListener
+  public void pageCreated(PageCreateEvent event) {
+    event.getUpdateTrigger();
+    createOrUpdateTechnology(event.getContent(), event.getPage());
+  }
+
+  /**
    * Puts the newly created page as a child of index page
    *
    * @param page the new page
@@ -227,7 +242,29 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   private void getFedexIdea(AbstractPage page)
     throws ParserConfigurationException, IOException, SAXException {
 
+    // Splits the comma separated string into a list and replaces all html tags
+    // TODO: Get the actual technology list
+    // List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
+    //   .map(Utilities::removeTags).collect(
+    //     Collectors.toList());
+
+    List<String> tech = new ArrayList<>();
+    tech.add("python");
+    tech.add("java");
 
 
+    List<FedexTechnology> techList = new ArrayList<>();
+
+    tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
+
+    return new FedexIdea.Builder()
+      .withTitle("Title from builder")
+      .withTechnologies(techList)
+      .withContentId(page.getId()).withSchemaId(4)
+//      .withCreator(page.getCreator().getName())
+      .withDescription("Demo description from builder after reload")
+      .withStatus("Boss")
+      .withOwner("admin")
+      .build();
   }
 }
