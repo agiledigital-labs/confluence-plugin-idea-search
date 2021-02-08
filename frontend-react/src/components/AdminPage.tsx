@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import TextArea from "@atlaskit/textarea";
@@ -10,24 +10,39 @@ const atlasTextArea = (props: WidgetProps) => {
   return (
     <TextArea
       minimumRows={12}
-      placeholder={props.placeholder}
-      {...{ value: props.value, onChange: props.onChange }}
+      onChange={(e) => console.log(e.target.value)}
+      //placeholder={props.placeholder}
+      {...{ value: props.value }} //, onChange: props.onChange }}
     />
   );
 };
 
 const OuterAdminForm = () => {
-  const [schemas, setSchemas] = useState<String>("our schema");
+  const [schemas, setSchemas] = useState<{
+    schema: string;
+    uiSchema: string;
+    indexSchema: string;
+  }>();
 
-  axios
-    .get("http://shouv-box:1990/confluence/rest/idea/1/schema")
-    .then((response) => setSchemas(response.data));
+  useEffect(() => {
+    axios
+      .get("http://shouv-box:1990/confluence/rest/idea/1/schema")
+      .then((response) =>
+        setSchemas({
+          schema: response.data.schema,
+          uiSchema: response.data.uiSchema,
+          indexSchema: response.data.indexSchema,
+        })
+      );
+  }, []);
 
   console.log(schemas);
 
-  const formData = {
-    schema: schemas,
-  };
+  // const formData = {
+  //   schema: schemas?.schema,
+  //   uiSchema: "this is not undefined", //schemas?.uiSchema,
+  //   indexSchema: schemas?.indexSchema,
+  // };
 
   const updateSchema = (type: string, data: string) => {
     console.log("Inside update schema now again");
@@ -71,6 +86,9 @@ const OuterAdminForm = () => {
     },
   };
 
+  // console.log(widgets);
+  // console.log(uiSchema);
+
   const [errors, setError] = useState<Array<string>>([]);
 
   const [val, setVal] = useState("{}");
@@ -89,6 +107,9 @@ const OuterAdminForm = () => {
   const submit = () => {
     console.log(val);
   };
+
+  // @ts-ignore
+  const onSubmit = ({ formData }) => console.log("Data submitted: ", formData);
 
   return (
     <div>
@@ -147,18 +168,22 @@ const OuterAdminForm = () => {
         schema={schema}
         uiSchema={uiSchema}
         widgets={widgets}
-        formData={formData}
+        //formData={formData}
+        onSubmit={onSubmit}
       >
         <Button
           appearance="primary"
           onClick={(e) => {
-            updateSchema(
-              "ui-schema",
-              // @ts-ignore
-              document.getElementsByName("ui-schema")[0].value
-            );
-            // @ts-ignore
-            document.getElementsByName("ui-schema")[0].value = "";
+            // updateSchema(
+            //   "ui-schema",
+            //   // @ts-ignore
+            //   document.getElementsByName("ui-schema")[0].value
+            // );
+            // // @ts-ignore
+            // document.getElementsByName("ui-schema")[0].value = "";
+            // console.log(formData);
+
+            console.log;
           }}
         >
           Save
