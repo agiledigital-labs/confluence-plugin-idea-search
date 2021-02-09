@@ -28,6 +28,7 @@ const useStyles = makeStyles(() => ({
 
 const OuterTable = () => {
   const classes = useStyles();
+  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
 
   const [searchTerm, setSearchTerm] = useState({
     owner: "",
@@ -52,7 +53,7 @@ const OuterTable = () => {
     console.log(searchTerm);
     axios
       .get(
-        "http://shouv-box:1990/confluence/rest/idea/1/ideaPages?description=" +
+        `${contextPath}/rest/idea/1/ideaPages?description=` +
           searchTerm.description +
           "&title=" +
           searchTerm.title +
@@ -80,7 +81,7 @@ const OuterTable = () => {
       cells: [
         {
           key: `cell-${page.title}`,
-          content: <a href={page.url}>{page.title}</a>,
+          content: <a href={`${contextPath}/${page.url}`}>{page.title}</a>,
         },
         {
           key: `cell-${page.description}`,

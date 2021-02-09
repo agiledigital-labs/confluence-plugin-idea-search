@@ -237,18 +237,12 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
           row.setMacroRepresentations(
             category, getMacroFromList(macros, category, serializer)));
 
-    // Splits the comma separated string into a list and replaces all html tags
-    // TODO: Get the actual technology list
      List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
        .map(Utilities::removeTags).collect(
          Collectors.toList());
 
-//    List<String> tech = new ArrayList<>();
-//    tech.add("python");
-//    tech.add("java");
-
-
     List<FedexTechnology> techList = new ArrayList<>();
+    String url =  page.getUrlPath();
 
     tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 
@@ -260,6 +254,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
       .withDescription(row.getDescription().getValue())
       .withStatus(row.getStatus().getValue())
       .withOwner(row.getOwner().getValue())
+      .withUrl(page.getUrlPath())
       .build();
   }
 }

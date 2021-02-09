@@ -63,5 +63,10 @@ public interface AoFedexIdea extends RawEntity<Long> {
   @StringLength(-1)
   String getFormData();
 
+  @StringLength(-1)
+  String getUrl();
+
+  void setUrl(String team);
+
   void setFormData(String formData);
 }

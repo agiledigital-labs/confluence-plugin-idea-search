@@ -226,8 +226,6 @@ public class TechnologyList {
     status = status != null ? status : "";
     owner = owner != null ? owner : "";
 
-
-    //List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
     List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea(title, description, status, owner);
 
     List<Map> preConvert = allIdeas.stream().map( idea -> {

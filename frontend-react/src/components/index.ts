@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     AJS?: {
+      contextPath: () => string;
       Confluence: {
         PropertyPanel: {
           Macro: {
