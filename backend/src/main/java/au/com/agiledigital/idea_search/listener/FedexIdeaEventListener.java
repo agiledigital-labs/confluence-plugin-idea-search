@@ -239,13 +239,13 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
     // Splits the comma separated string into a list and replaces all html tags
     // TODO: Get the actual technology list
-    // List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
-    //   .map(Utilities::removeTags).collect(
-    //     Collectors.toList());
+     List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
+       .map(Utilities::removeTags).collect(
+         Collectors.toList());
 
-    List<String> tech = new ArrayList<>();
-    tech.add("python");
-    tech.add("java");
+//    List<String> tech = new ArrayList<>();
+//    tech.add("python");
+//    tech.add("java");
 
 
     List<FedexTechnology> techList = new ArrayList<>();
@@ -253,13 +253,13 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 
     return new FedexIdea.Builder()
-      .withTitle("Title from builder")
+      .withTitle(page.getDisplayTitle())
       .withTechnologies(techList)
       .withContentId(page.getId()).withSchemaId(4)
-//      .withCreator(page.getCreator().getName())
-      .withDescription("Demo description from builder after reload")
-      .withStatus("Boss")
-      .withOwner("admin")
+      .withCreator(page.getCreator().getName())
+      .withDescription(row.getDescription().getValue())
+      .withStatus(row.getStatus().getValue())
+      .withOwner(row.getOwner().getValue())
       .build();
   }
 }

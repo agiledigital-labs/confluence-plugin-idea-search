@@ -21,10 +21,12 @@ import com.atlassian.user.impl.DefaultUser;
 import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -269,7 +271,6 @@ public class TechnologyList {
   @Consumes({"application/json"})
   @PUT
   public String putSchema(
-    @QueryParam("type") String type,
     @Context HttpServletRequest request,
     @Context HttpServletResponse response
   ) {
@@ -282,29 +283,21 @@ public class TechnologyList {
       throw new Error("Error parsing request body");
     }
 
-    Map<String, String> mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
+    Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
 
-    List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
-    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
+     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
+     FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
 
-    switch (type){
-      case "index-schema":
-        latestSchema.setIndexSchema(mappedSchemaBody.get("data"));
-        break;
-      case "ui-schema":
-        latestSchema.setUiSchema(mappedSchemaBody.get("data"));
-        break;
-      case "idea-schema":
-        latestSchema.setSchema(mappedSchemaBody.get("data"));
-        break;
-      default:
-        break;
-    }
+     latestSchema.setIndexSchema(mappedSchemaBody.get("indexSchema").toString());
+
+     latestSchema.setUiSchema(mappedSchemaBody.get("uiSchema").toString());
+
+     latestSchema.setSchema(mappedSchemaBody.get("schema").toString());
 
     FedexSchema createdSchema = this.fedexIdeaService.createSchema(latestSchema);
 
     try {
-      return this.gson.toJson(createdSchema.getUiSchema());
+      return this.gson.toJson(createdSchema);
     } catch (Exception e){
       return this.gson.toJson("There is an error");
     }
