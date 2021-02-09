@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Create javadoc
-        run: mvn -gs ./settings.xml javadoc:javadoc
+        run: mvn -gs ./backend/settings.xml javadoc:javadoc
       - name: push-documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
