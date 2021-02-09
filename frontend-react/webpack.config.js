@@ -17,6 +17,7 @@ module.exports = {
   entry: {
     form: "./src/Form.ts",
     idea: "./src/Idea.ts",
+    admin: "./src/AdminPage.ts",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

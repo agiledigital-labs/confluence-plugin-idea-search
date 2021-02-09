@@ -81,8 +81,8 @@
   >
     <context>atl.admin</context>
     <resource
-      location="/frontend/bundled.form.js"
-      name="bundled.form.js"
+      location="/frontend/bundled.admin.js"
+      name="bundled.admin.js"
       type="download"
     />
   </web-resource>
