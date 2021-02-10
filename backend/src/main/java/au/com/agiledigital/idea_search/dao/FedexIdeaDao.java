@@ -389,7 +389,6 @@ public class FedexIdeaDao {
     return null;
   }
 
-
   /**
    * Prepare technology string for saving as an an active object
    *
@@ -485,7 +484,6 @@ public class FedexIdeaDao {
   }
 
   private long getSchemaFromIdea(long contentId) {
-
     return Arrays.stream(this.ao.find(
       AO_FEDEX_IDEA_TYPE,
       Query.select().where("CONTENT_ID = ?", contentId)

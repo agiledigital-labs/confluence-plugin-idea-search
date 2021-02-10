@@ -99,68 +99,12 @@ public class Index {
       : this.gson.toJson(allTechnologies);
   }
 
-  private static String DEFAULT_SCHEMA = "{\n" +
-    "  \"title\": \"A fedex Idea or puzzle\",\n" +
-    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
-    "  \"type\": \"object\",\n" +
-    "  \"required\": [\n" +
-    "    \"ideaTitle\"\n" +
-    "  ],\n" +
-    "  \"properties\": {\n" +
-    "    \"ideaTitle\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Idea Title (or how it should be know)\",\n" +
-    "      \"default\": \"Other things\"\n" +
-    "    },\n" +
-    "    \"description\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Description\"\n" +
-    "    },\n" +
-    "    \"owner\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Idea owner\"\n" +
-    "    },\n" +
-    "    \"status\":{\n" +
-    "          \"type\": \"string\",\n" +
-    "          \"enum\": [\n" +
-    "            \"new\",\n" +
-    "            \"inProgress\",\n" +
-    "            \"completed\",\n" +
-    "            \"abandoned\"\n" +
-    "          ],\"enumNames\": [\"New\", \"In Progress\", \"Completed\", \"Abandoned\"],\n" +
-    "          \"default\": \"New\"\n" +
-    "        \n" +
-    "    },\n" +
-    "        \"team\": {\n" +
-    "      \"type\": \"array\",\n" +
-    "      \"title\": \"The team\",\n" +
-    "      \"items\":{\n" +
-    "        \"type\": \"string\"\n" +
-    "      }\n" +
-    "    },\n" +
-    "       \"technologies\": {\n" +
-    "      \"type\": \"array\",\n" +
-    "      \"title\": \"The tech\",\n" +
-    "      \"items\":{\n" +
-    "        \"type\": \"string\"\n" +
-    "      }\n" +
-    "    },\n" +
-    "           \"links\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Links to resources for this idea\"\n" +
-    "    },\n" +
-    "           \"tickets\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Links to issues or tickets that track this\"\n" +
-    "    },\n" +
-    "           \"talks\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Presentations on the idea\"\n" +
-    "    }\n" +
-    "  }\n" +
-    "}";
-
-
+  /**
+   * Gets latest schema
+   *
+   * @param response Servlet response to populate
+   * @return JSON string representation of latest schema
+   */
   @Path("/schema")
   @Produces({"application/json"})
   @GET
@@ -171,6 +115,13 @@ public class Index {
     return this.gson.toJson(latestSchema);
   }
 
+  /**
+   * Gets brief information about the schemas 
+   * (id, name, version and description)
+   *
+   * @param response Servlet response to populate
+   * @return JSON string representation of brief schema information
+   */
   @Path("/schema/ids")
   @Produces({"application/json"})
   @GET
@@ -194,6 +145,7 @@ public class Index {
    * @param description the query on description field
    * @param status the query on status
    * @param owner the query on owner
+   * @param response the servlet response to populate
    * @return A json string containing all found idea pages
    */
   @Path("/ideapages")
@@ -236,6 +188,7 @@ public class Index {
     return this.gson.toJson(preConvert);
   }
 
+  // extracts body from request
   private static String extractPostRequestBody(HttpServletRequest request) throws IOException {
     if ("POST".equalsIgnoreCase(request.getMethod())) {
       try {
@@ -249,9 +202,11 @@ public class Index {
   }
 
   /**
-   * @param searchString to find technologies that begin with this string
-   * @param response     Servlet contest
-   * @return String in the form of a json list of TechnologyAPI objects
+   * Posts a complete schema (schema, uiSchema and indexSchema)
+   *
+   * @param request Servlet request to extract post body from
+   * @param response Servlet response to populate
+   * @return JSON string representation of the updated schema
    */
   @Path("/schema")
   @Consumes({"application/json"})
@@ -289,7 +244,7 @@ public class Index {
   /**
    * Added to prevent the search caching the responses
    *
-   * @param response
+   * @param response Servlet response to populate
    */
   private void applyNoCacheHeaders(HttpServletResponse response) {
     CachingHeaders.PREVENT_CACHING.apply(response);

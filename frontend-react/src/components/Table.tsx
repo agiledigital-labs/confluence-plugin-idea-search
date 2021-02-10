@@ -15,7 +15,9 @@ interface IdeaPage {
   url?: string;
 }
 
+// rows to be shown on each page of the paginated table
 const rowsPerPage: number = 10;
+// the default rendered page for paginated table
 const defaultPage: number = 1;
 
 const useStyles = makeStyles(() => ({
@@ -31,8 +33,11 @@ const useStyles = makeStyles(() => ({
 
 const OuterTable = () => {
   const classes = useStyles();
+  // gets context path from atlassian
+  // if not found, set to confluence as default
   const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
 
+  // search term will be empty fields on initial render
   const [searchTerm, setSearchTerm] = useState({
     owner: "",
     status: "",
@@ -118,6 +123,7 @@ const OuterTable = () => {
           <Textfield
             id={`${header}`}
             placeholder={header}
+            // specifying className to use useStyle() for css
             className={classes.root}
             onChange={(e) => {
               // @ts-ignore

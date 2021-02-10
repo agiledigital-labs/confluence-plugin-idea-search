@@ -13,8 +13,10 @@ interface formDataType {
   indexSchema: JSONSchema7;
 }
 
+// minimum number of rows for TextArea
 const minRows: number = 12;
 
+// custom JSX.Element with atlaskit's TextArea
 const atlasTextArea = (props: WidgetProps) => {
   return (
     <TextArea
@@ -22,12 +24,14 @@ const atlasTextArea = (props: WidgetProps) => {
         value: props.value,
         minimumRows: minRows,
         required: props.required,
+        // call form's onChange function with field value
         onChange: (event) => props.onChange(event.target.value),
       }}
     />
   );
 };
 
+// schema structure for json schema form
 const schema: JSONSchema7 = {
   properties: {
     schema: {
@@ -45,10 +49,12 @@ const schema: JSONSchema7 = {
   },
 };
 
+// specifying atlasTextArea as our custom widget
 const widgets = {
   atlasTextArea,
 };
 
+// specifying ui widgets to use atlasTextArea
 const uiSchema = {
   schema: {
     "ui:widget": atlasTextArea,
@@ -61,6 +67,7 @@ const uiSchema = {
   },
 };
 
+// validate form and populate form's error messages
 const validate = (formData: any, errors: any) => {
   const testValidate = (data: string): boolean => {
     try {
@@ -83,10 +90,13 @@ const validate = (formData: any, errors: any) => {
 };
 
 const OuterAdminForm = () => {
+  // gets context path from atlassian
+  // if not found, set to confluence as default
   const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
 
   const [formData, setFormData] = useState<formDataType>();
 
+  // populate form data with schema from the database
   useEffect(() => {
     axios.get(`${contextPath}/rest/idea/1/schema`).then((response) =>
       setFormData({
@@ -101,6 +111,7 @@ const OuterAdminForm = () => {
     setFormData(event.formData);
   };
 
+  // submission feedback to be used to populate atlaskit's section message
   const [submissionFeedback, setSubmissionFeedback] = useState<{
     title?: string;
     appearance?:
@@ -152,6 +163,7 @@ const OuterAdminForm = () => {
         <Button type="submit" appearance="primary">
           Save
         </Button>
+        {/* Submission feedback is hidden unless there is feedback from post request. */}
         <div hidden={submissionFeedback.hidden}>
           <SectionMessage
             title={submissionFeedback.title}

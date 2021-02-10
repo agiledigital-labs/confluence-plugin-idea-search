@@ -71,7 +71,6 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY_V2 =
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint-V2");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
-  private static final String FEDEX_IDEA_BLUEPRINT_LABEL_V2 = "fedex-ideas-v2";
   private final ContentBlueprint contentBlueprint;
 
   /**

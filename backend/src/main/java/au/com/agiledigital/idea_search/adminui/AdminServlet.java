@@ -66,6 +66,7 @@ public class AdminServlet extends HttpServlet
     response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
   }
 
+  // gets the uri to identify where a login attempt is being made
   private URI getUri(HttpServletRequest request)
   {
     StringBuffer builder = request.getRequestURL();
