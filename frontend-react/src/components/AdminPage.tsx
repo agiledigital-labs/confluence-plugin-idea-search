@@ -151,8 +151,8 @@ const OuterAdminForm = () => {
         </Button>
         <div hidden={submissionFeedback.hidden}>
           <SectionMessage
-            title={submissionFeedback.title} //"This account will be permanently deleted"
-            appearance={submissionFeedback.appearance} //"error"
+            title={submissionFeedback.title}
+            appearance={submissionFeedback.appearance}
           >
             <p>{submissionFeedback.message}</p>
           </SectionMessage>

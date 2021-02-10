@@ -244,7 +244,7 @@ public class Index {
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
       } catch (Exception e){
-        return e.toString();
+        throw e;
       }
     }
     return "";
@@ -268,7 +268,7 @@ public class Index {
     try {
       schemaBody = extractPostRequestBody(request);
     } catch (Exception e){
-      throw new Error("Error parsing request body");
+      throw new Error("Error parsing request body: "+e.getMessage());
     }
 
     Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
