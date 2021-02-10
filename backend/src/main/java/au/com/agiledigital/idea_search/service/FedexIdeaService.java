@@ -62,5 +62,14 @@ public interface FedexIdeaService {
    */
   List<TechnologyAPI> queryTechList(String searchString);
 
+  /**
+   * Searches and collects all matching fedex ideas
+   *
+   * @param title the query on title field
+   * @param description the query on description field
+   * @param status the query on status
+   * @param owner the query on owner
+   * @return A list of fedex ideas matching search query
+   */
   List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner);
 }

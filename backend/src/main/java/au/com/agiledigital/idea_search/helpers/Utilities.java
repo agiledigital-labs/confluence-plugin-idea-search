@@ -209,7 +209,14 @@ public class Utilities {
     return getMacroRepresentation(macros, category, serializer, xhtmlContent);
   }
 
-
+  /**
+   *
+   * @param labels label of the pages to be retrieved
+   * @param spaceKey key of the space the pages are at
+   * @param searchManager manager to facilitate search queries
+   * @param settingsManager manager to collect url
+   * @return A list of fedex ideas with related macros
+   */
   public static List<IdeaContainer> getRows(Set<String> labels, String spaceKey, SearchManager searchManager, SettingsManager settingsManager){
     SearchFilter searchFilter =
       ContentPermissionsSearchFilter.getInstance()

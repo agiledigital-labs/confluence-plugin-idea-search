@@ -7,6 +7,12 @@ import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 import axios from "axios";
 
+interface formDataType {
+  schema: JSONSchema7;
+  uiSchema: JSONSchema7;
+  indexSchema: JSONSchema7;
+}
+
 const minRows: number = 12;
 
 const atlasTextArea = (props: WidgetProps) => {
@@ -79,11 +85,7 @@ const validate = (formData: any, errors: any) => {
 const OuterAdminForm = () => {
   const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
 
-  const [formData, setFormData] = useState<{
-    schema: JSONSchema7;
-    uiSchema: JSONSchema7;
-    indexSchema: JSONSchema7;
-  }>();
+  const [formData, setFormData] = useState<formDataType>();
 
   useEffect(() => {
     axios.get(`${contextPath}/rest/idea/1/schema`).then((response) =>
@@ -112,7 +114,7 @@ const OuterAdminForm = () => {
     hidden: boolean;
   }>({ hidden: true });
 
-  const updateSchema = (data: any) => {
+  const updateSchema = (data: formDataType | undefined) => {
     axios.post(`${contextPath}/rest/idea/1/schema`, data).then((response) =>
       response.status === 200
         ? setSubmissionFeedback({
@@ -129,8 +131,6 @@ const OuterAdminForm = () => {
           })
     );
   };
-
-  console.log(submissionFeedback);
 
   return (
     <div>
