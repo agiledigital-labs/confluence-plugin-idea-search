@@ -115,21 +115,24 @@ const OuterAdminForm = () => {
   }>({ hidden: true });
 
   const updateSchema = (data: formDataType | undefined) => {
-    axios.post(`${contextPath}/rest/idea/1/schema`, data).then((response) =>
-      response.status === 200
-        ? setSubmissionFeedback({
-            title: "Schemas saved Successfully",
-            appearance: "confirmation",
-            message: "Your schema has been saved successfully",
-            hidden: false,
-          })
-        : setSubmissionFeedback({
-            title: "Failed to save schemas",
-            appearance: "error",
-            message: `Could not save schema`,
-            hidden: false,
-          })
-    );
+    axios
+      .post(`${contextPath}/rest/idea/1/schema`, data)
+      .then(() =>
+        setSubmissionFeedback({
+          title: "Schemas saved Successfully",
+          appearance: "confirmation",
+          message: "Your schema has been saved successfully",
+          hidden: false,
+        })
+      )
+      .catch(() =>
+        setSubmissionFeedback({
+          title: "Failed to save schemas",
+          appearance: "error",
+          message: "Could not save schemas",
+          hidden: false,
+        })
+      );
   };
 
   return (
