@@ -233,9 +233,7 @@ public class Index {
       return preJsonIdea;
     }).collect(Collectors.toList());
 
-    return allIdeas.isEmpty()
-      ? "[{}]"
-      : this.gson.toJson(preConvert);
+    return this.gson.toJson(preConvert);
   }
 
   private static String extractPostRequestBody(HttpServletRequest request) throws IOException {
