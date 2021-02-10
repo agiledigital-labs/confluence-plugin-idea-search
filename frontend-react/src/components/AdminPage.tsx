@@ -15,6 +15,8 @@ interface formDataType {
 
 // minimum number of rows for TextArea
 const minRows: number = 12;
+// the rest endpoint version
+const version: string = "1";
 
 // custom JSX.Element with atlaskit's TextArea
 const atlasTextArea = (props: WidgetProps) => {
@@ -98,7 +100,7 @@ const OuterAdminForm = () => {
 
   // populate form data with schema from the database
   useEffect(() => {
-    axios.get(`${contextPath}/rest/idea/v1/schema`).then((response) =>
+    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((response) =>
       setFormData({
         schema: response.data.schema,
         uiSchema: response.data.uiSchema,
@@ -127,7 +129,7 @@ const OuterAdminForm = () => {
 
   const updateSchema = (data: formDataType | undefined) => {
     axios
-      .post(`${contextPath}/rest/idea/v1/schema`, data)
+      .post(`${contextPath}/rest/idea/${version}/schema`, data)
       .then(() =>
         setSubmissionFeedback({
           title: "Schemas saved Successfully",

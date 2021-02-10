@@ -20,6 +20,8 @@ interface IdeaPage {
 const rowsPerPage: number = 10;
 // the default rendered page for paginated table
 const defaultPage: number = 1;
+// the rest endpoint version
+const version: string = "1";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -59,7 +61,7 @@ const OuterTable = () => {
   useEffect(() => {
     axios
       .get(
-        `${contextPath}/rest/idea/v1/ideapages?${queryString.stringify(
+        `${contextPath}/rest/idea/${version}/ideapages?${queryString.stringify(
           searchTerm
         )}`
       )
