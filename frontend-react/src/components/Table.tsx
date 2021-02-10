@@ -54,7 +54,7 @@ const OuterTable = () => {
   useEffect(() => {
     axios
       .get(
-        `${contextPath}/rest/idea/1/ideaPages?description=` +
+        `${contextPath}/rest/idea/1/ideapages?description=` +
           searchTerm.description +
           "&title=" +
           searchTerm.title +

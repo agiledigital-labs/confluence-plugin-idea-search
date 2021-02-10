@@ -58,7 +58,7 @@ public class AdminServlet extends HttpServlet
 
     // render admin configuration ui page
     response.setContentType("text/html;charset=utf-8");
-    renderer.render("vm/admin.vm", response.getWriter());
+    renderer.render("vm/Admin.vm", response.getWriter());
   }
 
   private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException

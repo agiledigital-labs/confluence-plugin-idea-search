@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  */
 @Path("/")
 @Component
-public class index {
+public class Index {
   private SearchManager searchManager;
   private SettingsManager settingsManager;
   private UserAccessor userAccessor;
@@ -44,7 +44,7 @@ public class index {
 
 
   @Autowired
-  public index(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager, @ComponentImport UserAccessor userAccessor) {
+  public Index(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager, @ComponentImport UserAccessor userAccessor) {
     this.searchManager = searchManager;
     this.settingsManager = settingsManager;
     this.fedexIdeaService = fedexIdeaService;
@@ -192,7 +192,7 @@ public class index {
    * @param response     Servlet contest
    * @return String in the form of a json list of TechnologyAPI objects
    */
-  @Path("/ideaPages")
+  @Path("/ideapages")
   @Produces({"application/json"})
   @GET
   public String getIdeaPages(
