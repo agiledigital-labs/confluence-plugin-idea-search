@@ -26,7 +26,7 @@ public class TechnologyServletTest {
   @Before
   public void setup() {
     httpClient = new DefaultHttpClient();
-    servletUrl = System.getProperty("baseurl") + "/rest/idea/v1/technology";
+    servletUrl = System.getProperty("baseurl") + "/rest/idea/1/technology";
   }
 
   @After
