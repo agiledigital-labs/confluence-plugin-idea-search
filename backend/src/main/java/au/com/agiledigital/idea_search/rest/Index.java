@@ -188,9 +188,13 @@ public class Index {
   }
 
   /**
-   * @param searchString to find technologies that begin with this string
-   * @param response     Servlet contest
-   * @return String in the form of a json list of TechnologyAPI objects
+   * Find and return idea pages based on query
+   *
+   * @param title the query on title field
+   * @param description the query on description field
+   * @param status the query on status
+   * @param owner the query on owner
+   * @return A json string containing all found idea pages
    */
   @Path("/ideapages")
   @Produces({"application/json"})
