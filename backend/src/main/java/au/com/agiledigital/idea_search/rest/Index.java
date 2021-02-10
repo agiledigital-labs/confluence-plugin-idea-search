@@ -166,7 +166,7 @@ public class Index {
   @GET
   public String getSchema( @Context HttpServletResponse response){
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
-    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
+    FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
 
     return this.gson.toJson(latestSchema);
   }
@@ -272,7 +272,8 @@ public class Index {
     Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
 
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
-    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
+
+    FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
 
     latestSchema.setIndexSchema(mappedSchemaBody.get("indexSchema").toString());
 
