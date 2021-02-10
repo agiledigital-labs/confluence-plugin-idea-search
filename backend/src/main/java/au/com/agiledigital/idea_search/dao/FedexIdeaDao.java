@@ -407,12 +407,9 @@ public class FedexIdeaDao {
   private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
     aoFedexIdea.setContentId(fedexIdea.getContentId());
     aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
-    // aoFedexIdea.setOwner("admin");
     aoFedexIdea.setOwner(fedexIdea.getOwner());
-    // aoFedexIdea.setStatus("inProgress");
     aoFedexIdea.setStatus(fedexIdea.getStatus());
     aoFedexIdea.setTitle(fedexIdea.getTitle());
-    // aoFedexIdea.setDescription("Demo description");
     aoFedexIdea.setDescription(fedexIdea.getDescription());
     aoFedexIdea.setSchemaIdManual(fedexIdea.getSchemaId());
     aoFedexIdea.setSchema(this.findRawOneSchema(fedexIdea.getSchemaId()));

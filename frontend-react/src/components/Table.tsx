@@ -15,6 +15,9 @@ interface IdeaPage {
   url?: string;
 }
 
+const rowsPerPage: number = 10;
+const defaultPage: number = 1;
+
 const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
@@ -40,7 +43,6 @@ const OuterTable = () => {
   });
 
   const handleChange = (term: string, value: string) => {
-    console.log(term.toLowerCase());
     setSearchTerm((prevTerm) => ({
       ...prevTerm,
       [term.toLowerCase()]: value,
@@ -50,7 +52,6 @@ const OuterTable = () => {
   const [justPages, setJustPages] = useState<Array<IdeaPage>>();
 
   useEffect(() => {
-    console.log(searchTerm);
     axios
       .get(
         `${contextPath}/rest/idea/1/ideaPages?description=` +
@@ -98,7 +99,7 @@ const OuterTable = () => {
         {
           key: `cell-${page.owner}`,
           content: (
-            <a href={"http://shouv-box:1990/confluence/display/~" + page.owner}>
+            <a href={`${contextPath}/display/~${page.owner}`}>
               {"@" + page.owner}
             </a>
           ),
@@ -114,14 +115,11 @@ const OuterTable = () => {
       content: (
         <div>
           <div className={classes.heading}>{header}</div>
-          {console.log(header)}
           <Textfield
             id={`${header}`}
             placeholder={header}
             className={classes.root}
-            onBlur={(e) => console.log(e.target.value)}
             onChange={(e) => {
-              console.log(e.currentTarget.value);
               // @ts-ignore
               handleChange(header, e.target.value);
             }}
@@ -136,15 +134,13 @@ const OuterTable = () => {
       <DynamicTable
         head={head}
         rows={rows}
-        rowsPerPage={10}
-        defaultPage={1}
+        rowsPerPage={rowsPerPage}
+        defaultPage={defaultPage}
         loadingSpinnerSize="large"
         isLoading={false}
         isFixedSize
         defaultSortKey="Title"
         defaultSortOrder="ASC"
-        onSort={() => console.log("onSort")}
-        onSetPage={() => console.log("onSetPage")}
       />
     </div>
   );

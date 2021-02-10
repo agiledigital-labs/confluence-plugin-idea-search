@@ -138,6 +138,15 @@
     tslib "^2.0.0"
     uuid "^3.1.0"
 
+"@atlaskit/icon@^21.1.0":
+  version "21.2.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-21.2.4.tgz#3937744f6d2d45d21fcea60c661debab4b83dbaf"
+  integrity sha512-W+5qORTCXB2r1m+BeanyyQeeSvxB+et3Tfeo5O9QsTtkXFl+Iw9quDi6HFoDjKGkHukF/6eZRsgbCoodHFQXsg==
+  dependencies:
+    "@atlaskit/theme" "^11.0.0"
+    tslib "^2.0.0"
+    uuid "^3.1.0"
+
 "@atlaskit/item@^11.0.2":
   version "11.0.3"
   resolved "https://registry.yarnpkg.com/@atlaskit/item/-/item-11.0.3.tgz#f2a3b7a6cf932655b7c3d705f2716114d7474210"
@@ -188,6 +197,16 @@
     exenv "^1.2.2"
     tiny-invariant "^0.0.3"
     tslib "^1.9.3"
+
+"@atlaskit/section-message@^5.0.9":
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/@atlaskit/section-message/-/section-message-5.0.9.tgz#7f48ce45dc4e9fc8570a9c786acc49e844f2d33b"
+  integrity sha512-sgZxZ5yRoOrpr0+mJW53JDzFaT+lELNWamjAxiG18KKjQ8Cjl7bx8OxnLy2qNR+FERvYzCTjZu8VVTMA/1ugGw==
+  dependencies:
+    "@atlaskit/button" "^15.1.0"
+    "@atlaskit/icon" "^21.1.0"
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
 
 "@atlaskit/spinner@^14.0.0":
   version "14.0.0"

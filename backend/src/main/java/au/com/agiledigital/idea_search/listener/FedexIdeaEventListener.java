@@ -242,7 +242,6 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
          Collectors.toList());
 
     List<FedexTechnology> techList = new ArrayList<>();
-    String url =  page.getUrlPath();
 
     tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 

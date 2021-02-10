@@ -1,32 +1,19 @@
 package au.com.agiledigital.idea_search.rest;
 
-import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
-
-import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
-
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
-import com.atlassian.confluence.api.model.people.User;
 import com.atlassian.confluence.search.v2.SearchManager;
 import com.atlassian.confluence.setup.settings.SettingsManager;
-import com.atlassian.confluence.user.DefaultUserAccessor;
-import com.atlassian.confluence.user.DefaultUserDetailsManager;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.web.filter.CachingHeaders;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.user.UserKey;
-import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.user.impl.DefaultUser;
-import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -47,7 +34,7 @@ import org.springframework.stereotype.Component;
  */
 @Path("/")
 @Component
-public class TechnologyList {
+public class index {
   private SearchManager searchManager;
   private SettingsManager settingsManager;
   private UserAccessor userAccessor;
@@ -57,7 +44,7 @@ public class TechnologyList {
 
 
   @Autowired
-  public TechnologyList(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager, @ComponentImport UserAccessor userAccessor) {
+  public index(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager, @ComponentImport UserAccessor userAccessor) {
     this.searchManager = searchManager;
     this.settingsManager = settingsManager;
     this.fedexIdeaService = fedexIdeaService;
@@ -111,7 +98,6 @@ public class TechnologyList {
       ? "{[]}"
       : this.gson.toJson(allTechnologies);
   }
-  public static String userKey = "2c9d829d6e61f011016e61f143ff0000";
 
   private static String DEFAULT_SCHEMA = "{\n" +
     "  \"title\": \"A fedex Idea or puzzle\",\n" +
@@ -249,15 +235,15 @@ public class TechnologyList {
   }
 
   private static String extractPostRequestBody(HttpServletRequest request) throws IOException {
-    if ("PUT".equalsIgnoreCase(request.getMethod())) {
+    if ("POST".equalsIgnoreCase(request.getMethod())) {
       try {
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
       } catch (Exception e){
-        return "Error in getting input stream";
+        return e.toString();
       }
     }
-    return "Nothing to see here";
+    return "";
   }
 
   /**
@@ -267,8 +253,8 @@ public class TechnologyList {
    */
   @Path("/schema")
   @Consumes({"application/json"})
-  @PUT
-  public String putSchema(
+  @POST
+  public String postSchema(
     @Context HttpServletRequest request,
     @Context HttpServletResponse response
   ) {
@@ -283,22 +269,18 @@ public class TechnologyList {
 
     Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
 
-     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
-     FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
+    List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
+    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
 
-     latestSchema.setIndexSchema(mappedSchemaBody.get("indexSchema").toString());
+    latestSchema.setIndexSchema(mappedSchemaBody.get("indexSchema").toString());
 
-     latestSchema.setUiSchema(mappedSchemaBody.get("uiSchema").toString());
+    latestSchema.setUiSchema(mappedSchemaBody.get("uiSchema").toString());
 
-     latestSchema.setSchema(mappedSchemaBody.get("schema").toString());
+    latestSchema.setSchema(mappedSchemaBody.get("schema").toString());
 
     FedexSchema createdSchema = this.fedexIdeaService.createSchema(latestSchema);
 
-    try {
-      return this.gson.toJson(createdSchema);
-    } catch (Exception e){
-      return this.gson.toJson("There is an error");
-    }
+    return this.gson.toJson(createdSchema);
   }
 
   /**

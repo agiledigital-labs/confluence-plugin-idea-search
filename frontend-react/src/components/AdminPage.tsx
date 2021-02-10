@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import TextArea from "@atlaskit/textarea";
 import Button from "@atlaskit/button/standard-button";
+import SectionMessage from "@atlaskit/section-message";
 import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 import axios from "axios";
+
+const minRows: number = 12;
 
 const atlasTextArea = (props: WidgetProps) => {
   return (
     <TextArea
       {...{
         value: props.value,
-        minimumRows: 12,
+        minimumRows: minRows,
         required: props.required,
         onChange: (event) => props.onChange(event.target.value),
       }}
@@ -37,7 +40,7 @@ const schema: JSONSchema7 = {
 };
 
 const widgets = {
-  atlasTextArea: atlasTextArea,
+  atlasTextArea,
 };
 
 const uiSchema = {
@@ -53,18 +56,9 @@ const uiSchema = {
 };
 
 const validate = (formData: any, errors: any) => {
-  console.log(
-    "Inside the function, comparing " +
-      formData.schema +
-      " and " +
-      formData.uiSchema
-  );
-
-  console.log(formData);
-
   const testValidate = (data: string): boolean => {
     try {
-      console.log(JSON.parse(data));
+      JSON.parse(data);
       return true;
     } catch (e) {
       return false;
@@ -82,14 +76,9 @@ const validate = (formData: any, errors: any) => {
   return errors;
 };
 
-const updateSchema = (data: any) => {
-  console.log("Inside update schema now again");
-  axios
-    .put("http://shouv-box:1990/confluence/rest/idea/1/schema", data)
-    .then((response) => console.log(response.data));
-};
-
 const OuterAdminForm = () => {
+  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
+
   const [formData, setFormData] = useState<{
     schema: JSONSchema7;
     uiSchema: JSONSchema7;
@@ -97,20 +86,51 @@ const OuterAdminForm = () => {
   }>();
 
   useEffect(() => {
-    axios
-      .get("http://shouv-box:1990/confluence/rest/idea/1/schema")
-      .then((response) =>
-        setFormData({
-          schema: response.data.schema,
-          uiSchema: response.data.uiSchema,
-          indexSchema: response.data.indexSchema,
-        })
-      );
+    axios.get(`${contextPath}/rest/idea/1/schema`).then((response) =>
+      setFormData({
+        schema: response.data.schema,
+        uiSchema: response.data.uiSchema,
+        indexSchema: response.data.indexSchema,
+      })
+    );
   }, []);
 
   const onFormChange = (event: IChangeEvent) => {
     setFormData(event.formData);
   };
+
+  const [submissionFeedback, setSubmissionFeedback] = useState<{
+    title?: string;
+    appearance?:
+      | "info"
+      | "warning"
+      | "error"
+      | "confirmation"
+      | "change"
+      | undefined;
+    message?: string;
+    hidden: boolean;
+  }>({ hidden: true });
+
+  const updateSchema = (data: any) => {
+    axios.post(`${contextPath}/rest/idea/1/schema`, data).then((response) =>
+      response.status === 200
+        ? setSubmissionFeedback({
+            title: "Schemas saved Successfully",
+            appearance: "confirmation",
+            message: "Your schema has been saved successfully",
+            hidden: false,
+          })
+        : setSubmissionFeedback({
+            title: "Failed to save schemas",
+            appearance: "error",
+            message: `Could not save schema`,
+            hidden: false,
+          })
+    );
+  };
+
+  console.log(submissionFeedback);
 
   return (
     <div>
@@ -123,14 +143,20 @@ const OuterAdminForm = () => {
         onChange={onFormChange}
         validate={validate}
         onSubmit={() => {
-          alert("Submitted!");
-          console.log(formData);
           updateSchema(formData);
         }}
       >
         <Button type="submit" appearance="primary">
           Save
         </Button>
+        <div hidden={submissionFeedback.hidden}>
+          <SectionMessage
+            title={submissionFeedback.title} //"This account will be permanently deleted"
+            appearance={submissionFeedback.appearance} //"error"
+          >
+            <p>{submissionFeedback.message}</p>
+          </SectionMessage>
+        </div>
       </Form>
     </div>
   );
