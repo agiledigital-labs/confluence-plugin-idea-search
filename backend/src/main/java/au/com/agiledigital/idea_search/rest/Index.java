@@ -268,7 +268,7 @@ public class Index {
     try {
       schemaBody = extractPostRequestBody(request);
     } catch (Exception e){
-      throw new Error("Error parsing request body: "+e.getMessage());
+      throw new Error("Error parsing request body: ", e);
     }
 
     Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
