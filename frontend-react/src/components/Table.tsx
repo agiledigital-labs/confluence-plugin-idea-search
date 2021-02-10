@@ -5,6 +5,7 @@ import DynamicTable from "@atlaskit/dynamic-table";
 import { makeStyles } from "@material-ui/core";
 import Textfield from "@atlaskit/textfield";
 import { isEmpty } from "lodash";
+import queryString from "query-string";
 
 interface IdeaPage {
   owner?: string;
@@ -44,7 +45,6 @@ const OuterTable = () => {
     technologies: "",
     title: "",
     description: "",
-    url: "",
   });
 
   const handleChange = (term: string, value: string) => {
@@ -59,14 +59,9 @@ const OuterTable = () => {
   useEffect(() => {
     axios
       .get(
-        `${contextPath}/rest/idea/1/ideapages?description=` +
-          searchTerm.description +
-          "&title=" +
-          searchTerm.title +
-          "&status=" +
-          searchTerm.status +
-          "&owner=" +
-          searchTerm.owner
+        `${contextPath}/rest/idea/1/ideapages?${contextPath}/rest/idea/1/ideapages?${queryString.stringify(
+          searchTerm
+        )}`
       )
       .then((response) => setJustPages(response.data));
   }, [searchTerm]);
