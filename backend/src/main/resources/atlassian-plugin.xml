@@ -51,8 +51,8 @@
       type="download"
     />
   </content-template>
-  <rest key="rest" name="Idea Rest API" path="/idea" version="1">
-    <description>Provides a REST interface to inline tasks</description>
+  <rest key="rest" name="Idea Rest API" path="/idea" version="v1">
+    <description>Provides a REST interface to expose and modify data.</description>
   </rest>
   <web-item
     i18n-name-key="ideaSearch.blueprint.page.create-link.title"

@@ -125,7 +125,7 @@ const addTechnologies = (
   AJS.$("#idea-technology").auiSelect2({
     multiple: true,
     ajax: {
-      url: `${AJS.contextPath()}/rest/idea/1/technology`,
+      url: `${AJS.contextPath()}/rest/idea/v1/technology`,
       data: (params) => ({ q: params }),
       processResults: (data) => ({
         results: data.map((item) => ({

@@ -59,7 +59,7 @@ const OuterTable = () => {
   useEffect(() => {
     axios
       .get(
-        `${contextPath}/rest/idea/1/ideapages?${contextPath}/rest/idea/1/ideapages?${queryString.stringify(
+        `${contextPath}/rest/idea/v1/ideapages?${queryString.stringify(
           searchTerm
         )}`
       )

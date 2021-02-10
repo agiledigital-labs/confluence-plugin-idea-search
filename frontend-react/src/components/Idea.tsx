@@ -45,19 +45,19 @@ const uiSchema = (context: string) => ({
   team: {
     items: {
       context,
-      endpoint: "rest/prototype/1/search/user.json?max-results=6&query=",
+      endpoint: "rest/prototype/v1/search/user.json?max-results=6&query=",
       "ui:widget": UserSelection,
     },
   },
   owner: {
     context,
-    endpoint: "rest/prototype/1/search/user.json?max-results=6&query=",
+    endpoint: "rest/prototype/v1/search/user.json?max-results=6&query=",
     "ui:widget": UserSelection,
   },
   technologies: {
     items: {
       context,
-      endpoint: "rest/idea/1/technology?q=",
+      endpoint: "rest/idea/v1/technology?q=",
       "ui:widget": RestSelection,
     },
   },
@@ -132,7 +132,7 @@ const OuterIdea = () => {
   // });
 
   useEffect(() => {
-    axios.get(`${context}/rest/idea/1/schema`).then((data) => {
+    axios.get(`${context}/rest/idea/v1/schema`).then((data) => {
       setRestSchema(JSON.parse(data.data.schema));
     });
     setHack(true);
