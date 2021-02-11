@@ -194,8 +194,8 @@ public class Index {
       try {
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
-      } catch (Exception e){
-        throw e;
+      } catch (IOException e){
+        throw new IOException("Failed to parse request body.", e);
       }
     }
     return "";
@@ -214,15 +214,11 @@ public class Index {
   public String postSchema(
     @Context HttpServletRequest request,
     @Context HttpServletResponse response
-  ) {
+  ) throws IOException {
     this.applyNoCacheHeaders(response);
     String schemaBody = "";
 
-    try {
-      schemaBody = extractPostRequestBody(request);
-    } catch (Exception e){
-      throw new Error("Error parsing request body: ", e);
-    }
+    schemaBody = extractPostRequestBody(request);
 
     Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
 
