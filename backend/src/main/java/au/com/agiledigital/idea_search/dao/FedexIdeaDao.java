@@ -51,9 +51,7 @@ public class FedexIdeaDao {
 
     this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
 
-    // Save the changes to the active object
     aoFedexIdea.save();
-    // Set the relation of the technology to the idea and save
 
     return this.asFedexIdea(aoFedexIdea);
   }
