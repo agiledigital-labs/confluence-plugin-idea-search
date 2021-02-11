@@ -2,8 +2,6 @@ package au.com.agiledigital.idea_search.macros;
 
 import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
 
-import au.com.agiledigital.idea_search.macros.transport.BlueprintContainer;
-import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;

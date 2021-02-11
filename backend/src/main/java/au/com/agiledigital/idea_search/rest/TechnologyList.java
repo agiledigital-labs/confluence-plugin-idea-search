@@ -1,23 +1,11 @@
 package au.com.agiledigital.idea_search.rest;
 
 
-import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
-import com.atlassian.confluence.api.model.people.User;
-import com.atlassian.confluence.search.v2.SearchManager;
-import com.atlassian.confluence.setup.settings.SettingsManager;
-import com.atlassian.confluence.user.DefaultUserAccessor;
-import com.atlassian.confluence.user.DefaultUserDetailsManager;
-import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.web.filter.CachingHeaders;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.user.UserKey;
-import com.atlassian.sal.api.user.UserManager;
-import com.atlassian.user.impl.DefaultUser;
-import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,20 +28,14 @@ import org.springframework.stereotype.Component;
 @Path("/")
 @Component
 public class TechnologyList {
-  private SearchManager searchManager;
-  private SettingsManager settingsManager;
-  private UserAccessor userAccessor;
 
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
 
 
   @Autowired
-  public TechnologyList(FedexIdeaService fedexIdeaService, @ComponentImport SearchManager searchManager, @ComponentImport SettingsManager settingsManager, @ComponentImport UserAccessor userAccessor) {
-    this.searchManager = searchManager;
-    this.settingsManager = settingsManager;
+  public TechnologyList(FedexIdeaService fedexIdeaService) {
     this.fedexIdeaService = fedexIdeaService;
-    this.userAccessor = userAccessor;
   }
 
   @Path("/schema")

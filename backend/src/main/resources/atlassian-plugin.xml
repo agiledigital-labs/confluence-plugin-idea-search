@@ -130,16 +130,6 @@
       class="au.com.agiledigital.idea_search.blueprints.IndexPageContextProvider"/>
   </content-template>
 
-  <!-- Client Side Scripts Macro -->
-  <xhtml-macro
-    name="Idea Search Client Side Scripts"
-    class="au.com.agiledigital.idea_search.macros.ClientSideScripts"
-    key='ideaSearch-macro-clientSideScripts'>
-    <description key="ideaSearch.macro.client-side-scripts.desc"/>
-    <category name="hidden"/>
-    <parameters/>
-  </xhtml-macro>
-
   <web-resource
     key="ideaSearch-macro-clientSideScripts-macro-resource"
     name="Client Side Scripts Web Resources">

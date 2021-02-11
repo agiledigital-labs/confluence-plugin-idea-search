@@ -1,12 +1,10 @@
 package au.com.agiledigital.idea_search.helpers;
 
-//import au.com.agiledigital.idea_search.macros.DataMacroRepresentation;
 
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import com.atlassian.confluence.core.BodyContent;
 import com.atlassian.confluence.pages.AbstractPage;
 import com.atlassian.confluence.setup.settings.SettingsManager;
-import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -25,8 +23,7 @@ import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
 public class Utilities {
   private static final Logger log = LoggerFactory.getLogger(Utilities.class);
-  private static XhtmlContent xhtmlContent;
-  private static DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+  private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
   private Utilities() {throw new IllegalStateException("Utility class"); }
 
@@ -57,12 +54,9 @@ public class Utilities {
   /**
    * Parses XML to Java Dom objects
    *
-   * @param xml string of readin XML content
+   * @param xml string of read-in XML content
    * @return Object containing the structure of the XML which has functionality for navigating the
    * dom
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
    */
   private static Document parseXML(String xml)
     throws ParserConfigurationException, IOException, SAXException {
@@ -97,6 +91,6 @@ public class Utilities {
       }
 
       return new FedexIdea.Builder().build();
-    };
-  }
+    }
+}
 
