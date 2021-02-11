@@ -149,25 +149,7 @@
   </web-resource>
 
   <!-- Structured Data Macro -->
-  <xhtml-macro
-    name="idea-structured-field"
-    class="au.com.agiledigital.idea_search.macros.StructuredField"
-    key='ideaSearch-macro-structuredField'>
-    <description key="ideaSearch.macro.structuredField.desc"/>
-    <category name="hidden"/>
-    <parameters>
-      <parameter name="category" type="enum">
-        <value name="description"/>
-        <value name="technologies"/>
-        <value name="status"/>
-        <value name="owner"/>
-        <value name="team"/>
-      </parameter>
-    </parameters>
-    <property-panel>
-      <button id="updater" label="Update the content"/>
-    </property-panel>
-  </xhtml-macro>
+
   <web-resource name="Javascript" key="editor_status-light">
     <context>editor</context>
     <resource type="download" name="updateMacro.js" location="js/updateMacro.js"/>
@@ -235,7 +217,6 @@
   <ao key="ao-module" namespace="fedex-idea">
     <description>The module configuring the active objects data storage service for this plugin</description>
     <entity>au.com.agiledigital.idea_search.dao.AoFedexIdea</entity>
-    <entity>au.com.agiledigital.idea_search.dao.AoFedexTechnology</entity>
     <entity>au.com.agiledigital.idea_search.dao.AoIdeaBlueprint</entity>
     <entity>au.com.agiledigital.idea_search.dao.AoSchema</entity>
   </ao>

@@ -18,14 +18,6 @@ public interface AoFedexIdea extends RawEntity<Long> {
   @PrimaryKey
   long getGlobalId();
 
-  String getOwner();
-
-  void setOwner(String owner);
-
-  String getVersion();
-
-  void setVersion(String version);
-
   @StringLength(-1)
   String getTitle();
 
@@ -35,19 +27,6 @@ public interface AoFedexIdea extends RawEntity<Long> {
   long getContentId();
 
   void setContentId(long contentId);
-
-  @OneToMany
-  AoFedexTechnology[] getTechnologies();
-
-  @StringLength(-1)
-  String getStatus();
-
-  void setStatus(String status);
-
-  @StringLength(-1)
-  String getDescription();
-
-  void setDescription(String team);
 
   @Indexed
   String getCreatorUserKey();

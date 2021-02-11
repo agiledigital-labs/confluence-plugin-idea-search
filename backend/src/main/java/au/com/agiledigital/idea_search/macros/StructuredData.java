@@ -9,35 +9,40 @@ import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.text.WordUtils;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class StructuredData implements Macro {
 
   private final PageBuilderService pageBuilderService;
-  private final DefaultFedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
+
   @Autowired
   public StructuredData(
     @ComponentImport PageBuilderService pageBuilderService, @ComponentImport BootstrapManager bootstrapManager, DefaultFedexIdeaService fedexIdeaService) {
     this.pageBuilderService = pageBuilderService;
-    this.fedexIdeaService = fedexIdeaService;
   }
-  private static final Logger log = LoggerFactory.getLogger(StructuredData.class);
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
-    Map<String,Object> data = new HashMap<String,Object>();
-    data =gson.fromJson(s, data.getClass());
+
+    Map<String, String> data = new LinkedHashMap<>();
+
+    data =gson.fromJson(Jsoup.parse(s).body().text(), data.getClass());
+
+    Map<String, String> renderData = new LinkedHashMap<>();
+
+
+    data.forEach( (r, t) -> {
+      renderData.put(WordUtils.capitalize(r.replaceAll("[A-Z]", " $0")), t);
+    });
 
     pageBuilderService
       .assembler()
@@ -45,10 +50,9 @@ public class StructuredData implements Macro {
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-structuredData-macro-resource");
     Map<String, Object> context = new HashMap<>();
-    context.put("schema", this.fedexIdeaService.getSchema(0));
-    context.put("data", data);
-    context.put("db-version", this.fedexIdeaService.getByContentId(conversionContext.getEntity().getContentId().asLong()));
+    context.put("data", renderData);
     return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
+
   }
 
   @Override

@@ -87,6 +87,7 @@ public class Utilities {
         return new FedexIdea.Builder().withTitle(page.getTitle())
           .withUrl(settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath())
           .withFormData(test)
+          .withContentId(page.getContentId())
           .withCreator(page.getCreator())
           .build();
 

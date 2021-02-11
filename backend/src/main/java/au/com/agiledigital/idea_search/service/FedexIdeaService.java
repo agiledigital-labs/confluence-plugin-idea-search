@@ -2,7 +2,6 @@ package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexSchema;
-import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 
 import java.util.List;
 
@@ -33,13 +32,6 @@ public interface FedexIdeaService {
   FedexIdea getByContentId(long contentId);
 
   /**
-   * Filter technology list from dao to avoid technology duplication
-   *
-   * @return list of distinct technology strings
-   */
-  List<TechnologyAPI> queryTechList();
-
-  /**
    * Get the existing blueprint id from database
    *
    * @return the current blueprint id
@@ -52,15 +44,6 @@ public interface FedexIdeaService {
    * @param blueprintId the blueprint id to be set
    */
   void setBlueprintId(String blueprintId);
-
-  /**
-   * Filter technology list from dao to avoid technology duplication Overload to take a search
-   * string
-   *
-   * @param searchString to search for technologies with this begining
-   * @return String json array of TechnologyAPI objects
-   */
-  List<TechnologyAPI> queryTechList(String searchString);
 
   List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner);
 }

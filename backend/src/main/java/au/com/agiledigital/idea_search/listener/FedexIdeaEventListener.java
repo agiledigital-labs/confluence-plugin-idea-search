@@ -7,23 +7,17 @@ import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
   import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
 import com.atlassian.confluence.setup.settings.SettingsManager;
-import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.ModuleCompleteKey;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ConfluenceImport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.xml.sax.SAXException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+
 import static au.com.agiledigital.idea_search.helpers.Utilities.getPageData;
 
 /**
@@ -33,25 +27,17 @@ import static au.com.agiledigital.idea_search.helpers.Utilities.getPageData;
 @Named
 public class FedexIdeaEventListener implements InitializingBean, DisposableBean {
 
-  private static final Logger log = LoggerFactory.getLogger(FedexIdeaEventListener.class);
-
   @ConfluenceImport
   private final EventPublisher eventPublisher;
 
   private final DefaultFedexIdeaService fedexIdeaService;
-  private final XhtmlContent xhtmlContent;
 
   @ConfluenceImport
   private final IndexPageManager indexPageManager;
 
-  private final DocumentBuilderFactory documentBuilderFactory =
-    DocumentBuilderFactory.newInstance();
   private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY =
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
-  private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY_V2 =
-    new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint-V2");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
-  private static final String FEDEX_IDEA_BLUEPRINT_LABEL_V2 = "fedex-ideas-v2";
   private final ContentBlueprint contentBlueprint;
 private SettingsManager settingsManager;
 
@@ -60,7 +46,6 @@ private SettingsManager settingsManager;
    *
    * @param eventPublisher   confluence event publisher
    * @param fedexIdeaService fedex Idea service
-   * @param xhtmlContent     used to parse the page content
    * @param indexPageManager class for the index page
    */
   @Inject
@@ -68,11 +53,9 @@ private SettingsManager settingsManager;
     EventPublisher eventPublisher,
     SettingsManager settingsManager,
     DefaultFedexIdeaService fedexIdeaService,
-    @ComponentImport XhtmlContent xhtmlContent,
     IndexPageManager indexPageManager) {
     this.eventPublisher = eventPublisher;
     this.fedexIdeaService = fedexIdeaService;
-    this.xhtmlContent = xhtmlContent;
     this.indexPageManager = indexPageManager;
     this.contentBlueprint = new ContentBlueprint();
     this.contentBlueprint.setModuleCompleteKey(FEDEX_IDEA_BLUEPRINT_KEY.toString());
@@ -99,9 +82,15 @@ private SettingsManager settingsManager;
    * @param event produced when a page is updated
    */
   @EventListener
-  public void pageUpdated(PageUpdateEvent event) throws IOException, SAXException, ParserConfigurationException {
+  public void pageUpdated(PageUpdateEvent event)  {
+    if (
+      event.getContent().getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
+    ) {
+        makeChildOfIndex(event.getPage());
 
     this.fedexIdeaService.updateIdea(getPageData(this.settingsManager, event.getPage()), event.getPage().getId());
+      }
+
 
 
   }
@@ -117,8 +106,16 @@ private SettingsManager settingsManager;
    * @param event produced when a page is updated
    */
   @EventListener
-  public void pageCreated(PageCreateEvent event) throws IOException, SAXException, ParserConfigurationException {
-    this.fedexIdeaService.createIdea(getPageData(this.settingsManager, event.getPage()));
+  public void pageCreated(PageCreateEvent event)  {
+    if (
+      event.getContent().getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
+    ) {
+
+        makeChildOfIndex(event.getPage());
+
+        this.fedexIdeaService.updateIdea(getPageData(this.settingsManager, event.getPage()), event.getPage().getId());
+      }
+
 
 
   }

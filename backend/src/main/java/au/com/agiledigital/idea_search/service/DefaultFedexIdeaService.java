@@ -25,8 +25,6 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    */
   public FedexIdea createIdea(FedexIdea fedexIdea) {
 
-    fedexIdea.getContentId();
-
     return this.fedexIdeaDao.createIdea(fedexIdea);
   }
 
@@ -79,25 +77,6 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    */
   public FedexIdea updateIdea(FedexIdea fedexIdea, long contentId) {
     return this.fedexIdeaDao.upsertByContentId(fedexIdea, contentId);
-  }
-
-  /**
-   * Pass through a list of distinct technology strings from dao Overload to take a search string
-   *
-   * @param searchString of the technology be searched for
-   * @return A string list of technology names
-   */
-  public List<TechnologyAPI> queryTechList(String searchString) {
-    return fedexIdeaDao.queryTechList(searchString);
-  }
-
-  /**
-   * Pass through a list of distinct technology strings from dao
-   *
-   * @return A string list of technology names
-   */
-  public List<TechnologyAPI> queryTechList() {
-    return fedexIdeaDao.queryTechList();
   }
 
   public List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner) { return fedexIdeaDao.findAll(title, description, status, owner); }

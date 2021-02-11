@@ -56,56 +56,6 @@ public class TechnologyList {
     this.userAccessor = userAccessor;
   }
 
-  /**
-   * Clean the of non ASCII and control characters
-   *
-   * @param text input string
-   * @return cleaned string
-   */
-  private static String cleanTextContent(String text) {
-    return text
-      .replaceAll("[^\\x00-\\x7F]", "")
-      .replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "")
-      .replaceAll("\\p{C}", "");
-  }
-
-  /**
-   * @param searchString to find technologies that begin with this string
-   * @param response     Servlet contest
-   * @return String in the form of a json list of TechnologyAPI objects
-   */
-  @Path("/technology")
-  @Produces({"application/json"})
-  @GET
-  public String getTechList(
-    @QueryParam("q") String searchString,
-    @Context HttpServletResponse response
-  ) {
-    String normalizeSearch = searchString != null && searchString.length() > 0
-      ? cleanTextContent(searchString).toLowerCase()
-      : null;
-    this.applyNoCacheHeaders(response);
-
-    boolean searchKeyHasValue = normalizeSearch != null && !normalizeSearch.trim().isEmpty();
-
-    List<TechnologyAPI> allTechnologies = searchKeyHasValue
-      ? this.fedexIdeaService.queryTechList(normalizeSearch)
-      : this.fedexIdeaService.queryTechList();
-
-    if (searchKeyHasValue && allTechnologies.isEmpty() && normalizeSearch.endsWith(",")) {
-      TechnologyAPI newTech = new TechnologyAPI(
-        normalizeSearch.replace(",", "")
-      );
-      allTechnologies.add(0, newTech);
-    }
-
-    return allTechnologies.isEmpty()
-      ? "{[]}"
-      : this.gson.toJson(allTechnologies);
-  }
-  public static String userKey = "2c9d829d6e61f011016e61f143ff0000";
-
-
   @Path("/schema")
   @Produces({"application/json"})
   @GET
@@ -134,7 +84,6 @@ public class TechnologyList {
   }
 
   /**
-   * @param searchString to find technologies that begin with this string
    * @param response     Servlet contest
    * @return String in the form of a json list of TechnologyAPI objects
    */
@@ -159,20 +108,12 @@ public class TechnologyList {
     owner = owner != null ? owner : "";
 
 
-    //List<IdeaContainer> allIdeas = getRows(newSet, "ds", this.searchManager, this.settingsManager);
     List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea(title, description, status, owner);
 
     List<Map> preConvert = allIdeas.stream().map( idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", idea.getUrl());
-      preJsonIdea.put("description", idea.getDescription().isEmpty() ? "":idea.getDescription());
-      preJsonIdea.put("technologies", idea.getTechnologies().isEmpty() ? "" : idea.getTechnologies().stream().map(tech-> tech.getTechnology()).collect(
-        Collectors.toList()));
-
-      preJsonIdea.put("owner", idea.getOwner());
-
-      preJsonIdea.put("status", idea.getStatus());
 
       return preJsonIdea;
     }).collect(Collectors.toList());
