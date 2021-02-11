@@ -220,17 +220,13 @@ public class Index {
 
     schemaBody = extractPostRequestBody(request);
 
-    Map mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
+    FedexSchema mappedSchemaBody = this.gson.fromJson(schemaBody, FedexSchema.class);
 
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
 
     FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
-
-    latestSchema.setIndexSchema(mappedSchemaBody.get("indexSchema").toString());
-
-    latestSchema.setUiSchema(mappedSchemaBody.get("uiSchema").toString());
-
-    latestSchema.setSchema(mappedSchemaBody.get("schema").toString());
+    
+    SchemaMapper.MAPPER.mapToSchema(mappedSchemaBody, latestSchema);
 
     FedexSchema createdSchema = this.fedexIdeaService.createSchema(latestSchema);
 
