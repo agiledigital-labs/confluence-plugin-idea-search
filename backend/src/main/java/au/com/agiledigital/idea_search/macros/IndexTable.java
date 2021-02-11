@@ -1,7 +1,6 @@
 package au.com.agiledigital.idea_search.macros;
 
 import static au.com.agiledigital.idea_search.helpers.MacroHelpers.splitTrimToSet;
-import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
 
 import au.com.agiledigital.idea_search.macros.transport.BlueprintContainer;
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
@@ -71,30 +70,6 @@ public class IndexTable implements Macro {
 
     Map<String, Object> context = new HashMap<>();
 
-    List<IdeaContainer> rows = getRows(getMacroLabels(map), conversionContext.getSpaceKey(), this.searchManager, this.settingsManager);
-
-    List<IdeaContainer> filteredRows =
-      rows.stream()
-        .filter(container -> container.getBlueprintId() != null && !container.getBlueprintId().isEmpty()).collect(Collectors.toList());
-
-    context.put("rows", rows);
-    context.put(
-      "blueprint",
-      new BlueprintContainer(
-        conversionContext.getSpaceKey(),
-        settingsManager.getGlobalSettings().getBaseUrl(),
-        filteredRows.isEmpty()
-          // Set the blueprint id to be that of fedex idea blueprint
-          ? this.fedexIdeaService.getBlueprintId()
-          : Collections.max(
-          filteredRows.stream()
-            .collect(
-              Collectors.groupingBy(
-                IdeaContainer::getBlueprintId,
-                Collectors.counting()))
-            .entrySet(),
-          Entry.comparingByValue())
-          .getKey()));
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

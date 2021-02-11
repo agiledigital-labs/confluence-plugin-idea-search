@@ -1,6 +1,0 @@
-#* @vtlvariable name="payload" type="java.lang.String" *#
-#set($payloadWithHtml = $payload)
-#if($heading)
-<h2>Owner</h2>
-#end
-$payloadWithHtml

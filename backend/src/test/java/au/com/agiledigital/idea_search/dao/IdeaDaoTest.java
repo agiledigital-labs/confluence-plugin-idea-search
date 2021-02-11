@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.user.UserAccessor;
 import com.google.gson.Gson;
 import java.util.Arrays;
@@ -29,7 +30,9 @@ public class IdeaDaoTest {
   public void noDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
     UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
-    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    PageService pageService = Mockito.mock(PageService.class);
+
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor, pageService);
     List<String> noDaoTech = Collections.emptyList();
 
     // Given active object query returns an empty list.
@@ -49,7 +52,8 @@ public class IdeaDaoTest {
   public void singleDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
     UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
-    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    PageService pageService = Mockito.mock(PageService.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor, pageService);
     AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(
       AoFedexTechnology.class
     );
@@ -77,7 +81,8 @@ public class IdeaDaoTest {
   public void multipleDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
     UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
-    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    PageService pageService = Mockito.mock(PageService.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor, pageService);
     AoFedexTechnology aoFedexTechnologyPerl = Mockito.mock(AoFedexTechnology.class);
     AoFedexTechnology aoFedexTechnologyPython = Mockito.mock(AoFedexTechnology.class);
 
@@ -109,7 +114,8 @@ public class IdeaDaoTest {
   public void distinctDaoTech() {
     ActiveObjects ao = Mockito.mock(ActiveObjects.class);
     UserAccessor userAccessor = Mockito.mock(UserAccessor.class);
-    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor);
+    PageService pageService = Mockito.mock(PageService.class);
+    FedexIdeaDao ideaDao = new FedexIdeaDao(ao, userAccessor, pageService);
 
     AoFedexTechnology aoFedexTechnologyJs = Mockito.mock(
       AoFedexTechnology.class

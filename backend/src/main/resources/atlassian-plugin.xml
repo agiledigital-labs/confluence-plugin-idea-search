@@ -48,7 +48,7 @@
   </content-template>
 
   <rest key="rest" name="Idea Rest API" path="/idea" version="1">
-    <description>Provides a REST interface to inline tasks</description>
+    <description>Provides a REST interface</description>
   </rest>
 
   <web-item
@@ -194,6 +194,10 @@
     <resource
       location="/frontend/bundled.form.js"
       name="bundled.form.js"
+      type="download"/>
+    <resource
+      location="/frontend/bundled.table.js"
+      name="bundled.table.js"
       type="download"/>
 
     <resource

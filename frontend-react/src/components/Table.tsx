@@ -52,7 +52,7 @@ const OuterTable = () => {
     console.log(searchTerm);
     axios
       .get(
-        "http://shouv-box:1990/confluence/rest/idea/1/ideaPages?description=" +
+        "http://wren:1990/confluence/rest/idea/1/ideaPages?description=" +
           searchTerm.description +
           "&title=" +
           searchTerm.title +
@@ -97,7 +97,7 @@ const OuterTable = () => {
         {
           key: `cell-${page.owner}`,
           content: (
-            <a href={"http://shouv-box:1990/confluence/display/~" + page.owner}>
+            <a href={"http://wren:1990/confluence/display/~" + page.owner}>
               {"@" + page.owner}
             </a>
           ),
@@ -115,7 +115,7 @@ const OuterTable = () => {
           <div className={classes.heading}>{header}</div>
           {console.log(header)}
           <Textfield
-            id={`${header}`}
+            id={`${header}asdf`}
             placeholder={header}
             className={classes.root}
             onBlur={(e) => console.log(e.target.value)}
@@ -152,7 +152,7 @@ const OuterTable = () => {
 export default OuterTable;
 
 window.addEventListener("load", function () {
-  const wrapper = document.getElementById("container");
+  const wrapper = document.getElementById("index-container");
   // @ts-ignore
   wrapper ? ReactDOM.render(<OuterTable />, wrapper) : false;
 });

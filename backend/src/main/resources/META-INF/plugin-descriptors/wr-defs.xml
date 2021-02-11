@@ -1,4 +1,12 @@
 <bundles>
+  <web-resource key="entrypoint-table">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>table</context>
+    <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+    <resource type="download" name="bundled.table.js" location="frontend/bundled.table.js"/>
+  </web-resource>
   <web-resource key="entrypoint-modal">
     <transformation extension="js">
       <transformer key="jsI18n"/>
@@ -7,7 +15,7 @@
     <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
     <resource type="download" name="bundled.modal.js" location="frontend/bundled.modal.js"/>
   </web-resource>
-  <web-resource key="assets-5412d567-b793-4ce0-a70e-40d180254b3c">
+  <web-resource key="assets-e2806b40-1898-48fd-8174-0a32d95e1406">
     <transformation extension="js">
       <transformer key="jsI18n"/>
     </transformation>

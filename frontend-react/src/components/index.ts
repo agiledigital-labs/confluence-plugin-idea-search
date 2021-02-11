@@ -18,4 +18,3 @@ declare global {
 }
 
 export { default as Idea } from "./Idea";
-export { default as Admin } from "./AdminPage";

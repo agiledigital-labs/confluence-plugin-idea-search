@@ -20,7 +20,7 @@ const OuterAdminForm = () => {
   const [schemas, setSchemas] = useState<String>("our schema");
 
   axios
-    .get("http://shouv-box:1990/confluence/rest/idea/1/schema")
+    .get("http://wren:1990/confluence/rest/idea/1/schema")
     .then((response) => setSchemas(response.data));
 
   console.log(schemas);
@@ -32,7 +32,7 @@ const OuterAdminForm = () => {
   const updateSchema = (type: string, data: string) => {
     console.log("Inside update schema now again");
     axios
-      .put("http://shouv-box:1990/confluence/rest/idea/1/schema?type=" + type, {
+      .put("http://wren:1990/confluence/rest/idea/1/schema?type=" + type, {
         data,
       })
       .then((response) => console.log(response.data));

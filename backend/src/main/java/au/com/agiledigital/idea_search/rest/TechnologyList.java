@@ -1,6 +1,5 @@
 package au.com.agiledigital.idea_search.rest;
 
-import static au.com.agiledigital.idea_search.helpers.Utilities.getRows;
 
 import au.com.agiledigital.idea_search.macros.transport.IdeaContainer;
 import au.com.agiledigital.idea_search.model.FedexIdea;
@@ -106,85 +105,6 @@ public class TechnologyList {
   }
   public static String userKey = "2c9d829d6e61f011016e61f143ff0000";
 
-  private static String DEFAULT_SCHEMA = "{\n" +
-    "  \"title\": \"A fedex Idea or puzzle\",\n" +
-    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
-    "  \"type\": \"object\",\n" +
-    "  \"required\": [\n" +
-    "    \"ideaTitle\"\n" +
-    "  ],\n" +
-    "  \"properties\": {\n" +
-    "    \"ideaTitle\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Idea Title (or how it should be know)\",\n" +
-    "      \"default\": \"Other things\"\n" +
-    "    },\n" +
-    "    \"description\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Description\"\n" +
-    "    },\n" +
-    "    \"owner\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Idea owner\"\n" +
-    "    },\n" +
-    "    \"status\":{\n" +
-    "          \"type\": \"string\",\n" +
-    "          \"enum\": [\n" +
-    "            \"new\",\n" +
-    "            \"inProgress\",\n" +
-    "            \"completed\",\n" +
-    "            \"abandoned\"\n" +
-    "          ],\"enumNames\": [\"New\", \"In Progress\", \"Completed\", \"Abandoned\"],\n" +
-    "          \"default\": \"New\"\n" +
-    "        \n" +
-    "    },\n" +
-    "        \"team\": {\n" +
-    "      \"type\": \"array\",\n" +
-    "      \"title\": \"The team\",\n" +
-    "      \"items\":{\n" +
-    "        \"type\": \"string\"\n" +
-    "      }\n" +
-    "    },\n" +
-    "       \"technologies\": {\n" +
-    "      \"type\": \"array\",\n" +
-    "      \"title\": \"The tech\",\n" +
-    "      \"items\":{\n" +
-    "        \"type\": \"string\"\n" +
-    "      }\n" +
-    "    },\n" +
-    "           \"links\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Links to resources for this idea\"\n" +
-    "    },\n" +
-    "           \"tickets\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Links to issues or tickets that track this\"\n" +
-    "    },\n" +
-    "           \"talks\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Presentations on the idea\"\n" +
-    "    }\n" +
-    "  }\n" +
-    "}";
-
-
-  private static String DEFAULT_UI_SCHEMA = "{\n" +
-    "  team: {\n" +
-    "    items: {\n" +
-    "      endpoint: \"rest/prototype/1/search/user.json?max-results=6&query=\",\n" +
-    "      \"ui:widget\": UserSelection,\n" +
-    "    },\n" +
-    "  },\n" +
-    "  owner: {\n" +
-    "    endpoint: \"rest/prototype/1/search/user.json?max-results=6&query=\",\n" +
-    "    \"ui:widget\": UserSelection,\n" +
-    "  },\n" +
-    "  technologies: {\n" +
-    "    items: {\n" +
-    "      endpoint: \"rest/idea/1/technology?q=\",\n" +
-    "      \"ui:widget\": RestSelection,\n" +
-    "    },\n" +
-    "  }";
 
   @Path("/schema")
   @Produces({"application/json"})
@@ -194,19 +114,6 @@ public class TechnologyList {
     FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
 
     return this.gson.toJson(latestSchema);
-  }
-
-  @Path("/schema/reset")
-  @Produces({"application/json"})
-  @POST
-  public void resetSchema(@Context HttpServletResponse response) {
-    FedexSchema schema = new FedexSchema.Builder()
-      .withSchema(DEFAULT_SCHEMA)
-      .withUiSchema(DEFAULT_UI_SCHEMA).build();
-    this.fedexIdeaService.createSchema(schema);
-
-    response.setStatus(204);
-
   }
 
 
@@ -288,7 +195,6 @@ public class TechnologyList {
   }
 
   /**
-   * @param searchString to find technologies that begin with this string
    * @param response     Servlet contest
    * @return String in the form of a json list of TechnologyAPI objects
    */

@@ -5,6 +5,10 @@ import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.model.FedexTechnology;
 import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.confluence.api.model.content.id.ContentId;
+import com.atlassian.confluence.content.service.PageService;
+import com.atlassian.confluence.pages.DefaultPageManager;
+import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -32,11 +36,14 @@ public class FedexIdeaDao {
 
   @ComponentImport
   private final UserAccessor userAccessor;
+  @ComponentImport
+  private final PageService pageService;
 
   @Autowired
-  public FedexIdeaDao(ActiveObjects ao, UserAccessor userAccessor) {
+  public FedexIdeaDao(ActiveObjects ao, UserAccessor userAccessor, PageService pageService) {
     this.ao = ao;
     this.userAccessor = userAccessor;
+    this.pageService = pageService;
   }
 
   /**
@@ -150,12 +157,7 @@ public class FedexIdeaDao {
       // Deletes the technology item from the table
       aoFedexTechnology.forEach(this.ao::delete);
     }
-    if (fedexIdea.getTechnologies() != null) {
 
-      List<AoFedexTechnology> aoTechList = getAoFedexTechnologies(fedexIdea);
-      setTechnologies(aoTechList, aoFedexIdea);
-
-    }
     this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
 
     aoFedexIdea.save();
@@ -181,17 +183,6 @@ public class FedexIdeaDao {
     return other;
   }
 
-  /**
-   * Extract technologies from FedexIdea and create an active object for each
-   *
-   * @param fedexIdea from model
-   * @return List<AoFedexTechnology> unsaved.
-   */
-  private List<AoFedexTechnology> getAoFedexTechnologies(FedexIdea fedexIdea) {
-    return fedexIdea.getTechnologies().stream()
-      .map(tech -> this.prepareAOFedexTechnology(tech.getTechnology()))
-      .collect(Collectors.toList());
-  }
 
   // See comment on
   // https://community.atlassian.com/t5/Jira-questions/ActiveObjects-jira/qaq-p/354375.
@@ -379,10 +370,10 @@ public class FedexIdeaDao {
    * @param userKey string of the user key id
    * @return userName string
    */
-  private String getUsername(String userKey) {
+  private ConfluenceUser getUsername(String userKey) {
     if (userKey != null) {
       ConfluenceUser user = this.userAccessor.getUserByKey(new UserKey(userKey));
-      return user == null ? null : user.getLowerName();
+      return user == null ? null : user;
     }
 
     return null;
@@ -409,15 +400,9 @@ public class FedexIdeaDao {
    */
   private void prepareAOFedexIdea(AoFedexIdea aoFedexIdea, FedexIdea fedexIdea) {
     // TODO: Uncomment event and put actual values
-    aoFedexIdea.setContentId(fedexIdea.getContentId());
-    aoFedexIdea.setCreatorUserKey(this.getUserKey(fedexIdea.getCreator()));
-    // aoFedexIdea.setOwner("admin");
-    aoFedexIdea.setOwner(fedexIdea.getOwner());
-    // aoFedexIdea.setStatus("inProgress");
-    aoFedexIdea.setStatus(fedexIdea.getStatus());
+    aoFedexIdea.setContentId(fedexIdea.getContentId().asLong());
+    aoFedexIdea.setCreatorUserKey(fedexIdea.getCreator().getKey().toString());
     aoFedexIdea.setTitle(fedexIdea.getTitle());
-    // aoFedexIdea.setDescription("Demo description");
-    aoFedexIdea.setDescription(fedexIdea.getDescription());
   }
 
   /**
@@ -442,19 +427,16 @@ public class FedexIdeaDao {
    * @return FedexIdea object
    */
   private FedexIdea asFedexIdea(AoFedexIdea aoFedexIdea) {
+    this.pageService.getIdPageLocator(aoFedexIdea.getContentId()).getPage().getContentId();
+
     return aoFedexIdea == null
       ? null
       : (new FedexIdea.Builder())
         .withGlobalId(aoFedexIdea.getGlobalId())
         .withTitle(aoFedexIdea.getTitle())
-        .withOwner(aoFedexIdea.getOwner())
-        .withContentId(aoFedexIdea.getContentId())
-        .withTechnologies(asListFedexTechnology(aoFedexIdea.getTechnologies()))
+        .withContentId(this.pageService.getIdPageLocator(aoFedexIdea.getContentId()).getPage().getContentId())
         .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
-        .withDescription(aoFedexIdea.getDescription())
-        .withStatus(aoFedexIdea.getStatus())
         .withFormData(aoFedexIdea.getFormData())
-//        .withSchemaId(this.getSchemaFromIdea(aoFedexIdea.getContentId()))
         .build();
   }
 
