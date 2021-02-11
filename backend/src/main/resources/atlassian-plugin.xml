@@ -52,7 +52,7 @@
     />
   </content-template>
   <rest key="rest" name="Idea Rest API" path="/idea" version="1">
-    <description>Provides a REST interface to inline tasks</description>
+    <description>Provides a REST interface to expose and modify data.</description>
   </rest>
   <web-item
     i18n-name-key="ideaSearch.blueprint.page.create-link.title"
@@ -63,6 +63,30 @@
     <param name="blueprintKey" value="idea-blueprint"/>
     <resource location="/images/myblueprint.png" name="icon" type="download"/>
   </web-item>
+
+  <web-item key="conf-menu-item" i18n-name-key="idea.admin.label" section="system.admin/configuration" weight="10">
+    <description>Link to idea-admin page.</description>
+    <label key="idea.admin.label" />
+    <link linkId="idea-admin-link">/plugins/servlet/idea/admin</link>
+  </web-item>
+
+  <servlet key="admin-servlet" class="au.com.agiledigital.idea_search.adminui.AdminServlet">
+    <url-pattern>/idea/admin</url-pattern>
+  </servlet>
+
+
+  <web-resource
+    key="ideaAdminResource"
+    name="Idea admin page resource"
+  >
+    <context>atl.admin</context>
+    <resource
+      location="/frontend/bundled.admin.js"
+      name="bundled.admin.js"
+      type="download"
+    />
+  </web-resource>
+
 
   <web-resource
     key="ideaSearch.blueprint.page.wizard"
@@ -271,11 +295,6 @@
       location="/frontend/bundled.form.js"
       name="bundled.form.js"
       type="download"
-    />
-    <resource
-      type="download"
-      name="TableFilter.js"
-      location="/js/TableFilter.js"
     />
   </web-resource>
 

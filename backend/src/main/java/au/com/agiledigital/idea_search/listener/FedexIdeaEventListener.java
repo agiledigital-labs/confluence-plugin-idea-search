@@ -71,7 +71,6 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   private static final ModuleCompleteKey FEDEX_IDEA_BLUEPRINT_KEY_V2 =
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint-V2");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
-  private static final String FEDEX_IDEA_BLUEPRINT_LABEL_V2 = "fedex-ideas-v2";
   private final ContentBlueprint contentBlueprint;
 
   /**
@@ -144,24 +143,16 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   @EventListener
   public void onBlueprintCreateEvent(BlueprintPageCreateEvent event) {
-    // Makes the new page child of the fedex idea index page
-    makeChildOfIndex(event.getPage());
 
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
 
     String blueprintKey = FEDEX_IDEA_BLUEPRINT_KEY.getCompleteKey();
 
-    // Gets the blueprintId and sets it as the current one in ao database
-    String blueprintId = String.valueOf(event.getBlueprint().getId());
-    this.fedexIdeaService.setBlueprintId(blueprintId);
 
     if (blueprintKey.equals(moduleCompleteKey)) {
-      try {
-        FedexIdea idea = getFedexIdea(event.getPage());
-        this.fedexIdeaService.createIdea(idea);
-      } catch (ParserConfigurationException | IOException | SAXException e) {
-        log.debug(e.getMessage());
-      }
+      // Gets the blueprintId and sets it as the current one in ao database
+      String blueprintId = String.valueOf(event.getBlueprint().getId());
+      this.fedexIdeaService.setBlueprintId(blueprintId);
     }
   }
 
@@ -187,6 +178,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
    */
   @EventListener
   public void pageCreated(PageCreateEvent event) {
+    event.getUpdateTrigger();
     createOrUpdateTechnology(event.getContent(), event.getPage());
   }
 
@@ -244,22 +236,23 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
           row.setMacroRepresentations(
             category, getMacroFromList(macros, category, serializer)));
 
-    // Splits the comma separated string into a list and replaces all html tags
-    List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
-      .map(Utilities::removeTags).collect(
-        Collectors.toList());
+     List<String> tech = Arrays.stream(row.getTechnologies().getValue().split("\\s*,\\s*"))
+       .map(Utilities::removeTags).collect(
+         Collectors.toList());
 
     List<FedexTechnology> techList = new ArrayList<>();
 
     tech.forEach(t -> techList.add(new FedexTechnology.Builder().withTechnology(t).build()));
 
     return new FedexIdea.Builder()
-//      .withTechnologies(techList)
+      .withTitle(page.getDisplayTitle())
+      .withTechnologies(techList)
       .withContentId(page.getId()).withSchemaId(4)
-//      .withCreator(page.getCreator().getName())
-//      .withDescription(row.getDescription().getValue())
-//      .withStatus(row.getStatus().getValue())
-//      .withOwner(row.getOwner().getValue())
+      .withCreator(page.getCreator().getName())
+      .withDescription(row.getDescription().getValue())
+      .withStatus(row.getStatus().getValue())
+      .withOwner(row.getOwner().getValue())
+      .withUrl(page.getUrlPath())
       .build();
   }
 }

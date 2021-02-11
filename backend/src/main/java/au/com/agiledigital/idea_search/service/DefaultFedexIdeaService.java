@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
-
   private final FedexIdeaDao fedexIdeaDao;
 
   @Autowired
@@ -24,12 +23,12 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return FedexIdea that was created
    */
   public FedexIdea createIdea(FedexIdea fedexIdea) {
-
     fedexIdea.getContentId();
 
     return this.fedexIdeaDao.createIdea(fedexIdea);
-  }  /**
+  }
 
+  /**
    * Create a new FedexIdea
    *
    * @param fedexSchema to be created
@@ -39,20 +38,37 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     return this.fedexIdeaDao.createSchema(fedexSchema);
   }
 
+  /**
+   * Gets the schema with query id
+   *
+   * @param id of the requested schema
+   * @return
+   */
   public  FedexSchema getSchema(long id) {
     return this.fedexIdeaDao.findOneSchema(id);
   }
 
+  /**
+   * Lists all schema
+   *
+   * @return a list of schemas
+   */
   public List<FedexSchema> listSchemas() {
     return this.fedexIdeaDao.findAllSchema();
   }
 
+  /**
+   * Gets a fedex idea by content id
+   *
+   * @param contentId of the FedexIdea
+   * @return
+   */
   public FedexIdea getByContentId(long contentId){
     return this.fedexIdeaDao.getByContentId(contentId);
   }
 
   /**
-   * Get the existing blueprint id from database
+   * Gets the existing blueprint id from database
    *
    * @return the current blueprint id
    */
@@ -63,7 +79,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   /**
    * Store a blueprint id in the database
    *
-   * @param blueprintId the blueprint id to be set
+   * @param blueprintId to be set
    */
   public void setBlueprintId(String blueprintId) {
     this.fedexIdeaDao.setBlueprintId(blueprintId);
@@ -98,4 +114,15 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   public List<TechnologyAPI> queryTechList() {
     return fedexIdeaDao.queryTechList();
   }
+
+  /**
+   * Searches and collects all matching fedex ideas
+   *
+   * @param title the query on title field
+   * @param description the query on description field
+   * @param status the query on status
+   * @param owner the query on owner
+   * @return A list of fedex ideas matching search query
+   */
+  public List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner) { return fedexIdeaDao.findAll(title, description, status, owner); }
 }

@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     AJS?: {
+      contextPath: () => string;
       Confluence: {
         PropertyPanel: {
           Macro: {
@@ -17,3 +18,4 @@ declare global {
 
 export { default as Form } from "./Table";
 export { default as Idea } from "./Idea";
+export { default as Admin } from "./AdminPage";

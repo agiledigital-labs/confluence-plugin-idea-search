@@ -1,0 +1,10 @@
+<html>
+  <head>
+    <title>$i18n.getText("idea.admin.label")</title>
+    <meta name="decorator" content="atl.admin">
+  </head>
+  <body>
+    <div id="admincontainer">
+    </div>
+  </body>
+</html>

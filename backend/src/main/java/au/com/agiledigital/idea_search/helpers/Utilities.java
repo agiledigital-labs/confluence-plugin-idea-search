@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSSerializer;
 
 public class Utilities {
+  private static XhtmlContent xhtmlContent;
 
   private Utilities() {throw new IllegalStateException("Utility class"); }
 
@@ -21,9 +22,6 @@ public class Utilities {
   public static String removeTags(String rawData) {
     return rawData.replaceAll("\\<[^>]+>\\>", "");
   }
-
-
-
 
   public static MacroRepresentation getMacroRepresentation(NodeList macros, StructuredCategory category, LSSerializer serializer, XhtmlContent xhtmlContent) {
     for (int i = 0; i < macros.getLength(); i++) {
@@ -105,6 +103,4 @@ public class Utilities {
     "    }\n" +
     "  }\n" +
     "}";
-
-
 }
