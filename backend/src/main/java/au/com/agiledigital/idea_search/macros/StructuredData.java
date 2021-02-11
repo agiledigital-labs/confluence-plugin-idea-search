@@ -1,7 +1,5 @@
 package au.com.agiledigital.idea_search.macros;
 
-import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
@@ -10,50 +8,43 @@ import com.atlassian.confluence.setup.BootstrapManager;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.google.gson.Gson;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static au.com.agiledigital.idea_search.helpers.Utilities.DEFAULT_SCHEMA;
+import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.WordUtils;
 
 public class StructuredData implements Macro {
-
-  private PageBuilderService pageBuilderService;
-  private BootstrapManager bootstrapManager;
-  private DefaultFedexIdeaService fedexIdeaService;
+  private final PageBuilderService pageBuilderService;
+  private Gson gson = new Gson();
 
   @Autowired
   public StructuredData(
     @ComponentImport PageBuilderService pageBuilderService, @ComponentImport BootstrapManager bootstrapManager, DefaultFedexIdeaService fedexIdeaService) {
     this.pageBuilderService = pageBuilderService;
-    this.bootstrapManager = bootstrapManager;
-    this.fedexIdeaService = fedexIdeaService;
   }
-  private static final Logger log = LoggerFactory.getLogger(StructuredData.class);
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
+    Map<String, String> data = new LinkedHashMap<>();
+    data =gson.fromJson(Jsoup.parse(s).body().text(), data.getClass());
+    Map<String, String> renderData = new LinkedHashMap<>();
 
-    long macroContent = conversionContext.getEntity().getContentId().asLong();
-
-//    FedexIdea currentIdea = this.fedexIdeaService.getByContentId(macroContent);
-
-//    FedexSchema schema = this.fedexIdeaService.getSchema(currentIdea.getSchemaId());
+    data.forEach( (r, t) -> {
+      renderData.put(WordUtils.capitalize(r.replaceAll("[A-Z]", " $0")), t);
+    });
 
     pageBuilderService
       .assembler()
       .resources()
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-structuredData-macro-resource");
+
     Map<String, Object> context = new HashMap<>();
-    context.put("contextPath", bootstrapManager.getWebAppContextPath());
-    context.put("schema", DEFAULT_SCHEMA);
-//    context.put("uiSchema", schema.getUiSchema());
-//    context.put("formData", currentIdea.getFormData());
+    context.put("data", renderData);
     return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
   }
 
