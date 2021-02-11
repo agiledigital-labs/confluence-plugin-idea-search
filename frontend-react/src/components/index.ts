@@ -3,6 +3,7 @@ declare global {
     AJS?: {
       dialog2: any;
       $: any;
+      contextPath: () => string;
       Confluence: {
         PropertyPanel: {
           Macro: {

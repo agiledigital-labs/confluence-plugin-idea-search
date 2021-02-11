@@ -15,9 +15,10 @@ module.exports = {
   },
   // watch : true,
   entry: {
-    indexTable: "./src/components/Table.tsx",
-    admin: "./src/components/AdminPage.tsx",
+    form: "./src/Form.ts",
     modal: "./src/UpdateFormModal.tsx",
+    idea: "./src/Idea.ts",
+    admin: "./src/AdminPage.ts",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

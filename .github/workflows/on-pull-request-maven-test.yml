@@ -28,4 +28,4 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Test with Maven
-        run: mvn -s ./settings.xml -B test --file pom.xml
+        run: mvn -s ./backend/settings.xml -B test --file pom.xml

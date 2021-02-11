@@ -12,18 +12,12 @@ import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
- * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space
+ * Macro for the Index Table. Fetches the pages with label "fedex-ideas" from the space
  * specified, pulls the structured field macro from each and processes the data. It constructs a
  * table to display said data.
  */
@@ -32,7 +26,6 @@ public class IndexTable implements Macro {
   private PageBuilderService pageBuilderService;
   private SettingsManager settingsManager;
   private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-  private final DefaultFedexIdeaService fedexIdeaService;
 
   public IndexTable(
     @ComponentImport SearchManager searchManager,
@@ -43,19 +36,10 @@ public class IndexTable implements Macro {
     this.searchManager = searchManager;
     this.pageBuilderService = pageBuilderService;
     this.settingsManager = settingsManager;
-    this.fedexIdeaService = fedexIdeaService;
 
     documentBuilderFactory.setNamespaceAware(false);
     documentBuilderFactory.setValidating(false);
   }
-
-  private Set<String> getMacroLabels(Map<String, String> parameters) {
-    Set<String> labels = new HashSet<>(splitTrimToSet(parameters.get("labels"), ","));
-    labels.add("fedex-ideas");
-
-    return labels;
-  }
-
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
@@ -66,8 +50,8 @@ public class IndexTable implements Macro {
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-indexTable-macro-resource");
 
+    // passing in an empty context as index table will be constructed with react
     Map<String, Object> context = new HashMap<>();
-
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

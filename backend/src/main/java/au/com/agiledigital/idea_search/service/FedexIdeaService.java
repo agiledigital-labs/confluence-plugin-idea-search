@@ -14,8 +14,20 @@ public interface FedexIdeaService {
    * @return created fedexIdea
    */
   FedexIdea createIdea(FedexIdea fedexIdea);
+
+  /**
+   * Saves the supplied FedexSchema object
+   *
+   * @param fedexSchema to be saved in the active object database
+   * @return
+   */
   FedexSchema createSchema(FedexSchema fedexSchema);
 
+  /**
+   * Lists all FedexSchema
+   *
+   * @return a list of FedexSchema
+   */
   List<FedexSchema> listSchemas();
 
   /**
@@ -27,8 +39,20 @@ public interface FedexIdeaService {
    */
   FedexIdea updateIdea(FedexIdea fedexIdea, long contentId);
 
+  /**
+   * Gets a schema by id
+   *
+   * @param id of the FedexSchema
+   * @return FedexSchema with matching id
+   */
   FedexSchema getSchema(long id);
 
+  /**
+   * Gets a FedexIdea by contentId
+   *
+   * @param contentId of the FedexIdea
+   * @return FedexIdea with matching contentId
+   */
   FedexIdea getByContentId(long contentId);
 
   /**

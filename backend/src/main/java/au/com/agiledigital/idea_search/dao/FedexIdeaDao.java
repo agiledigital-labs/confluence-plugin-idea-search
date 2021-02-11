@@ -167,6 +167,10 @@ public class FedexIdeaDao {
   /**
    * List all fedex idea in the data store
    *
+   * @param title search query on title
+   * @param description search query on description
+   * @param status search query on status
+   * @param owner search query on owner
    * @return a list of all available FedexIdea
    */
   public List<FedexIdea> findAll(String title, String description, String status, String owner) {
@@ -230,8 +234,6 @@ public class FedexIdeaDao {
 
     return null;
   }
-
-
 
   /**
    * Prepare fedex active object with the data from a fedex idea

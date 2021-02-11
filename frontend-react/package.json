@@ -5,6 +5,7 @@
   "dependencies": {
     "@atlaskit/button": "^15.1.4",
     "@fluentui/react": "^7.157.1",
+    "@atlaskit/section-message": "^5.0.9",
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.2",
@@ -20,6 +21,7 @@
     "fp-ts": "^2.9.3",
     "@types/semantic-ui": "^2.2.7",
     "lodash": "^4.17.20",
+    "query-string": "^6.14.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^16.13.1",
@@ -27,7 +29,7 @@
     "styled-components": "^5.2.1"
   },
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "webpack --mode development",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
