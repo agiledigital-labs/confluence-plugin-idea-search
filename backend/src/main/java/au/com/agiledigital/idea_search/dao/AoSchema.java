@@ -46,6 +46,6 @@ public interface AoSchema extends RawEntity<Long> {
   @StringLength(-1)
   String getSchema();
 
-  void setSchema(String Schema);
+  void setSchema(String schema);
 
 }

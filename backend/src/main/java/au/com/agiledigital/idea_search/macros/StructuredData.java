@@ -40,9 +40,9 @@ public class StructuredData implements Macro {
     Map<String, String> renderData = new LinkedHashMap<>();
 
 
-    data.forEach( (r, t) -> {
-      renderData.put(WordUtils.capitalize(r.replaceAll("[A-Z]", " $0")), t);
-    });
+    data.forEach( (r, t) ->
+      renderData.put(WordUtils.capitalize(r.replaceAll("[A-Z]", " $0")), t)
+    );
 
     pageBuilderService
       .assembler()

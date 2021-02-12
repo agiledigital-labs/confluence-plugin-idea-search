@@ -27,49 +27,69 @@ import org.springframework.stereotype.Component;
  */
 @Path("/")
 @Component
-public class TechnologyList {
+public class Index {
 
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
 
 
   @Autowired
-  public TechnologyList(FedexIdeaService fedexIdeaService) {
+  public Index(FedexIdeaService fedexIdeaService) {
     this.fedexIdeaService = fedexIdeaService;
   }
 
+  /**
+   * Gets latest schema
+   *
+   * @param response Servlet response to populate
+   * @return JSON string representation of latest schema
+   */
   @Path("/schema")
   @Produces({"application/json"})
   @GET
   public String getSchema( @Context HttpServletResponse response){
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
-    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
+    FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
 
     return this.gson.toJson(latestSchema);
   }
 
 
+
+  /**
+   * Gets brief information about the schemas
+   * (id, name, version and description)
+   *
+   * @param response Servlet response to populate
+   * @return JSON string representation of brief schema information
+   */
   @Path("/schema/ids")
   @Produces({"application/json"})
   @GET
-  public String getSchemaIds(@Context HttpServletResponse response) {
+  public String getSchemaIds( @Context HttpServletResponse response){
     List<Map> schemaIds = this.fedexIdeaService.listSchemas().stream().map(schema -> {
       Map schemaReturn = new HashMap<String, String>();
-      schemaReturn.put("id", schema.getGlobalId());
-      schemaReturn.put("name", schema.getName());
-      schemaReturn.put("version", schema.getVersion());
-      schemaReturn.put("description", schema.getDescription());
-      return schemaReturn;
+      schemaReturn.put("id",  schema.getGlobalId());
+      schemaReturn.put("name",  schema.getName());
+      schemaReturn.put("version",  schema.getVersion());
+      schemaReturn.put("description",  schema.getDescription());
+      return  schemaReturn;
     }).collect(Collectors.toList());
 
-    return this.gson.toJson(schemaIds);
+    return this.gson.toJson( schemaIds);
   }
 
   /**
-   * @param response     Servlet contest
-   * @return String in the form of a json list of TechnologyAPI objects
+   * Find and return idea pages based on query
+   *
+   * @param title the query on title field
+   * @param description the query on description field
+   * @param status the query on status
+   * @param owner the query on owner
+   * @param response the servlet response to populate
+   * @return A json string containing all found idea pages
    */
-  @Path("/ideaPages")
+  @Path("/ideapages")
   @Produces({"application/json"})
   @GET
   public String getIdeaPages(
@@ -89,87 +109,75 @@ public class TechnologyList {
     status = status != null ? status : "";
     owner = owner != null ? owner : "";
 
-
     List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea(title, description, status, owner);
 
     List<Map> preConvert = allIdeas.stream().map( idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", idea.getUrl());
+//      preJsonIdea.put("description", idea.getDescription().isEmpty() ? "":idea.getDescription());
+//      preJsonIdea.put("technologies", idea.getTechnologies().isEmpty() ? "" : idea.getTechnologies().stream().map(tech-> tech.getTechnology()).collect(
+//        Collectors.toList()));
+
+//      preJsonIdea.put("owner", idea.getOwner());
+
+//      preJsonIdea.put("status", idea.getStatus());
 
       return preJsonIdea;
     }).collect(Collectors.toList());
 
-    return allIdeas.isEmpty()
-      ? "[{}]"
-      : this.gson.toJson(preConvert);
+    return this.gson.toJson(preConvert);
   }
 
+  // extracts body from request
   private static String extractPostRequestBody(HttpServletRequest request) throws IOException {
-    if ("PUT".equalsIgnoreCase(request.getMethod())) {
+    if ("POST".equalsIgnoreCase(request.getMethod())) {
       try {
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
-      } catch (Exception e){
-        return "Error in getting input stream";
+      } catch (IOException e){
+        throw new IOException("Failed to parse request body.", e);
       }
     }
-    return "Nothing to see here";
+    return "";
   }
 
   /**
-   * @param response     Servlet contest
-   * @return String in the form of a json list of TechnologyAPI objects
+   * Posts a complete schema (schema, uiSchema and indexSchema)
+   *
+   * @param request Servlet request to extract post body from
+   * @param response Servlet response to populate
+   * @return JSON string representation of the updated schema
    */
   @Path("/schema")
   @Consumes({"application/json"})
-  @PUT
-  public String putSchema(
-    @QueryParam("type") String type,
+  @POST
+  public String postSchema(
     @Context HttpServletRequest request,
     @Context HttpServletResponse response
-  ) {
+  ) throws IOException {
     this.applyNoCacheHeaders(response);
     String schemaBody = "";
 
-    try {
-      schemaBody = extractPostRequestBody(request);
-    } catch (Exception e){
-      throw new Error("Error parsing request body");
-    }
+    schemaBody = extractPostRequestBody(request);
 
-    Map<String, String> mappedSchemaBody = this.gson.fromJson(schemaBody, Map.class);
+    FedexSchema mappedSchemaBody = this.gson.fromJson(schemaBody, FedexSchema.class);
 
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
-    FedexSchema latestSchema = allSchema.get(allSchema.size() - 1);
 
-    switch (type){
-      case "index-schema":
-        latestSchema.setIndexSchema(mappedSchemaBody.get("data"));
-        break;
-      case "ui-schema":
-        latestSchema.setUiSchema(mappedSchemaBody.get("data"));
-        break;
-      case "idea-schema":
-        latestSchema.setSchema(mappedSchemaBody.get("data"));
-        break;
-      default:
-        break;
-    }
+    FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
+
+    SchemaMapper.MAPPER.mapToSchema(mappedSchemaBody, latestSchema);
 
     FedexSchema createdSchema = this.fedexIdeaService.createSchema(latestSchema);
 
-    try {
-      return this.gson.toJson(createdSchema.getUiSchema());
-    } catch (Exception e){
-      return this.gson.toJson("There is an error");
-    }
+    return this.gson.toJson(createdSchema);
   }
 
   /**
    * Added to prevent the search caching the responses
    *
-   * @param response
+   * @param response Servlet response to populate
    */
   private void applyNoCacheHeaders(HttpServletResponse response) {
     CachingHeaders.PREVENT_CACHING.apply(response);

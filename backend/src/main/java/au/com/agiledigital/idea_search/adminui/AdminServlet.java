@@ -1,7 +1,10 @@
 package au.com.agiledigital.idea_search.adminui;
 
 import javax.inject.Inject;
+
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.user.UserProfile;
+import com.atlassian.templaterenderer.RenderingException;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import java.net.URI;
 import com.atlassian.sal.api.auth.LoginUriProvider;
@@ -24,7 +27,7 @@ public class AdminServlet extends HttpServlet
   @ComponentImport
   private final TemplateRenderer renderer;
   @ComponentImport
-  private PageBuilderService pageBuilderService;
+  private final PageBuilderService pageBuilderService;
 
   @Inject
   public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, PageBuilderService pageBuilderService)
@@ -44,15 +47,21 @@ public class AdminServlet extends HttpServlet
       .requireWebResource(
         "au.com.agiledigital.idea_search:ideaSearch-macro-indexTable-macro-resource");
 
-    String username = userManager.getRemoteUsername(request);
-    if (username == null || !userManager.isSystemAdmin(username))
-    {
-      redirectToLogin(request, response);
-      return;
-    }
+    UserProfile remoteUser = userManager.getRemoteUser(request);
 
-    response.setContentType("text/html;charset=utf-8");
-    renderer.render("vm/admin.vm", response.getWriter());
+    try {
+      if (remoteUser == null || !userManager.isSystemAdmin(remoteUser.getUserKey())) {
+        redirectToLogin(request, response);
+        return;
+      }
+
+      response.setContentType("text/html;charset=utf-8");
+      renderer.render("vm/admin.vm", response.getWriter());
+    } catch (IOException ioException){
+      log("IO exception when logging in to admin panel" + ioException.toString());
+    } catch (RenderingException renderingException){
+      log("Render exception when rendering to admin panel" + renderingException.toString());
+    }
   }
 
   private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException

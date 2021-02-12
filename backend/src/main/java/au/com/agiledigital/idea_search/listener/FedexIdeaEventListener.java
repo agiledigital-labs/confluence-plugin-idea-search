@@ -5,7 +5,8 @@ import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
-  import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
+import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
+import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
 import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
@@ -95,6 +96,26 @@ private SettingsManager settingsManager;
 
   }
 
+
+  /**
+   * Listen for pages created from blueprints.
+   *
+   * @param event created when a pages is created from a blueprint
+   */
+  @EventListener
+  public void onBlueprintCreateEvent(BlueprintPageCreateEvent event) {
+
+    String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
+
+    String blueprintKey = FEDEX_IDEA_BLUEPRINT_KEY.getCompleteKey();
+
+
+    if (blueprintKey.equals(moduleCompleteKey)) {
+      // Gets the blueprintId and sets it as the current one in ao database
+      String blueprintId = String.valueOf(event.getBlueprint().getId());
+      this.fedexIdeaService.setBlueprintId(blueprintId);
+    }
+  }
 
   /**
    * Listen for page creations events on pages with the correct label, updates the data store with

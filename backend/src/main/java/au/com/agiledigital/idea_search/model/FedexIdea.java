@@ -1,17 +1,10 @@
 package au.com.agiledigital.idea_search.model;
 
-import com.atlassian.confluence.api.impl.service.content.ContentServiceImpl;
 import com.atlassian.confluence.api.model.content.id.ContentId;
-import com.atlassian.confluence.api.service.content.ContentService;
-import com.atlassian.confluence.content.service.DefaultPageService;
-import com.atlassian.confluence.pages.DefaultPageManager;
-import com.atlassian.confluence.pages.Page;
-import com.atlassian.confluence.pages.PageManager;
 import com.atlassian.confluence.user.ConfluenceUser;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import java.util.List;
 
 /**
  * Internal model of the idea

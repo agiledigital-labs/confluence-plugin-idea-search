@@ -3,7 +3,6 @@ package au.com.agiledigital.idea_search.service;
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexSchema;
-import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
