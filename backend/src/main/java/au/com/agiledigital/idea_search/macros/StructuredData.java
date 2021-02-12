@@ -25,9 +25,12 @@ public class StructuredData implements Macro {
     // gets the page body data as mapped
     data =gson.fromJson(Jsoup.parse(s).body().text(), data.getClass());
 
-    // unlike koitlin, there isn't a mapKeys function available on hashmap, so we have to create a new
-    // hashmap to have capitalised keys, splitting on capital letters, i.e. camelCase becomes Camel Case
-    Map<String, String> renderedData = data.entrySet().stream().collect(Collectors.toMap(entry -> WordUtils.capitalize(entry.getKey().replaceAll("[A-Z]", " $0")), entry -> entry.getValue()));
+    // making keys (section headers) capitalised. splitting on capital letters, i.e. camelCase becomes Camel Case
+    Map<String, String> renderedData = data.entrySet()
+      .stream().map(entry ->
+        new String[]{WordUtils.capitalize(entry.getKey().replaceAll("[A-Z]", " $0")), entry.getValue()}
+      )
+      .collect(Collectors.toMap(entry -> entry[0],entry->entry[1]));
 
     Map<String, Object> context = new HashMap<>();
     context.put("data", renderedData);
