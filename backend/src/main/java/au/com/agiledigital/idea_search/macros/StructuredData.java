@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -32,7 +33,10 @@ public class StructuredData implements Macro {
       .stream().map(entry ->
         new String[]{ headingTransformation(entry.getKey()), entry.getValue()}
       )
-      .collect(Collectors.toMap(entry -> entry[0],entry->entry[1]));
+      .collect(Collectors.toMap(entry -> entry[0],entry->entry[1],
+        (key, duplicateKey) -> {
+          throw new IllegalStateException(String.format("Duplicate key %s", key));
+        }, LinkedHashMap::new ));
 
     Map<String, Object> context = new HashMap<>();
     context.put("data", renderedData);
