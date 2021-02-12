@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Macro for the Index Table. Fetches the pages with the label "fedex-ideas" from the space
+ * Macro for the Index Table. Fetches the pages with label "fedex-ideas" from the space
  * specified, pulls the structured field macro from each and processes the data. It constructs a
  * table to display said data.
  */
@@ -20,8 +20,8 @@ public class IndexTable implements Macro {
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
 
+    // passing in an empty context as index table will be constructed with react
     Map<String, Object> context = new HashMap<>();
-
 
     return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
   }

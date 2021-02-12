@@ -15,7 +15,15 @@
     <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
     <resource type="download" name="bundled.modal.js" location="frontend/bundled.modal.js"/>
   </web-resource>
-  <web-resource key="assets-e2806b40-1898-48fd-8174-0a32d95e1406">
+  <web-resource key="entrypoint-admin">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>admin</context>
+    <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+    <resource type="download" name="bundled.admin.js" location="frontend/bundled.admin.js"/>
+  </web-resource>
+  <web-resource key="assets-DEV_PSEUDO_HASH">
     <transformation extension="js">
       <transformer key="jsI18n"/>
     </transformation>

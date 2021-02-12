@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import TextArea from "@atlaskit/textarea";
 import Button from "@atlaskit/button/standard-button";
 import SectionMessage from "@atlaskit/section-message";
+import TextArea from "@atlaskit/textarea";
 import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { version } from "./index";
 

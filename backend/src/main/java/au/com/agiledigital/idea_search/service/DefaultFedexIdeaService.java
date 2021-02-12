@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
-
   private final FedexIdeaDao fedexIdeaDao;
 
   @Autowired
@@ -37,20 +36,37 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
     return this.fedexIdeaDao.createSchema(fedexSchema);
   }
 
+  /**
+   * Gets the schema with query id
+   *
+   * @param id of the requested schema
+   * @return
+   */
   public  FedexSchema getSchema(long id) {
     return this.fedexIdeaDao.findOneSchema(id);
   }
 
+  /**
+   * Lists all schema
+   *
+   * @return a list of schemas
+   */
   public List<FedexSchema> listSchemas() {
     return this.fedexIdeaDao.findAllSchema();
   }
 
+  /**
+   * Gets a fedex idea by content id
+   *
+   * @param contentId of the FedexIdea
+   * @return
+   */
   public FedexIdea getByContentId(long contentId){
     return this.fedexIdeaDao.getByContentId(contentId);
   }
 
   /**
-   * Get the existing blueprint id from database
+   * Gets the existing blueprint id from database
    *
    * @return the current blueprint id
    */
@@ -61,7 +77,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   /**
    * Store a blueprint id in the database
    *
-   * @param blueprintId the blueprint id to be set
+   * @param blueprintId to be set
    */
   public void setBlueprintId(String blueprintId) {
     this.fedexIdeaDao.setBlueprintId(blueprintId);

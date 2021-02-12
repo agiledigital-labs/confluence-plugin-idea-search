@@ -48,7 +48,7 @@
   </content-template>
 
   <rest key="rest" name="Idea Rest API" path="/idea" version="1">
-    <description>Provides a REST interface</description>
+    <description>Provides a REST interface to expose and modify data.</description>
   </rest>
 
   <web-item
@@ -77,8 +77,8 @@
   >
     <context>atl.admin</context>
     <resource
-      location="/frontend/bundled.form.js"
-      name="bundled.form.js"
+      location="/frontend/bundled.admin.js"
+      name="bundled.admin.js"
       type="download"
     />
   </web-resource>

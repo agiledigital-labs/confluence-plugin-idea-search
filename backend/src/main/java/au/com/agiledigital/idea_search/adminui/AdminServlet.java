@@ -15,9 +15,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
+/**
+ * Servlet to serve a admin configuration page on Configuration UI.
+ * See more at: https://developer.atlassian.com/server/confluence/adding-a-configuration-ui-for-your-plugin/
+ */
 public class AdminServlet extends HttpServlet
 {
   @ComponentImport
@@ -41,27 +44,24 @@ public class AdminServlet extends HttpServlet
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
   {
+    // require web resource to be able to use custom react
     pageBuilderService
       .assembler()
       .resources()
       .requireWebResource(
-        "au.com.agiledigital.idea_search:ideaSearch-macro-indexTable-macro-resource");
+        "au.com.agiledigital.idea_search:ideaAdminResource");
 
-    UserProfile remoteUser = userManager.getRemoteUser(request);
-
-    try {
-      if (remoteUser == null || !userManager.isSystemAdmin(remoteUser.getUserKey())) {
-        redirectToLogin(request, response);
-        return;
-      }
-
-      response.setContentType("text/html;charset=utf-8");
-      renderer.render("vm/admin.vm", response.getWriter());
-    } catch (IOException ioException){
-      log("IO exception when logging in to admin panel" + ioException.toString());
-    } catch (RenderingException renderingException){
-      log("Render exception when rendering to admin panel" + renderingException.toString());
+    // verify that admin user is requesting the page
+    String username = userManager.getRemoteUsername(request);
+    if (username == null || !userManager.isSystemAdmin(username))
+    {
+      redirectToLogin(request, response);
+      return;
     }
+
+    // render admin configuration ui page
+    response.setContentType("text/html;charset=utf-8");
+    renderer.render("vm/Admin.vm", response.getWriter());
   }
 
   private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
@@ -69,6 +69,7 @@ public class AdminServlet extends HttpServlet
     response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
   }
 
+  // gets the uri to identify where a login attempt is being made
   private URI getUri(HttpServletRequest request)
   {
     StringBuffer builder = request.getRequestURL();

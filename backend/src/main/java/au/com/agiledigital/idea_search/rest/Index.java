@@ -1,11 +1,13 @@
 package au.com.agiledigital.idea_search.rest;
 
-
 import au.com.agiledigital.idea_search.model.FedexIdea;
-
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
+import com.atlassian.confluence.search.v2.SearchManager;
+import com.atlassian.confluence.setup.settings.SettingsManager;
+import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.confluence.web.filter.CachingHeaders;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,7 +19,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,10 +61,8 @@ public class Index {
     return this.gson.toJson(latestSchema);
   }
 
-
-
   /**
-   * Gets brief information about the schemas
+   * Gets brief information about the schemas 
    * (id, name, version and description)
    *
    * @param response Servlet response to populate
