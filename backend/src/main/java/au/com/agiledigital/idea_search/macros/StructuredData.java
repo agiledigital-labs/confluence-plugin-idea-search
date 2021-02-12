@@ -7,9 +7,11 @@ import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
 /**
@@ -28,13 +30,21 @@ public class StructuredData implements Macro {
     // making keys (section headers) capitalised. splitting on capital letters, i.e. camelCase becomes Camel Case
     Map<String, String> renderedData = data.entrySet()
       .stream().map(entry ->
-        new String[]{WordUtils.capitalize(entry.getKey().replaceAll("[A-Z]", " $0")), entry.getValue()}
+        new String[]{ headingTransformation(entry.getKey()), entry.getValue()}
       )
       .collect(Collectors.toMap(entry -> entry[0],entry->entry[1]));
 
     Map<String, Object> context = new HashMap<>();
     context.put("data", renderedData);
     return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
+  }
+
+  // converts a string into a capitalised string and splits on capital letters
+  private String headingTransformation(String heading) {
+    String[] headingList = StringUtils.splitByCharacterTypeCamelCase(heading);
+    // to make sure the first letter of the heading is always capitalised
+    headingList[0] = StringUtils.capitalize(headingList[0]);
+    return StringUtils.join(headingList, " ");
   }
 
   @Override
