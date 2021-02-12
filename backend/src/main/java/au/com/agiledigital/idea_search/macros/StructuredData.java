@@ -8,9 +8,13 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.WordUtils;
 import org.jsoup.Jsoup;
 
+/**
+ * Prepares structured data for presentation, capitalising titles
+ */
 public class StructuredData implements Macro {
   private Gson gson = new Gson();
 
@@ -21,14 +25,12 @@ public class StructuredData implements Macro {
     // gets the page body data as mapped
     data =gson.fromJson(Jsoup.parse(s).body().text(), data.getClass());
 
-    Map<String, String> renderData = new LinkedHashMap<>();
-    // capitalises text values
-    data.forEach( (r, t) -> {
-      renderData.put(WordUtils.capitalize(r.replaceAll("[A-Z]", " $0")), t);
-    });
+    // unlike koitlin, there isn't a mapKeys function available on hashmap, so we have to create a
+    // new hashmap to have capitalised keys
+    Map<String, String> renderedData = data.entrySet().stream().collect(Collectors.toMap(entry -> WordUtils.capitalize(entry.getKey().replaceAll("[A-Z]", " $0")), entry -> entry.getValue()));
 
     Map<String, Object> context = new HashMap<>();
-    context.put("data", renderData);
+    context.put("data", renderedData);
     return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
   }
 
