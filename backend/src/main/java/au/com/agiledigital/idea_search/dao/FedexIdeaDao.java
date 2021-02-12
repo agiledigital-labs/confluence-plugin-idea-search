@@ -270,15 +270,17 @@ public class FedexIdeaDao {
    * @return FedexIdea object
    */
   private FedexIdea asFedexIdea(AoFedexIdea aoFedexIdea) {
-    this.pageService.getIdPageLocator(aoFedexIdea.getContentId()).getPage().getContentId();
-
-    return new FedexIdea.Builder()
-      .withGlobalId(aoFedexIdea.getGlobalId())
-      .withTitle(aoFedexIdea.getTitle())
-      .withContentId(this.pageService.getIdPageLocator(aoFedexIdea.getContentId()).getPage().getContentId())
-      .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
-      .withFormData(aoFedexIdea.getFormData())
-      .build();
+    try {
+      return new FedexIdea.Builder()
+        .withGlobalId(aoFedexIdea.getGlobalId())
+        .withTitle(aoFedexIdea.getTitle())
+        .withContentId(this.pageService.getIdPageLocator(aoFedexIdea.getContentId()).getPage().getContentId())
+        .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
+        .withFormData(aoFedexIdea.getFormData())
+        .build();
+    } catch (NullPointerException nullPointerException){
+      return new FedexIdea.Builder().build();
+    }
   }
 
 

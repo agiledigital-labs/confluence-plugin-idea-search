@@ -33,13 +33,7 @@ const widgets = {
   RestSelection: RestSelection,
 };
 
-const InnerFrom = ({
-  schema,
-  uiSchema,
-  context,
-  formData,
-  onFormChange,
-}: any) => {
+const InnerFrom = ({ schema, uiSchema, formData, onFormChange }: any) => {
   const classes = useStyles();
 
   return (
@@ -72,7 +66,7 @@ const OuterIdea = ({
   const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
 
   useEffect(() => {
-    axios.get(`/${contextPath}/rest/idea/${version}/schema`).then((data) => {
+    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((data) => {
       setRestSchema(JSON.parse(data.data.schema));
       setUiSchema(JSON.parse(data.data.uiSchema));
     });

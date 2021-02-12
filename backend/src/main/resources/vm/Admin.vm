@@ -4,7 +4,7 @@
     <meta name="decorator" content="atl.admin">
   </head>
   <body>
-    <div id="admincontainer">
+    <div id="admin-container">
     </div>
   </body>
 </html>
