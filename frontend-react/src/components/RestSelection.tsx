@@ -28,7 +28,6 @@ export const RestSelection = (props: any) => {
   console.log(props);
   const classes = useStyles();
   const [rest, setRest] = useState<string>(props.value);
-  // @ts-ignore
   const [restList, setRestList] = useState<Array<string>>([]);
   const restSearch = useCallback(
     debounce((restInput: string) => {
@@ -59,7 +58,7 @@ export const RestSelection = (props: any) => {
           onBlur={!props.readonly ? props.handleBlur : undefined}
           type="text"
           onChange={updateRest}
-          className="autocomplete-multirest MuiInputBase-input MuiInput-input"
+          className="autocomplete-multi MuiInputBase-input MuiInput-input"
           value={rest}
           required={props.required}
         />
@@ -85,6 +84,7 @@ export const RestSelection = (props: any) => {
               ? restList.map((item, index) => (
                   <ListItem
                     button
+                    key={index}
                     onClick={() => {
                       setRest(item);
                       props.onChange(item);

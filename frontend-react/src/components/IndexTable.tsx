@@ -5,6 +5,7 @@ import DynamicTable from "@atlaskit/dynamic-table";
 import { makeStyles } from "@material-ui/core";
 import Textfield from "@atlaskit/textfield";
 import { isEmpty } from "lodash";
+import queryString from "query-string";
 
 interface IdeaPage {
   owner?: string;
@@ -14,6 +15,15 @@ interface IdeaPage {
   description?: string;
   url?: string;
 }
+
+const AJS = window.AJS ? window.AJS : undefined;
+
+// rows to be shown on each page of the paginated table
+const rowsPerPage: number = 10;
+// the default rendered page for paginated table
+const defaultPage: number = 1;
+// the rest endpoint version
+const version: string = "1";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -28,18 +38,20 @@ const useStyles = makeStyles(() => ({
 
 const OuterTable = () => {
   const classes = useStyles();
+  // gets context path from atlassian
+  // if not found, set to confluence as default
+  const contextPath = AJS?.contextPath() ? AJS.contextPath() : "/confluence";
 
+  // search term will be empty fields on initial render
   const [searchTerm, setSearchTerm] = useState({
     owner: "",
     status: "",
     technologies: "",
     title: "",
     description: "",
-    url: "",
   });
 
   const handleChange = (term: string, value: string) => {
-    console.log(term.toLowerCase());
     setSearchTerm((prevTerm) => ({
       ...prevTerm,
       [term.toLowerCase()]: value,
@@ -49,20 +61,14 @@ const OuterTable = () => {
   const [justPages, setJustPages] = useState<Array<IdeaPage>>();
 
   useEffect(() => {
-    console.log(searchTerm);
     axios
       .get(
-        "http://wren:1990/confluence/rest/idea/1/ideaPages?description=" +
-          searchTerm.description +
-          "&title=" +
-          searchTerm.title +
-          "&status=" +
-          searchTerm.status +
-          "&owner=" +
-          searchTerm.owner
+        `${contextPath}/rest/idea/${version}/ideapages?${queryString.stringify(
+          searchTerm
+        )}`
       )
       .then((response) => setJustPages(response.data));
-  }, [searchTerm]);
+  }, [searchTerm, contextPath]);
 
   const rows = justPages
     ?.filter(
@@ -70,7 +76,7 @@ const OuterTable = () => {
         // check if there is at least one tech in the list containing search
         !isEmpty(
           page.technologies?.filter((tech) =>
-            // check if searchterm is in the tech name
+            // check if search term is in the tech name
             tech.toLowerCase().includes(searchTerm.technologies.toLowerCase())
           )
         )
@@ -80,7 +86,7 @@ const OuterTable = () => {
       cells: [
         {
           key: `cell-${page.title}`,
-          content: <a href={page.url}>{page.title}</a>,
+          content: <a href={`${contextPath}/${page.url}`}>{page.title}</a>,
         },
         {
           key: `cell-${page.description}`,
@@ -97,7 +103,7 @@ const OuterTable = () => {
         {
           key: `cell-${page.owner}`,
           content: (
-            <a href={"http://wren:1990/confluence/display/~" + page.owner}>
+            <a href={`${contextPath}/display/~${page.owner}`}>
               {"@" + page.owner}
             </a>
           ),
@@ -113,15 +119,12 @@ const OuterTable = () => {
       content: (
         <div>
           <div className={classes.heading}>{header}</div>
-          {console.log(header)}
           <Textfield
-            id={`${header}asdf`}
+            id={`${header}`}
             placeholder={header}
+            // specifying className to use useStyle() for css
             className={classes.root}
-            onBlur={(e) => console.log(e.target.value)}
-            onChange={(e) => {
-              console.log(e.currentTarget.value);
-              // @ts-ignore
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               handleChange(header, e.target.value);
             }}
           />
@@ -135,15 +138,13 @@ const OuterTable = () => {
       <DynamicTable
         head={head}
         rows={rows}
-        rowsPerPage={10}
-        defaultPage={1}
+        rowsPerPage={rowsPerPage}
+        defaultPage={defaultPage}
         loadingSpinnerSize="large"
         isLoading={false}
         isFixedSize
         defaultSortKey="Title"
         defaultSortOrder="ASC"
-        onSort={() => console.log("onSort")}
-        onSetPage={() => console.log("onSetPage")}
       />
     </div>
   );
@@ -152,7 +153,7 @@ const OuterTable = () => {
 export default OuterTable;
 
 window.addEventListener("load", function () {
-  const wrapper = document.getElementById("index-container");
+  const wrapper = document.getElementById("container");
   // @ts-ignore
   wrapper ? ReactDOM.render(<OuterTable />, wrapper) : false;
 });

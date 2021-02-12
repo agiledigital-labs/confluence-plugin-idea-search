@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import OuterModal from "./components/Modal";
 
 const AJS = window.AJS ? window.AJS : undefined;
+const tinymce = window.tinymce ? window.tinymce : undefined;
 
 /**
  * Updates the macro on the page with the new body supplied
@@ -13,13 +14,10 @@ const AJS = window.AJS ? window.AJS : undefined;
  */
 const updateMacro = function (macroNode: any, newBody: any) {
   var $macroDiv = AJS?.$(macroNode);
-  //@ts-ignore
   AJS?.Rte.getEditor().selection.select($macroDiv[0]);
-  //@ts-ignore
   AJS?.Rte.BookmarkManager.storeBookmark();
 
   const macroRenderRequest = {
-    //@ts-ignore
     contentId: AJS?.Confluence.Editor.getContentId(),
     macro: {
       name: "idea-structured-data",
@@ -27,8 +25,7 @@ const updateMacro = function (macroNode: any, newBody: any) {
       body: newBody,
     },
   };
-  //@ts-ignore
-  tinymce.confluence.MacroUtils.insertMacro(macroRenderRequest);
+  tinymce?.confluence.MacroUtils.insertMacro(macroRenderRequest);
 };
 
 const OpenModal = (event: any, macroNode: any) => {
@@ -37,8 +34,7 @@ const OpenModal = (event: any, macroNode: any) => {
     macroNode.innerText.trim().length > 0
       ? JSON.parse(macroNode.innerText)
       : undefined;
-  // @ts-ignore
-  AJS.$("body").append(techInput);
+  AJS?.$("body").append(techInput);
   const wrapper = document.getElementById("edit-page-dialog-tech");
 
   const onClose = (newBody: string) => () => {
@@ -57,9 +53,8 @@ const techInput = `
 
 const attachUpdateButton = () => {
   if (
-    AJS &&
-    AJS.Confluence.PropertyPanel.Macro !== undefined &&
-    AJS.Confluence.PropertyPanel.Macro.registerButtonHandler !== undefined
+    AJS?.Confluence.PropertyPanel.Macro !== undefined &&
+    AJS?.Confluence.PropertyPanel.Macro.registerButtonHandler !== undefined
   ) {
     AJS.Confluence.PropertyPanel.Macro.registerButtonHandler(
       "update",

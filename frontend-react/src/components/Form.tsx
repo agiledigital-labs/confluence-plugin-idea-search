@@ -6,7 +6,7 @@ import { JSONSchema7, validate } from "json-schema";
 import axios from "axios";
 import UserSelection from "./UserSelection";
 import RestSelection from "./RestSelection";
-
+import { version } from "./index";
 
 const Form = withTheme(Theme);
 
@@ -33,29 +33,13 @@ const widgets = {
   RestSelection: RestSelection,
 };
 
-const uiSchema = (context: string) => ({
-  team: {
-    items: {
-      context,
-      endpoint: "rest/prototype/1/search/user.json?max-results=6&query=",
-      "ui:widget": UserSelection,
-    },
-  },
-  owner: {
-    context,
-    endpoint: "rest/prototype/1/search/user.json?max-results=6&query=",
-    "ui:widget": UserSelection,
-  },
-  technologies: {
-    items: {
-      context,
-      endpoint: "rest/idea/1/technology?q=",
-      "ui:widget": RestSelection,
-    },
-  },
-});
-
-const InnerIdea = ({ schema, context, formData, onFormChange }: any) => {
+const InnerFrom = ({
+  schema,
+  uiSchema,
+  context,
+  formData,
+  onFormChange,
+}: any) => {
   const classes = useStyles();
 
   return (
@@ -65,7 +49,7 @@ const InnerIdea = ({ schema, context, formData, onFormChange }: any) => {
           formData,
           onChange: onFormChange,
           schema,
-          uiSchema: uiSchema(context),
+          uiSchema,
           widgets,
         }}
       >
@@ -84,10 +68,13 @@ const OuterIdea = ({
   const classes = useStyles();
 
   const [restSchema, setRestSchema] = useState<JSONSchema7>({});
+  const [uiSchema, setUiSchema] = useState<JSONSchema7>({});
+  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
 
   useEffect(() => {
-    axios.get(`/confluence/rest/idea/1/schema`).then((data) => {
+    axios.get(`/${contextPath}/rest/idea/${version}/schema`).then((data) => {
       setRestSchema(JSON.parse(data.data.schema));
+      setUiSchema(JSON.parse(data.data.uiSchema));
     });
   }, []);
 
@@ -111,10 +98,11 @@ const OuterIdea = ({
     );
   }
   return (
-    <InnerIdea
+    <InnerFrom
       {...{
         schema: restSchema,
-        context: "/confluence",
+        uiSchema,
+        context: contextPath,
         formData,
         onFormChange,
       }}

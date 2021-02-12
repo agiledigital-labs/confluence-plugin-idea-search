@@ -13,9 +13,8 @@ module.exports = {
       },
     ],
   },
-  // watch : true,
   entry: {
-    indexTable: "./src/components/Table.tsx",
+    indexTable: "./src/components/IndexTable.tsx",
     admin: "./src/components/AdminPage.tsx",
     modal: "./src/UpdateFormModal.tsx",
   },

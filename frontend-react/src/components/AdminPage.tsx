@@ -1,174 +1,182 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 import TextArea from "@atlaskit/textarea";
 import Button from "@atlaskit/button/standard-button";
-import Form, { WidgetProps } from "@rjsf/core";
+import SectionMessage from "@atlaskit/section-message";
+import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
+import axios from "axios";
+import { version } from "./index";
 
+interface formDataType {
+  schema: JSONSchema7;
+  uiSchema: JSONSchema7;
+  indexSchema: JSONSchema7;
+}
+
+// minimum number of rows for TextArea
+const minRows: number = 12;
+
+// custom JSX.Element with atlaskit's TextArea
 const atlasTextArea = (props: WidgetProps) => {
   return (
     <TextArea
-      minimumRows={12}
-      placeholder={props.placeholder}
-      {...{ value: props.value, onChange: props.onChange }}
+      {...{
+        value: props.value,
+        minimumRows: minRows,
+        required: props.required,
+        // call form's onChange function with field value
+        onChange: (event) => props.onChange(event.target.value),
+      }}
     />
   );
 };
 
-const OuterAdminForm = () => {
-  const [schemas, setSchemas] = useState<String>("our schema");
-
-  axios
-    .get("http://wren:1990/confluence/rest/idea/1/schema")
-    .then((response) => setSchemas(response.data));
-
-  console.log(schemas);
-
-  const formData = {
-    schema: schemas,
-  };
-
-  const updateSchema = (type: string, data: string) => {
-    console.log("Inside update schema now again");
-    axios
-      .put("http://wren:1990/confluence/rest/idea/1/schema?type=" + type, {
-        data,
-      })
-      .then((response) => console.log(response.data));
-  };
-
-  const schema: JSONSchema7 = {
-    properties: {
-      schema: {
-        type: "string",
-        title: "Schema",
-      },
-      uiSchema: {
-        type: "string",
-        title: "UI Schema",
-      },
-      indexSchema: {
-        type: "string",
-        title: "Index Page Schema",
-      },
-    },
-  };
-
-  const widgets = {
-    atlasTextArea: atlasTextArea,
-  };
-
-  const uiSchema = {
+// schema structure for json schema form
+const schema: JSONSchema7 = {
+  properties: {
     schema: {
-      "ui:widget": atlasTextArea,
+      type: "string",
+      title: "Schema",
     },
     uiSchema: {
-      "ui:widget": atlasTextArea,
+      type: "string",
+      title: "UI Schema",
     },
     indexSchema: {
-      "ui:widget": atlasTextArea,
+      type: "string",
+      title: "Index Page Schema",
     },
-  };
+  },
+};
 
-  const [errors, setError] = useState<Array<string>>([]);
+// specifying atlasTextArea as our custom widget
+const widgets = {
+  atlasTextArea,
+};
 
-  const [val, setVal] = useState("{}");
-  const changeVal = (e: any) => {
-    setVal(e.target.value);
+// specifying ui widgets to use atlasTextArea
+const uiSchema = {
+  schema: {
+    "ui:widget": atlasTextArea,
+  },
+  uiSchema: {
+    "ui:widget": atlasTextArea,
+  },
+  indexSchema: {
+    "ui:widget": atlasTextArea,
+  },
+};
 
-    if (!e || !JSON.parse(e.target.value)) {
-      setError([errors[0], errors[1], "Use valid json"]);
-      return;
+// validate form and populate form's error messages
+const validate = (formData: any, errors: any) => {
+  const testValidate = (data: string): boolean => {
+    try {
+      JSON.parse(data);
+      return true;
+    } catch (e) {
+      return false;
     }
-    setError([errors[0], errors[1], ""]);
   };
 
-  console.log(val, errors);
+  Object.keys(formData)
+    .map((key) => ({
+      key,
+      valid: testValidate(formData[key]),
+    }))
+    .filter((t) => !t.valid)
+    .forEach((e) => errors[e.key].addError(`${e.key}: is not valid`));
 
-  const submit = () => {
-    console.log(val);
+  return errors;
+};
+
+const OuterAdminForm = () => {
+  // gets context path from atlassian
+  // if not found, set to confluence as default
+  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
+
+  const [formData, setFormData] = useState<formDataType>();
+
+  // populate form data with schema from the database
+  useEffect(() => {
+    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((response) =>
+      setFormData({
+        schema: response.data.schema,
+        uiSchema: response.data.uiSchema,
+        indexSchema: response.data.indexSchema,
+      })
+    );
+  });
+
+  const onFormChange = (event: IChangeEvent) => {
+    setFormData(event.formData);
+  };
+
+  // submission feedback to be used to populate atlaskit's section message
+  const [submissionFeedback, setSubmissionFeedback] = useState<{
+    title?: string;
+    appearance?:
+      | "info"
+      | "warning"
+      | "error"
+      | "confirmation"
+      | "change"
+      | undefined;
+    message?: string;
+    hidden: boolean;
+  }>({ hidden: true });
+
+  const updateSchema = (data: formDataType | undefined) => {
+    axios
+      .post(`${contextPath}/rest/idea/${version}/schema`, data)
+      .then(() =>
+        setSubmissionFeedback({
+          title: "Schemas saved Successfully",
+          appearance: "confirmation",
+          message: "Your schema has been saved successfully",
+          hidden: false,
+        })
+      )
+      .catch(() =>
+        setSubmissionFeedback({
+          title: "Failed to save schemas",
+          appearance: "error",
+          message: "Could not save schemas",
+          hidden: false,
+        })
+      );
   };
 
   return (
     <div>
-      <TextArea minimumRows={12} placeholder="Idea Schema" name="idea-schema" />
-      <Button
-        appearance="primary"
-        onClick={(e) => {
-          updateSchema(
-            "idea-schema",
-            // @ts-ignore
-            document.getElementsByName("idea-schema")[0].value
-          );
-          // @ts-ignore
-          document.getElementsByName("idea-schema")[0].value = "";
-        }}
-      >
-        Save
-      </Button>
-      <TextArea minimumRows={12} placeholder="UI Schema" name="ui-schema" />
-      <Button
-        appearance="primary"
-        onClick={(e) => {
-          updateSchema(
-            "ui-schema",
-            // @ts-ignore
-            document.getElementsByName("ui-schema")[0].value
-          );
-          // @ts-ignore
-          document.getElementsByName("ui-schema")[0].value = "";
-        }}
-      >
-        Save
-      </Button>
-      <TextArea
-        minimumRows={12}
-        placeholder="Index Page Schema"
-        name="index-schema"
-        {...{ value: val, onChange: changeVal }}
-      />
-      <Button
-        appearance="primary"
-        onClick={(e) => {
-          submit();
-          updateSchema(
-            "index-schema",
-            // @ts-ignore
-            document.getElementsByName("index-schema")[0].value
-          );
-          // @ts-ignore
-          document.getElementsByName("index-schema")[0].value = "";
-        }}
-      >
-        Save
-      </Button>
       <Form
+        liveValidate
         schema={schema}
         uiSchema={uiSchema}
         widgets={widgets}
         formData={formData}
+        onChange={onFormChange}
+        validate={validate}
+        onSubmit={() => {
+          updateSchema(formData);
+        }}
       >
-        <Button
-          appearance="primary"
-          onClick={(e) => {
-            updateSchema(
-              "ui-schema",
-              // @ts-ignore
-              document.getElementsByName("ui-schema")[0].value
-            );
-            // @ts-ignore
-            document.getElementsByName("ui-schema")[0].value = "";
-          }}
-        >
+        <Button type="submit" appearance="primary">
           Save
         </Button>
+        {/* Submission feedback is hidden unless there is feedback from post request. */}
+        <div hidden={submissionFeedback.hidden}>
+          <SectionMessage
+            title={submissionFeedback.title}
+            appearance={submissionFeedback.appearance}
+          >
+            <p>{submissionFeedback.message}</p>
+          </SectionMessage>
+        </div>
       </Form>
     </div>
   );
 };
-
-export default OuterAdminForm;
 
 window.addEventListener("load", function () {
   const wrapper = document.getElementById("admincontainer");

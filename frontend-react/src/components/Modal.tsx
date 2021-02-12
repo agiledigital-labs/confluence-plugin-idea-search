@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
-import OuterIdea from "./Idea";
+import OuterForm from "./Form";
 
 const OuterModal = ({ onClose, initFormData }: any) => {
   const [formData, setFormData] = useState<object>(initFormData);
@@ -10,9 +10,9 @@ const OuterModal = ({ onClose, initFormData }: any) => {
         scrollBehavior={"inside"}
         onClose={onClose(JSON.stringify(formData))}
         width={"x-large"}
-        heading="Edit your idea"
+        heading="Edit the data in this form"
       >
-        <OuterIdea {...{ formData, setFormData }} />
+        <OuterForm {...{ formData, setFormData }} />
       </Modal>
     </ModalTransition>
   );
