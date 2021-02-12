@@ -77,12 +77,11 @@
   >
     <context>atl.admin</context>
     <resource
-      location="/frontend/bundled.admin.js"
-      name="bundled.admin.js"
+      location="/frontend/bundled.adminPage.js"
+      name="bundled.adminPage.js"
       type="download"
     />
   </web-resource>
-
 
   <web-resource
     key="ideaSearch.blueprint.page.wizard"
@@ -102,10 +101,6 @@
     <resource
       location="/soy/ideaSearch.soy"
       name="ideaSearch.soy.js"
-      type="download"/>
-    <resource
-      location="/frontend/bundled.form.js"
-      name="bundled.form.js"
       type="download"/>
 
     <resource location="/images" name="images/" type="download"/>
@@ -130,14 +125,6 @@
       class="au.com.agiledigital.idea_search.blueprints.IndexPageContextProvider"/>
   </content-template>
 
-  <web-resource
-    key="ideaSearch-macro-clientSideScripts-macro-resource"
-    name="Client Side Scripts Web Resources">
-    <dependency>com.atlassian.auiplugin:ajs</dependency>
-
-    <!--  Add Background resource loading here  -->
-  </web-resource>
-
   <!-- Structured Data Macro -->
 
   <web-resource name="Javascript" key="editor_status-light">
@@ -149,33 +136,6 @@
     <transformation extension="js">
       <transformer key="jsI18n"/> 
     </transformation>
-  </web-resource>
-  <web-resource
-    key="ideaSearch-macro-structuredField-macro-resource"
-    name="Structured Field Web Resources"
-  >
-
-    <dependency>
-      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
-    </dependency>
-
-    <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <dependency>com.atlassian.auiplugin:aui-select</dependency>
-    <dependency>com.atlassian.auiplugin:aui-select2</dependency>
-
-    <resource
-      location="/frontend/bundled.form.js"
-      name="bundled.form.js"
-      type="download"/>
-    <resource
-      location="/frontend/bundled.table.js"
-      name="bundled.table.js"
-      type="download"/>
-
-    <resource
-      type="download"
-      name="StructuredField.css"
-      location="/css/StructuredField.css"    />
   </web-resource>
 
   <!-- Structured Macro -->
@@ -194,10 +154,10 @@
   <web-resource name="Editor Modal" key="editor_modal">
     <context>editor</context>
     <resource
-      location="/frontend/bundled.modal.js"
-      name="bundled.modal.js"
-      type="download"
-    />
+      location="/frontend/bundled.editModal.js"
+      name="bundled.editModal.js"
+      type="download"/>
+
     <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
     <transformation extension="js">
       <transformer key="jsI18n"/>
@@ -238,18 +198,10 @@
   <web-resource
     key="ideaSearch-macro-indexTable-macro-resource"
     name="Index Table Web Resources">
-    <resource
-      type="download"
-      name="IndexTable.css"
-      location="/css/IndexTable.css"/>
 
     <resource
-      type="download"
-      name="StructuredField.css"
-      location="/css/StructuredField.css"/>
-    <resource
-      location="/frontend/bundled.form.js"
-      name="bundled.form.js"
+      location="/frontend/bundled.indexTable.js"
+      name="bundled.indexTable.js"
       type="download"
     />
   </web-resource>

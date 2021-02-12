@@ -14,11 +14,9 @@ module.exports = {
     ],
   },
   entry: {
-    indexTable: "./src/components/IndexTable.tsx",
-    admin: "./src/components/AdminPage.tsx",
-    modal: "./src/UpdateFormModal.tsx",
-    idea: "./src/Idea.ts",
-    admin: "./src/AdminPage.ts",
+    indexTable: "./src/IndexTable.tsx",
+    adminPage: "./src/AdminPage.tsx",
+    editModal: "./src/UpdateFormModal.tsx",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

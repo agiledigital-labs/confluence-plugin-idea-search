@@ -9,6 +9,7 @@ import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.join;
 
 public class StructuredData implements Macro {
 
@@ -39,10 +39,11 @@ public class StructuredData implements Macro {
 
     Map<String, String> renderData = new LinkedHashMap<>();
 
-
     data.forEach( (r, t) ->
       renderData.put(WordUtils.capitalize(r.replaceAll("[A-Z]", " $0")), t)
     );
+
+    StringUtils.join(StringUtils.splitByCharacterTypeCamelCase("thingThing"), " ");
 
     pageBuilderService
       .assembler()

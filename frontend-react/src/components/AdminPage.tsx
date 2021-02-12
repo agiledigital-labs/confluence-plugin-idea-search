@@ -4,7 +4,6 @@ import TextArea from "@atlaskit/textarea";
 import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import axios from "axios";
 import { version } from "./index";
 
@@ -178,8 +177,4 @@ const OuterAdminForm = () => {
   );
 };
 
-window.addEventListener("load", function () {
-  const wrapper = document.getElementById("admincontainer");
-  // @ts-ignore
-  wrapper ? ReactDOM.render(<OuterAdminForm />, wrapper) : false;
-});
+export default OuterAdminForm;

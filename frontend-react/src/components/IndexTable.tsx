@@ -5,7 +5,7 @@ import axios from "axios";
 import { isEmpty } from "lodash";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import { version } from "./index";
 
 interface IdeaPage {
   owner?: string;
@@ -22,8 +22,6 @@ const AJS = window.AJS ? window.AJS : undefined;
 const rowsPerPage: number = 10;
 // the default rendered page for paginated table
 const defaultPage: number = 1;
-// the rest endpoint version
-const version: string = "1";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -151,9 +149,3 @@ const OuterTable = () => {
 };
 
 export default OuterTable;
-
-window.addEventListener("load", function () {
-  const wrapper = document.getElementById("container");
-  // @ts-ignore
-  wrapper ? ReactDOM.render(<OuterTable />, wrapper) : false;
-});
