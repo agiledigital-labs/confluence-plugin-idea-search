@@ -2,16 +2,12 @@ package au.com.agiledigital.idea_search.macros;
 
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
-import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
@@ -22,8 +18,7 @@ public class StructuredData implements Macro {
   private Gson gson = new Gson();
 
   @Override
-  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
-    throws MacroExecutionException {
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext) {
     Map<String, String> data = new LinkedHashMap<>();
     // gets the page body data as mapped
     data =gson.fromJson(Jsoup.parse(s).body().text(), data.getClass());
