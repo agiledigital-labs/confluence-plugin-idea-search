@@ -33,4 +33,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -s ./backend/settings.xml -Dmaven.test.skip=true --file ./backend/pom.xml -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -s ./settings.xml -Dmaven.test.skip=true --file ./pom.xml -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        working-directory: ./backend

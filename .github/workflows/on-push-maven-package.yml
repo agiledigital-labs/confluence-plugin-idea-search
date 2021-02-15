@@ -37,7 +37,8 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Build with Maven
-        run: mvn -s ./backend/settings.xml -B package --file ./backend/pom.xml
+        run: mvn -s ./settings.xml -B package --file ./pom.xml
+        working-directory: ./backend
   test:
     runs-on: ubuntu-latest
     steps:
@@ -69,6 +70,8 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Check linting with Maven
-        run: mvn -s ./backend/settings.xml spotless:check --file ./backend/pom.xml
+        run: mvn -s ./settings.xml spotless:check --file ./pom.xml
+        working-directory: ./backend
       - name: Test with Maven
-        run: mvn -s ./backend/settings.xml -B test --file ./backend/pom.xml
+        run: mvn -s ./settings.xml -B test --file ./pom.xml
+        working-directory: ./backend

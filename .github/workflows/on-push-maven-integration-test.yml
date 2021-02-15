@@ -41,8 +41,9 @@ jobs:
       - name: Integration Test with Maven
         run: |
           mvn package com.atlassian.maven.plugins:confluence-maven-plugin:8.1.0:integration-test \
-          -gs ./backend/settings.xml -Dhttp.port='1991' \
-          -Dtest.integration.path=./backend/src/test/resources/generated-test-resources.zip  --file ./backend/pom.xml
+          -gs ./settings.xml -Dhttp.port='1991' \
+          -Dtest.integration.path=./src/test/resources/generated-test-resources.zip  --file ./pom.xml
+        working-directory: ./backend
 
         # This may throw some null pointer exceptions when confluence shuts down and Tomcat stops.
         # Error logs on confluence shut down has been a known issue.
