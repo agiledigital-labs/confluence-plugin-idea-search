@@ -1,13 +1,6 @@
 <body>
-## A hack!!!
-<div class="field-group hidden">
-  <input class="text" type="text" id="contextPath" name="contextPath" value="$contextPath">
-  <input class="text" type="text" id="schema" name="schema" value="$schema">
-##  <input class="text" type="text" id="schema" name="uiSchema" value="$uiSchema">
-##  <input class="text" type="text" id="uiSchema" name="formData" value="$formData">
-</div>
-<div id="maincontainer">
-  <div id="container-idea">
-  </div>
-</div>
+#foreach($item in $data.keySet())
+  <h2>$item</h2>
+  <p>$data.get($item)</p>
+#end
 </body>

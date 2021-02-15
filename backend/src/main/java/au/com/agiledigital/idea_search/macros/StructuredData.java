@@ -1,60 +1,60 @@
 package au.com.agiledigital.idea_search.macros;
 
-import au.com.agiledigital.idea_search.model.FedexIdea;
-import au.com.agiledigital.idea_search.model.FedexSchema;
-import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
-import com.atlassian.confluence.macro.MacroExecutionException;
-import com.atlassian.confluence.setup.BootstrapManager;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.webresource.api.assembler.PageBuilderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.google.gson.Gson;
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 
-import static au.com.agiledigital.idea_search.helpers.Utilities.DEFAULT_SCHEMA;
-
+/**
+ * Prepares structured data for presentation, capitalising titles
+ */
 public class StructuredData implements Macro {
-
-  private PageBuilderService pageBuilderService;
-  private BootstrapManager bootstrapManager;
-  private DefaultFedexIdeaService fedexIdeaService;
-
-  @Autowired
-  public StructuredData(
-    @ComponentImport PageBuilderService pageBuilderService, @ComponentImport BootstrapManager bootstrapManager, DefaultFedexIdeaService fedexIdeaService) {
-    this.pageBuilderService = pageBuilderService;
-    this.bootstrapManager = bootstrapManager;
-    this.fedexIdeaService = fedexIdeaService;
-  }
-  private static final Logger log = LoggerFactory.getLogger(StructuredData.class);
+  private Gson gson = new Gson();
 
   @Override
-  public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
-    throws MacroExecutionException {
+  public String execute(Map<String, String> map, String s, ConversionContext conversionContext) {
+    // gets the page body data as mapped
+    LinkedHashMap<String, String> data =gson.fromJson(Jsoup.parse(s).body().text(), LinkedHashMap.class);
 
-    long macroContent = conversionContext.getEntity().getContentId().asLong();
+    // making keys (section headers) capitalised. splitting on capital letters, i.e. camelCase becomes Camel Case
+    Map<String, String> renderedData = data.entrySet()
+      .stream().map(
+        entry -> new AbstractMap.SimpleEntry<>(headingTransformation(entry.getKey()), entry.getValue())
+      )
+      .collect(
+        Collectors.toMap(
+          AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
+          (key, duplicateKey) -> {
+            throw new IllegalStateException(String.format("Duplicate key [%s]", key));
+          }, LinkedHashMap::new
+        )
+      );
 
-//    FedexIdea currentIdea = this.fedexIdeaService.getByContentId(macroContent);
-
-//    FedexSchema schema = this.fedexIdeaService.getSchema(currentIdea.getSchemaId());
-
-    pageBuilderService
-      .assembler()
-      .resources()
-      .requireWebResource(
-        "au.com.agiledigital.idea_search:ideaSearch-macro-structuredData-macro-resource");
     Map<String, Object> context = new HashMap<>();
-    context.put("contextPath", bootstrapManager.getWebAppContextPath());
-    context.put("schema", DEFAULT_SCHEMA);
-//    context.put("uiSchema", schema.getUiSchema());
-//    context.put("formData", currentIdea.getFormData());
+    context.put("data", renderedData);
     return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
+  }
+
+  // converts a string into a capitalised string and splits on capital letters
+  private String headingTransformation(String heading) {
+    String[] headingList = StringUtils.splitByCharacterTypeCamelCase(heading);
+
+    // return an empty string if the array is empty
+    if (!ArrayUtils.isNotEmpty(headingList)) {
+      return "";
+    }
+
+    // to make sure the first letter of the heading is always capitalised
+    headingList[0] = StringUtils.capitalize(headingList[0]);
+    return StringUtils.join(headingList, " ");
   }
 
   @Override
