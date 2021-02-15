@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - main
-
 jobs:
   generate-doc:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -20,7 +18,7 @@ jobs:
         env:
           cache-name: cache-maven-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
+          # maven cache files are stored in `~/.m2` on Linux/macOS
           path: ~/.m2
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
@@ -28,7 +26,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Create javadoc
-        run: mvn -gs ./backend/settings.xml javadoc:javadoc
+        run: mvn -gs ./backend/settings.xml --file ./backend/pom.xml javadoc:javadoc
       - name: push-documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
