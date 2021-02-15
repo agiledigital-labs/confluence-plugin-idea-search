@@ -71,7 +71,11 @@ public class FedexSchemaDao {
     }
   }
 
-  // Creates a blueprintId in the ao database with supplied blueprint id
+  /**
+   * Creates a blueprintId in the ao database with supplied blueprint id
+   *
+   * @param blueprintId string that is assigned when the plugin is installed
+   */
   private void createBlueprintIdEntry(String blueprintId) {
     AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
     newBlueprint.setBlueprintId(blueprintId);

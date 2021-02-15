@@ -1,6 +1,7 @@
 package au.com.agiledigital.idea_search.listener;
 
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
+import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.pages.Page;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import java.util.stream.Collectors;
 
 import static au.com.agiledigital.idea_search.helpers.Utilities.getPageData;
 
@@ -75,26 +78,6 @@ private SettingsManager settingsManager;
 
 
 
-  /**
-   * Listen for page update events on pages with the correct label, updates the data store with the
-   * new idea
-   *
-   * @param event produced when a page is updated
-   */
-  @EventListener
-  public void pageUpdated(PageUpdateEvent event)  {
-    if (
-      event.getContent().getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
-    ) {
-        makeChildOfIndex(event.getPage());
-
-    this.fedexIdeaService.updateIdea(getPageData(this.settingsManager, event.getPage()), event.getPage().getId());
-      }
-
-
-
-  }
-
 
   /**
    * Listen for pages created from blueprints.
@@ -127,17 +110,28 @@ private SettingsManager settingsManager;
    */
   @EventListener
   public void pageCreated(PageCreateEvent event)  {
+    pageEventHandler(event.getContent(), event.getPage());
+  }
+
+  /**
+   * Listen for page update events on pages with the correct label, updates the data store with the
+   * new idea
+   *
+   * @param event produced when a page is updated
+   */
+  @EventListener
+  public void pageUpdated(PageUpdateEvent event)  {
+    pageEventHandler(event.getContent(), event.getPage());
+  }
+
+  private void pageEventHandler(ContentEntityObject content, Page page) {
     if (
-      event.getContent().getLabels().toString().contains(FEDEX_IDEA_BLUEPRINT_LABEL)
+      content.getLabels().stream().anyMatch(label -> label.equals(FEDEX_IDEA_BLUEPRINT_LABEL))
     ) {
+      makeChildOfIndex(page);
 
-        makeChildOfIndex(event.getPage());
-
-        this.fedexIdeaService.updateIdea(getPageData(this.settingsManager, event.getPage()), event.getPage().getId());
-      }
-
-
-
+      this.fedexIdeaService.upsertIdea(getPageData(this.settingsManager, page), page.getId());
+    }
   }
 
   /**

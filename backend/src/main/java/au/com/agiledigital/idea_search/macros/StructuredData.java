@@ -7,21 +7,21 @@ import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.JsonElement;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 /**
  * Prepares structured data for presentation,
- *
+ * <p>
  * Takes the JSON from the macro, and puts it in the context
  * for the velocity template
- *
  */
 public class StructuredData implements Macro {
   private Gson gson = new Gson();
@@ -35,12 +35,12 @@ public class StructuredData implements Macro {
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
-    Map<String, String> data = new LinkedHashMap<>();
-    // gets the page body data as mapped
-    data =gson.fromJson(Jsoup.parse(s).body().text(), data.getClass());
+    LinkedHashMap<String, String> jsonObject = gson.fromJson(Jsoup.parse(s).body().text(), LinkedHashMap.class);
+    JsonElement jsonElement = gson.toJsonTree(jsonObject);
+
 
     // making keys (section headers) capitalised. splitting on capital letters, i.e. camelCase becomes Camel Case
-    Map<String, String> renderedData = getStringMap(data);
+    Map<String, String> renderedData = getStringMap(jsonElement);
 
     Map<String, Object> context = new HashMap<>();
     context.put("data", renderedData);
@@ -55,24 +55,19 @@ public class StructuredData implements Macro {
    * @return Map of key and String
    */
   @Nonnull
-  private Map<String, String> getStringMap(Map<String, ?> data) {
-    return data.entrySet()
+  private Map<String, String> getStringMap(JsonElement data) {
+    return data.getAsJsonObject().entrySet()
       .stream().map(entry ->
-        new String[]{headingTransformation(entry.getKey()), this.handleComplexObject(entry.getValue())}
+        new AbstractMap.SimpleEntry<String, String>(headingTransformation(entry.getKey()), this.handleComplexObject(entry.getValue()))
       )
-      .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
+      .collect(Collectors.toMap(
+        AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
+        (key, duplicateKey) -> {
+          throw new IllegalStateException(String.format("Duplicate key [%s]", key));
+        }, LinkedHashMap::new
+      ));
   }
 
-  /**
-   * Converts values in a set to a List of strings where key and value are joined, separated by :
-   *
-   * @param data set of key values pairs
-   * @return List<String> where key and value are concatenated
-   */
-  @Nonnull
-  private List<String> getSubHeadings(Set data) {
-   return  (List<String>) data.stream().map(r ->  ((Map.Entry) r).getKey() +": " + this.handleComplexObject(((Map.Entry<?, ?>) r).getValue()) + ", ").collect(Collectors.toList());
-  }
 
   /**
    * Converts the unknown value into string for display.
@@ -80,13 +75,22 @@ public class StructuredData implements Macro {
    * @param displayData value from the structured data json to be converted into a string
    * @return paragraph text to be shown on the macro page
    */
-  private String handleComplexObject(Object displayData){
-    if (String.class.equals(displayData.getClass())) {
-      return (String) displayData;
-    } else if (ArrayList.class.equals(displayData.getClass())) {
-      return  StringUtils.join(((ArrayList<?>) displayData).toArray(), ", ");
-    } else if (LinkedTreeMap.class.equals(displayData.getClass())) {
-      return StringUtils.join(getSubHeadings(((LinkedTreeMap<String, String >) displayData).entrySet()).toArray());
+  private String handleComplexObject(JsonElement displayData) {
+    if (displayData.isJsonNull()) {
+      return "No data on this element";
+    } else if (displayData.isJsonPrimitive()) {
+      return displayData.getAsString();
+    } else if (displayData.isJsonArray()) {
+      return "[" + StringUtils.join(
+        StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+          displayData.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+          .map(this::handleComplexObject).collect(Collectors.toList()), ", ") +"]";
+    } else if (displayData.isJsonObject()) {
+      return StringUtils.join(
+        displayData.getAsJsonObject().entrySet()
+          .stream()
+          .map(element -> new AbstractMap.SimpleEntry<>(element.getKey(), handleComplexObject(element.getValue())))
+          .map(r -> r.getKey() + " -> " + r.getValue()).collect(Collectors.toList()), ", ");
     } else {
       return "failed to load";
     }
@@ -94,7 +98,6 @@ public class StructuredData implements Macro {
   }
 
   /**
-   *
    * @param heading string in camelCase to be converted to title case
    * @return
    */

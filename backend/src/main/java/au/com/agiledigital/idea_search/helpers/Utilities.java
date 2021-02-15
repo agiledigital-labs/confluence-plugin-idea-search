@@ -27,16 +27,6 @@ public class Utilities {
 
   private Utilities() {throw new IllegalStateException("Utility class"); }
 
-  /**
-   * Remove tags and give only wrapped text
-   *
-   * @param rawData the string to be stripped off tags
-   * @return string without any tags wrapping it
-   */
-  public static String removeTags(String rawData) {
-    return rawData.replaceAll("\\<[^>]+>\\>", "");
-  }
-
   public static String getFormData(NodeList macros) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);

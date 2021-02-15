@@ -87,13 +87,13 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   }
 
   /**
-   * Update an existing FedexIdea
+   * Create or Update an existing FedexIdea
    *
    * @param fedexIdea to be updated
    * @param contentId of idea to be updated
    * @return FedexIdea that was updated
    */
-  public FedexIdea updateIdea(FedexIdea fedexIdea, long contentId) {
+  public FedexIdea upsertIdea(FedexIdea fedexIdea, long contentId) {
     return this.fedexIdeaDao.upsertByContentId(fedexIdea, contentId);
   }
 

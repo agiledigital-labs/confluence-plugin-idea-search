@@ -37,7 +37,7 @@ public interface FedexIdeaService {
    * @param contentId of idea to be updated
    * @return updated fedex idea
    */
-  FedexIdea updateIdea(FedexIdea fedexIdea, long contentId);
+  FedexIdea upsertIdea(FedexIdea fedexIdea, long contentId);
 
   /**
    * Gets a schema by id

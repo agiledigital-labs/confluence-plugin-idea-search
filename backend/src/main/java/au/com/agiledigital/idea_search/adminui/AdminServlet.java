@@ -18,8 +18,7 @@ import java.net.URI;
  * Servlet to serve a admin configuration page on Configuration UI.
  * See more at: https://developer.atlassian.com/server/confluence/adding-a-configuration-ui-for-your-plugin/
  */
-public class AdminServlet extends HttpServlet
-{
+public class AdminServlet extends HttpServlet {
   @ComponentImport
   private final UserManager userManager;
   @ComponentImport
@@ -30,17 +29,25 @@ public class AdminServlet extends HttpServlet
   private final PageBuilderService pageBuilderService;
 
   @Inject
-  public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, PageBuilderService pageBuilderService)
-  {
+  public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, PageBuilderService pageBuilderService) {
     this.userManager = userManager;
     this.loginUriProvider = loginUriProvider;
     this.renderer = renderer;
     this.pageBuilderService = pageBuilderService;
   }
 
+  /**
+   * Returns the admin page on a get request.
+   * <p>
+   * Will check that the requesting user has admin privileges/will redirect to login.
+   *
+   * @param request to servlet
+   * @param response from servlet as rendered html
+   * @throws IOException
+   * @throws ServletException
+   */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
-  {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     // require web resource to be able to use custom react
     pageBuilderService
       .assembler()
@@ -49,9 +56,7 @@ public class AdminServlet extends HttpServlet
         "au.com.agiledigital.idea_search:ideaAdminResource");
 
     // verify that admin user is requesting the page
-    String username = userManager.getRemoteUsername(request);
-    if (username == null || !userManager.isSystemAdmin(username))
-    {
+    if (!userManager.isSystemAdmin(userManager.getRemoteUser(request).getUserKey())) {
       redirectToLogin(request, response);
       return;
     }
@@ -61,17 +66,26 @@ public class AdminServlet extends HttpServlet
     renderer.render("vm/Admin.vm", response.getWriter());
   }
 
-  private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException
-  {
+  /**
+   * Redirect user to the login page
+   *
+   * @param request to servlet
+   * @param response from servlet
+   * @throws IOException
+   */
+  private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
   }
 
-  // gets the uri to identify where a login attempt is being made
-  private URI getUri(HttpServletRequest request)
-  {
+  /**
+   * Gets the uri to identify where a login attempt is being made
+   *
+   * @param request to servlet
+   * @return URI of the page making the request to view admin resources
+   */
+  private URI getUri(HttpServletRequest request) {
     StringBuffer builder = request.getRequestURL();
-    if (request.getQueryString() != null)
-    {
+    if (request.getQueryString() != null) {
       builder.append("?");
       builder.append(request.getQueryString());
     }
