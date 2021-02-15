@@ -1,5 +1,4 @@
 <body>
-
 #foreach($item in $data.keySet())
   <h2>$item</h2>
   <p>$data.get($item)</p>

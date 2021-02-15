@@ -6,6 +6,7 @@ import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
@@ -14,10 +15,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-
 /**
- * Prepares structured data for presentation,
- * <p>
+ * Prepares structured data for presentation, capitalising titles
  * Takes the JSON from the macro, and puts it in the context
  * for the velocity template
  */
@@ -93,6 +92,12 @@ public class StructuredData implements Macro {
    */
   private String headingTransformation(String heading) {
     String[] headingList = StringUtils.splitByCharacterTypeCamelCase(heading);
+
+    // return an empty string if the array is empty
+    if (!ArrayUtils.isNotEmpty(headingList)) {
+      return "";
+    }
+
     // to make sure the first letter of the heading is always capitalised
     headingList[0] = StringUtils.capitalize(headingList[0]);
     return StringUtils.join(headingList, " ");
