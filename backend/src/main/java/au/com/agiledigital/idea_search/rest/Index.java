@@ -109,24 +109,12 @@ public class Index {
     Set<String> newSet = new HashSet<>();
     newSet.add("fedex-ideas");
 
-    title = title != null ? title : "";
-    description = description != null ? description : "";
-    status = status != null ? status : "";
-    owner = owner != null ? owner : "";
-
-    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea(title, description, status, owner);
+    List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea();
 
     List<Map> preConvert = allIdeas.stream().map( idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", idea.getUrl());
-//      preJsonIdea.put("description", idea.getDescription().isEmpty() ? "":idea.getDescription());
-//      preJsonIdea.put("technologies", idea.getTechnologies().isEmpty() ? "" : idea.getTechnologies().stream().map(tech-> tech.getTechnology()).collect(
-//        Collectors.toList()));
-
-//      preJsonIdea.put("owner", idea.getOwner());
-
-//      preJsonIdea.put("status", idea.getStatus());
 
       return preJsonIdea;
     }).collect(Collectors.toList());

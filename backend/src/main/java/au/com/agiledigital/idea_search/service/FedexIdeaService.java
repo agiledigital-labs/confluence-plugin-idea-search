@@ -69,5 +69,5 @@ public interface FedexIdeaService {
    */
   void setBlueprintId(String blueprintId);
 
-  List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner);
+  List<FedexIdea> queryAllFedexIdea();
 }
