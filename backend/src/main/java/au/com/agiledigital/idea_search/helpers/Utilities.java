@@ -56,7 +56,13 @@ public class Utilities {
   }
 
 
-
+  /**
+   * Extracts the formData from the macro object in the confluence page
+   *
+   * @param settingsManager from confluence
+   * @param page that the data macro is on
+   * @return a FedexIdea from the page data.
+   */
   @Nonnull
   public static FedexIdea getPageData(SettingsManager settingsManager, AbstractPage page) {
 
