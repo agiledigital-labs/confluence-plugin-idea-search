@@ -19,9 +19,11 @@ jobs:
         with:
           node-version: 15
       - name: Install dependencies
-        run: yarn --cwd ./frontend-react install
+        run: yarn install
+        working-directory: ./frontend-react
       - name: Build node packages
-        run: yarn --cwd ./frontend-react build
+        run: yarn build
+        working-directory: ./frontend-react
       - name: Cache maven modules
         uses: actions/cache@v2
         env:
@@ -49,9 +51,11 @@ jobs:
         with:
           node-version: 15
       - name: Install dependencies
-        run: yarn --cwd ./frontend-react install
+        run: yarn install
+        working-directory: ./frontend-react
       - name: Build node packages
-        run: yarn --cwd ./frontend-react build
+        run: yarn build
+        working-directory: ./frontend-react
       - name: Cache maven modules
         uses: actions/cache@v2
         env:
