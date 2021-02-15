@@ -45,7 +45,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @param id of the requested schema
    * @return FedexSchema for the id
    */
-  public  FedexSchema getSchema(long id) {
+  public FedexSchema getSchema(long id) {
     return this.fedexSchemaDao.findOneSchema(id);
   }
 
@@ -64,7 +64,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @param contentId of the FedexIdea
    * @return FedexId by the confluence content id
    */
-  public FedexIdea getByContentId(long contentId){
+  public FedexIdea getByContentId(long contentId) {
     return this.fedexIdeaDao.getByContentId(contentId);
   }
 
@@ -102,5 +102,7 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    *
    * @return List<FedexIdea> with no filtering or selection
    */
-  public List<FedexIdea> queryAllFedexIdea() { return fedexIdeaDao.findAll(); }
+  public List<FedexIdea> queryAllFedexIdea() {
+    return fedexIdeaDao.findAll();
+  }
 }

@@ -68,7 +68,6 @@ public class StructuredData implements Macro {
       ));
   }
 
-
   /**
    * Converts the unknown value into string for display.
    *
@@ -94,7 +93,6 @@ public class StructuredData implements Macro {
     } else {
       return "failed to load";
     }
-
   }
 
   /**

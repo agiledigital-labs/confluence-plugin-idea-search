@@ -45,7 +45,6 @@ public class FedexIdea {
     return this.contentId;
   }
 
-
   public ConfluenceUser getCreator() {
     return this.creator;
   }
@@ -53,7 +52,6 @@ public class FedexIdea {
   public String getTitle() {
     return this.title;
   }
-
 
   public String getFormData() {return this.formData;}
 
@@ -102,7 +100,6 @@ public class FedexIdea {
       return this;
     }
 
-
     public FedexIdea.Builder withContentId(ContentId contentId) {
 
       this.contentId = contentId;
@@ -113,7 +110,6 @@ public class FedexIdea {
       this.creator = creator;
       return this;
     }
-
 
     public FedexIdea.Builder withFormData(String formData) {
       this.formData = formData;

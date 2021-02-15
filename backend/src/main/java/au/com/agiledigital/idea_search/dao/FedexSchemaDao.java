@@ -35,7 +35,6 @@ public class FedexSchemaDao {
     this.userAccessor = userAccessor;
   }
 
-
   /**
    * Get the id of plugin blueprint
    *
@@ -44,31 +43,6 @@ public class FedexSchemaDao {
   public String getBlueprintId() {
     AoIdeaBlueprint[] blueprints = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select());
     return blueprints.length == 0 ? "" : blueprints[0].getBlueprintId();
-  }
-
-  /**
-   * Set the blueprint id if not current
-   *
-   * @param blueprintId the supplied blueprint id
-   */
-  public void setBlueprintId(String blueprintId) {
-    AoIdeaBlueprint[] blueprint = this.ao
-      .find(AO_IDEA_BLUEPRINT_TYPE, Query.select().where("BLUEPRINT_ID = ?", blueprintId));
-
-    // Check if there is already a blueprint
-    if (blueprint.length != 0) {
-      // If the existing blueprint id does not match with supplied one,
-      // then delete it and create a new one with the supplied id,
-      // otherwise keep blueprint id unchanged.
-      if (!blueprint[0].getBlueprintId().equals(blueprintId)) {
-        this.ao.delete(blueprint);
-        createBlueprintIdEntry(blueprintId);
-      }
-      // If no blueprint id is found,
-      // then create a new blueprint id with the supplied one.
-    } else {
-      createBlueprintIdEntry(blueprintId);
-    }
   }
 
   /**
@@ -81,6 +55,7 @@ public class FedexSchemaDao {
     newBlueprint.setBlueprintId(blueprintId);
     newBlueprint.save();
   }
+
   /**
    * Create new entry to represent the a FedexIdea
    *
@@ -98,7 +73,6 @@ public class FedexSchemaDao {
     return this.asSchema(aoSchema);
   }
 
-
   /**
    * Retrieve one schema from the database by the global id
    *
@@ -110,6 +84,7 @@ public class FedexSchemaDao {
 
     return this.asSchema(aoSchema);
   }
+
   /**
    * Retrieve one schema from the database by the global id
    *
@@ -131,7 +106,6 @@ public class FedexSchemaDao {
 
     return this.asListFedexSchema(aoSchema);
   }
-
 
   /**
    * Convert array of active objects to a list of model objects
@@ -173,7 +147,6 @@ public class FedexSchemaDao {
     aoSchema.setVersion(fedexSchema.getVersion());
   }
 
-
   /**
    * Convert fedex idea active object to a fedex idea model object
    *
@@ -184,16 +157,13 @@ public class FedexSchemaDao {
     return aoSchema == null
       ? null
       : (new FedexSchema.Builder())
-        .withGlobalId(aoSchema.getGlobalId())
-        .withSchema(aoSchema.getSchema())
-        .withUiSchema(aoSchema.getUiSchema())
-        .withIndexSchema(aoSchema.getIndexSchema())
-        .withName(aoSchema.getName())
-        .withDescription(aoSchema.getDescription())
-        .withVersion(aoSchema.getVersion())
-        .build();
+      .withGlobalId(aoSchema.getGlobalId())
+      .withSchema(aoSchema.getSchema())
+      .withUiSchema(aoSchema.getUiSchema())
+      .withIndexSchema(aoSchema.getIndexSchema())
+      .withName(aoSchema.getName())
+      .withDescription(aoSchema.getDescription())
+      .withVersion(aoSchema.getVersion())
+      .build();
   }
-
-
-
 }

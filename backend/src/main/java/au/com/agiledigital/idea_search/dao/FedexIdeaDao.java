@@ -55,7 +55,6 @@ public class FedexIdeaDao {
     return this.asFedexIdea(aoFedexIdea);
   }
 
-
   /**
    * Get the id of plugin blueprint
    *
@@ -120,7 +119,6 @@ public class FedexIdeaDao {
       ? this.ao.create(AO_FEDEX_IDEA_TYPE)
       : aoFedexIdeas[0];
 
-
     this.prepareAOFedexIdea(aoFedexIdea, fedexIdea);
 
     aoFedexIdea.save();
@@ -142,10 +140,7 @@ public class FedexIdeaDao {
     )).collect(Collectors.toList());
 
     return test.stream().map(this::asFedexIdea).collect(Collectors.toList()).get(0);
-
   }
-
-
 
   /**
    * List all fedex idea in the data store
@@ -159,7 +154,6 @@ public class FedexIdeaDao {
     AoFedexIdea[] aoFedexIdeas = this.ao.find(AO_FEDEX_IDEA_TYPE, query);
     return this.asListFedexIdea(aoFedexIdeas);
   }
-
 
   /**
    * Convert array of active objects to a list of model objects
@@ -200,7 +194,6 @@ public class FedexIdeaDao {
     aoFedexIdea.setFormData(fedexIdea.getFormData());
   }
 
-
   /**
    * Convert fedex idea active object to a fedex idea model object
    *
@@ -220,9 +213,4 @@ public class FedexIdeaDao {
       return new FedexIdea.Builder().build();
     }
   }
-
-
-
-
-
 }

@@ -46,7 +46,6 @@ public class Utilities {
     return null;
   }
 
-
   /**
    * Parses XML to Java Dom objects
    *
@@ -60,7 +59,6 @@ public class Utilities {
 
     return builder.parse(new ByteArrayInputStream(xml.getBytes()));
   }
-
 
   /**
    * Extracts the formData from the macro object in the confluence page

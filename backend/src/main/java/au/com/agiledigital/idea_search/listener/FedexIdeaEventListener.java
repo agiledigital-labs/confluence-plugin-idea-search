@@ -19,8 +19,6 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import java.util.stream.Collectors;
-
 import static au.com.agiledigital.idea_search.helpers.Utilities.getPageData;
 
 /**
@@ -42,7 +40,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
   private final ContentBlueprint contentBlueprint;
-private SettingsManager settingsManager;
+  private SettingsManager settingsManager;
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
@@ -63,7 +61,6 @@ private SettingsManager settingsManager;
     this.contentBlueprint = new ContentBlueprint();
     this.contentBlueprint.setModuleCompleteKey(FEDEX_IDEA_BLUEPRINT_KEY.toString());
     this.settingsManager = settingsManager;
-
   }
 
   @Override
@@ -76,9 +73,6 @@ private SettingsManager settingsManager;
     eventPublisher.register(this);
   }
 
-
-
-
   /**
    * Listen for pages created from blueprints.
    *
@@ -90,7 +84,6 @@ private SettingsManager settingsManager;
     String moduleCompleteKey = event.getBlueprint().getModuleCompleteKey();
 
     String blueprintKey = FEDEX_IDEA_BLUEPRINT_KEY.getCompleteKey();
-
 
     if (blueprintKey.equals(moduleCompleteKey)) {
       // Gets the blueprintId and sets it as the current one in ao database
@@ -109,7 +102,7 @@ private SettingsManager settingsManager;
    * @param event produced when a page is updated
    */
   @EventListener
-  public void pageCreated(PageCreateEvent event)  {
+  public void pageCreated(PageCreateEvent event) {
     pageEventHandler(event.getContent(), event.getPage());
   }
 
@@ -120,7 +113,7 @@ private SettingsManager settingsManager;
    * @param event produced when a page is updated
    */
   @EventListener
-  public void pageUpdated(PageUpdateEvent event)  {
+  public void pageUpdated(PageUpdateEvent event) {
     pageEventHandler(event.getContent(), event.getPage());
   }
 
@@ -144,6 +137,4 @@ private SettingsManager settingsManager;
 
     indexPage.addChild(page);
   }
-
-
 }
