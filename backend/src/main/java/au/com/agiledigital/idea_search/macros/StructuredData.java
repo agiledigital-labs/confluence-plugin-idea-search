@@ -31,7 +31,7 @@ public class StructuredData implements Macro {
       )
       .collect(
         Collectors.toMap(
-          entry -> entry.getKey(), entry->entry.getValue(),
+          AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
           (key, duplicateKey) -> {
             throw new IllegalStateException(String.format("Duplicate key [%s]", key));
           }, LinkedHashMap::new
