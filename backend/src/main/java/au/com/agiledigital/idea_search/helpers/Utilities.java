@@ -27,6 +27,12 @@ public class Utilities {
 
   private Utilities() {throw new IllegalStateException("Utility class"); }
 
+  /**
+   * Extract form data string form macro
+   *
+   * @param macros NodeList of macro elements
+   * @return the data from a idea-structured-data macro
+   */
   public static String getFormData(NodeList macros) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
@@ -72,11 +78,11 @@ public class Utilities {
         Document bodyParsed = parseXML(wrapBody(content.getBody()));
         NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
 
-        String test = getFormData(macros);
+        String formData = getFormData(macros);
 
         return new FedexIdea.Builder().withTitle(page.getTitle())
           .withUrl(settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath())
-          .withFormData(test)
+          .withFormData(formData)
           .withContentId(page.getContentId())
           .withCreator(page.getCreator())
           .build();
