@@ -116,7 +116,7 @@ public class Index {
   }
 
   /**
-   * Gets brief information about the schemas 
+   * Gets brief information about the schemas
    * (id, name, version and description)
    *
    * @param response Servlet response to populate
@@ -225,7 +225,7 @@ public class Index {
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
 
     FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
-    
+
     SchemaMapper.MAPPER.mapToSchema(mappedSchemaBody, latestSchema);
 
     FedexSchema createdSchema = this.fedexIdeaService.createSchema(latestSchema);
