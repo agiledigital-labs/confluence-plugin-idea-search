@@ -4,8 +4,6 @@ import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.apache.commons.lang3.StringUtils;
@@ -25,9 +23,6 @@ import java.util.stream.StreamSupport;
  */
 public class StructuredData implements Macro {
   private Gson gson = new Gson();
-
-  public StructuredData() {
-  }
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)

@@ -2,10 +2,7 @@ package au.com.agiledigital.idea_search.dao;
 
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.confluence.user.ConfluenceUser;
-import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.user.UserKey;
 import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,13 +23,9 @@ public class FedexSchemaDao {
   private static final Class<AoIdeaBlueprint> AO_IDEA_BLUEPRINT_TYPE = AoIdeaBlueprint.class;
   private static final Class<AoSchema> AO_IDEA_SCHEMA = AoSchema.class;
 
-  @ComponentImport
-  private final UserAccessor userAccessor;
-
   @Autowired
-  public FedexSchemaDao(ActiveObjects ao, UserAccessor userAccessor) {
+  public FedexSchemaDao(ActiveObjects ao) {
     this.ao = ao;
-    this.userAccessor = userAccessor;
   }
 
   /**
