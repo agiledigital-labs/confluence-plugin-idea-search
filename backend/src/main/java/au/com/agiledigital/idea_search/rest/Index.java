@@ -49,7 +49,7 @@ public class Index {
   }
 
   /**
-   * Gets brief information about the schemas 
+   * Gets brief information about the schemas
    * (id, name, version and description)
    *
    * @param response Servlet response to populate

@@ -95,4 +95,3 @@ public class Utilities {
       return new FedexIdea.Builder().build();
     }
 }
-

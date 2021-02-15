@@ -29,8 +29,8 @@
   },
   "scripts": {
     "prettier": "prettier --write . && yarn format",
-    "lint": "mvn -s backend/settings.xml spotless:check",
-    "format": "mvn -s backend/settings.xml spotless:apply"
+    "lint": "mvn -s settings.xml spotless:check",
+    "format": "mvn -s settings.xml spotless:apply"
   },
   "husky": {
     "hooks": {
