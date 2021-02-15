@@ -33,7 +33,7 @@ public class StructuredData implements Macro {
         Collectors.toMap(
           entry -> entry.getKey(), entry->entry.getValue(),
           (key, duplicateKey) -> {
-            throw new IllegalStateException(String.format("Duplicate key %s", key));
+            throw new IllegalStateException(String.format("Duplicate key [%s]", key));
           }, LinkedHashMap::new
         )
       );
