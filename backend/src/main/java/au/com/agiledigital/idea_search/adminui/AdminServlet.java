@@ -1,21 +1,18 @@
 package au.com.agiledigital.idea_search.adminui;
 
-import javax.inject.Inject;
-
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.user.UserProfile;
-import com.atlassian.templaterenderer.RenderingException;
-import com.atlassian.templaterenderer.TemplateRenderer;
-import java.net.URI;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
-import java.io.IOException;
+import com.atlassian.templaterenderer.TemplateRenderer;
+import com.atlassian.webresource.api.assembler.PageBuilderService;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.atlassian.webresource.api.assembler.PageBuilderService;
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * Servlet to serve a admin configuration page on Configuration UI.

@@ -1,6 +1,5 @@
 package au.com.agiledigital.idea_search.dao;
 
-import net.java.ao.OneToMany;
 import net.java.ao.RawEntity;
 import net.java.ao.schema.*;
 

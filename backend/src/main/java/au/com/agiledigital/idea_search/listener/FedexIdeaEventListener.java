@@ -1,7 +1,7 @@
 package au.com.agiledigital.idea_search.listener;
 
 import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
-  import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
+import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
@@ -12,7 +12,6 @@ import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.ModuleCompleteKey;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ConfluenceImport;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 

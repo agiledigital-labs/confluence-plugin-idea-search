@@ -1,9 +1,7 @@
 package au.com.agiledigital.idea_search.dao;
 
-import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
