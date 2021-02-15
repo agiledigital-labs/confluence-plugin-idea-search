@@ -81,7 +81,8 @@ const OuterIdea = ({
   if (!validateSchema.valid) {
     return (
       <div className={classes.root}>
-        There are the following error
+        There {validateSchema.errors.length > 1 ? "are" : "is"} the following
+        error
         {validateSchema.errors.length > 1 ? "s" : ""} in the schema
         <ul>
           {validateSchema.errors.map((error, index) => (
