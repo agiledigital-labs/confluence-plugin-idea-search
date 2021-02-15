@@ -25,11 +25,8 @@ import java.util.stream.StreamSupport;
  */
 public class StructuredData implements Macro {
   private Gson gson = new Gson();
-  private final PageBuilderService pageBuilderService;
 
-  public StructuredData(
-    @ComponentImport PageBuilderService pageBuilderService) {
-    this.pageBuilderService = pageBuilderService;
+  public StructuredData() {
   }
 
   @Override

@@ -46,17 +46,6 @@ public class FedexSchemaDao {
   }
 
   /**
-   * Creates a blueprintId in the ao database with supplied blueprint id
-   *
-   * @param blueprintId string that is assigned when the plugin is installed
-   */
-  private void createBlueprintIdEntry(String blueprintId) {
-    AoIdeaBlueprint newBlueprint = this.ao.create(AO_IDEA_BLUEPRINT_TYPE);
-    newBlueprint.setBlueprintId(blueprintId);
-    newBlueprint.save();
-  }
-
-  /**
    * Create new entry to represent the a FedexIdea
    *
    * @param fedexSchema FedexIdea model object
@@ -116,20 +105,6 @@ public class FedexSchemaDao {
     return Arrays.stream(aoSchemas)
       .map(this::asSchema)
       .collect(Collectors.toList());
-  }
-
-  /**
-   * Convert a user key ID to the users name
-   *
-   * @param userKey string of the user key id
-   * @return userName string
-   */
-  private ConfluenceUser getUsername(String userKey) {
-    if (userKey != null) {
-      return this.userAccessor.getUserByKey(new UserKey(userKey));
-    }
-
-    return null;
   }
 
   /**

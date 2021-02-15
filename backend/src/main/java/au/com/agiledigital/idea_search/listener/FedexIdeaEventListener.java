@@ -119,7 +119,7 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
   private void pageEventHandler(ContentEntityObject content, Page page) {
     if (
-      content.getLabels().stream().anyMatch(label -> label.equals(FEDEX_IDEA_BLUEPRINT_LABEL))
+      content.getLabels().stream().anyMatch(label -> label.getName().equals(FEDEX_IDEA_BLUEPRINT_LABEL))
     ) {
       makeChildOfIndex(page);
 
