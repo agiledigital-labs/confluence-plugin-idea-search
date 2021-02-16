@@ -79,6 +79,14 @@ const OuterTable = () => {
       .then((response) => setJustPages(response.data));
   }, [searchTerm, contextPath]);
 
+  const row = (page: IdeaPage) =>
+    formData?.indexSchema?.index
+      ? formData.indexSchema.index.map((item, index) => ({
+          key: `cell-${item}`,
+          content: page.indexData[index],
+        }))
+      : [];
+
   const rows = justPages?.map((page: IdeaPage) => ({
     key: `row-${page.title}`,
     cells: [
@@ -86,6 +94,7 @@ const OuterTable = () => {
         key: `cell-${page.title}`,
         content: <a href={`${contextPath}/${page.url}`}>{page.title}</a>,
       },
+      ...row(page),
     ],
   }));
 
