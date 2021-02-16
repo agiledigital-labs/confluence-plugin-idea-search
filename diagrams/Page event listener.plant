@@ -1,0 +1,14 @@
+@startuml
+EventBus -> ":FedexIdeaEventListener" : PageCreation/PageUpdate
+":FedexIdeaEventListener" -> ":FedexIdeaService" : upsert
+
+":FedexIdeaService" -> ":FedexIdeaDao" : upsert
+
+":FedexIdeaDao" -> ":ActiveObjects" : create or update
+
+":ActiveObjects" --> ":FedexIdeaDao" : return
+
+":FedexIdeaDao" --> ":FedexIdeaService" : return
+
+":FedexIdeaService" --> ":FedexIdeaEventListener" : return
+@enduml
