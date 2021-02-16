@@ -2,19 +2,21 @@ import DynamicTable from "@atlaskit/dynamic-table";
 import Textfield from "@atlaskit/textfield";
 import { makeStyles } from "@material-ui/core";
 import axios from "axios";
-import { isEmpty } from "lodash";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { version } from "./index";
+import { FormDataType, version } from "./index";
 
-interface IdeaPage {
-  owner?: string;
-  status?: string;
-  technologies?: string[];
-  title?: string;
-  description?: string;
-  url?: string;
-}
+type IdeaPage = {
+  creator: {
+    key: { userkey: string };
+    name: string;
+    lowerName: string;
+  };
+  indexData: Array<string>;
+  title: string;
+  indexSchema: { index: Array<string> };
+  url: string;
+};
 
 const AJS = window.AJS ? window.AJS : undefined;
 
@@ -40,14 +42,23 @@ const OuterTable = () => {
   // if not found, set to confluence as default
   const contextPath = AJS?.contextPath() ? AJS.contextPath() : "/confluence";
 
+  const [formData, setFormData] = useState<FormDataType>();
+
+  // populate form data with schema from the database
+  useEffect(() => {
+    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((response) =>
+      setFormData({
+        indexSchema: JSON.parse(response.data.indexSchema),
+      })
+    );
+  }, []);
+
+  const initSearch = formData?.indexSchema?.index?.reduce(
+    (pre, cur) => ({ ...pre, [cur]: "" }),
+    {}
+  );
   // search term will be empty fields on initial render
-  const [searchTerm, setSearchTerm] = useState({
-    owner: "",
-    status: "",
-    technologies: "",
-    title: "",
-    description: "",
-  });
+  const [searchTerm, setSearchTerm] = useState(initSearch);
 
   const handleChange = (term: string, value: string) => {
     setSearchTerm((prevTerm) => ({
@@ -62,54 +73,27 @@ const OuterTable = () => {
     axios
       .get(
         `${contextPath}/rest/idea/${version}/ideapages?${queryString.stringify(
-          searchTerm
+          searchTerm ? searchTerm : {}
         )}`
       )
       .then((response) => setJustPages(response.data));
   }, [searchTerm, contextPath]);
 
-  const rows = justPages
-    ?.filter(
-      (page) =>
-        // check if there is at least one tech in the list containing search
-        !isEmpty(
-          page.technologies?.filter((tech) =>
-            // check if search term is in the tech name
-            tech.toLowerCase().includes(searchTerm.technologies.toLowerCase())
-          )
-        )
-    )
-    .map((page: IdeaPage) => ({
-      key: `row-${page.title}`,
-      cells: [
-        {
-          key: `cell-${page.title}`,
-          content: <a href={`${contextPath}/${page.url}`}>{page.title}</a>,
-        },
-        {
-          key: `cell-${page.description}`,
-          content: page.description,
-        },
-        {
-          key: `cell-${page.technologies}`,
-          content: page.technologies?.join(", "),
-        },
-        {
-          key: `cell-${page.status}`,
-          content: page.status,
-        },
-        {
-          key: `cell-${page.owner}`,
-          content: (
-            <a href={`${contextPath}/display/~${page.owner}`}>
-              {"@" + page.owner}
-            </a>
-          ),
-        },
-      ],
-    }));
+  const rows = justPages?.map((page: IdeaPage) => ({
+    key: `row-${page.title}`,
+    cells: [
+      {
+        key: `cell-${page.title}`,
+        content: <a href={`${contextPath}/${page.url}`}>{page.title}</a>,
+      },
+    ],
+  }));
 
-  const headers = ["Title", "Description", "Technologies", "Status", "Owner"];
+  console.log(formData?.indexSchema?.index);
+
+  const headers = formData?.indexSchema?.index
+    ? ["Title", ...formData.indexSchema.index]
+    : ["Title", "The rest of the headers could not be loaded"];
 
   const head = {
     cells: headers.map((header) => ({

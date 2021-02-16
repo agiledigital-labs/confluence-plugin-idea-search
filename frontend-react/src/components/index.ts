@@ -1,3 +1,5 @@
+import { JSONSchema7 } from "json-schema";
+
 declare global {
   interface Window {
     tinymce: {
@@ -30,3 +32,9 @@ declare global {
 
 // the rest endpoint version
 export const version: string = "1";
+
+export interface FormDataType {
+  schema?: JSONSchema7;
+  uiSchema?: JSONSchema7;
+  indexSchema?: { index?: Array<string> };
+}

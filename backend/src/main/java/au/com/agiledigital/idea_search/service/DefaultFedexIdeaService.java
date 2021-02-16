@@ -13,7 +13,6 @@ import com.google.gson.JsonElement;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -153,9 +152,9 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
 
   private List<String> getIndexData(AoFedexIdea idea) {
     LinkedHashMap<String, String> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
-
+//{"index":["firstName","telephone"]}
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.fedexSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
-    JsonElement jsonElementIndexSchema = gson.toJsonTree(jsonIndexSchema);
+    JsonElement jsonElementIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("index");
 
     return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
       jsonElementIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)

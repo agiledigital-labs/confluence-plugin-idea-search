@@ -75,6 +75,10 @@ public class FedexSchemaDao {
   public FedexSchema findCurrentSchema() {
     AoSchema aoSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"))[0];
 
+    if (aoSchema == null){
+      return this.createSchema(new FedexSchema.Builder().withSchema("{}").withUiSchema("{}").withIndexSchema("[]").build());
+    }
+
     return this.asSchema(aoSchema);
   }
 

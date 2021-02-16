@@ -114,7 +114,7 @@ public class Index {
       preJsonIdea.put("url", getPageUrl(idea.getContentId()));
       preJsonIdea.put("creator", idea.getCreator());
       preJsonIdea.put("indexData", idea.getIndexData());
-      preJsonIdea.put("indexSchema", indexSchema);
+      preJsonIdea.put("indexSchema", this.gson.fromJson(indexSchema, Map.class));
 
       return preJsonIdea;
     }).collect(Collectors.toList());
