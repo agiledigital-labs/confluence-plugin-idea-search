@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import axios from "axios";
 import DynamicTable from "@atlaskit/dynamic-table";
-import { makeStyles } from "@material-ui/core";
 import Textfield from "@atlaskit/textfield";
+import { makeStyles } from "@material-ui/core";
+import axios from "axios";
 import { isEmpty } from "lodash";
 import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { version } from "./index";
 
 interface IdeaPage {
   owner?: string;
@@ -16,12 +16,12 @@ interface IdeaPage {
   url?: string;
 }
 
+const AJS = window.AJS ? window.AJS : undefined;
+
 // rows to be shown on each page of the paginated table
 const rowsPerPage: number = 10;
 // the default rendered page for paginated table
 const defaultPage: number = 1;
-// the rest endpoint version
-const version: string = "1";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -38,7 +38,7 @@ const OuterTable = () => {
   const classes = useStyles();
   // gets context path from atlassian
   // if not found, set to confluence as default
-  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
+  const contextPath = AJS?.contextPath() ? AJS.contextPath() : "/confluence";
 
   // search term will be empty fields on initial render
   const [searchTerm, setSearchTerm] = useState({
@@ -66,7 +66,7 @@ const OuterTable = () => {
         )}`
       )
       .then((response) => setJustPages(response.data));
-  }, [searchTerm]);
+  }, [searchTerm, contextPath]);
 
   const rows = justPages
     ?.filter(
@@ -74,7 +74,7 @@ const OuterTable = () => {
         // check if there is at least one tech in the list containing search
         !isEmpty(
           page.technologies?.filter((tech) =>
-            // check if searchterm is in the tech name
+            // check if search term is in the tech name
             tech.toLowerCase().includes(searchTerm.technologies.toLowerCase())
           )
         )
@@ -122,8 +122,7 @@ const OuterTable = () => {
             placeholder={header}
             // specifying className to use useStyle() for css
             className={classes.root}
-            onChange={(e) => {
-              // @ts-ignore
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               handleChange(header, e.target.value);
             }}
           />
@@ -150,9 +149,3 @@ const OuterTable = () => {
 };
 
 export default OuterTable;
-
-window.addEventListener("load", function () {
-  const wrapper = document.getElementById("container");
-  // @ts-ignore
-  wrapper ? ReactDOM.render(<OuterTable />, wrapper) : false;
-});

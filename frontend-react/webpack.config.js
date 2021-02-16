@@ -13,11 +13,10 @@ module.exports = {
       },
     ],
   },
-  // watch : true,
   entry: {
-    form: "./src/Form.ts",
-    idea: "./src/Idea.ts",
-    admin: "./src/AdminPage.ts",
+    indexTable: "./src/IndexTable.tsx",
+    adminPage: "./src/AdminPage.tsx",
+    editModal: "./src/UpdateFormModal.tsx",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

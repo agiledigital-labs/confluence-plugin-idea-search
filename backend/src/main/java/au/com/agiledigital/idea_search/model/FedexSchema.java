@@ -42,9 +42,11 @@ public class FedexSchema {
   public String getName() {
     return this.name;
   }
+
   public String getDescription() {
     return this.description;
   }
+
   public String getIndexSchema() {
     return this.indexSchema;
   }
@@ -64,11 +66,12 @@ public class FedexSchema {
   public Integer getVersion() {
     return this.version;
   }
+
   public String getUiSchema() {
     return this.uiSchema;
   }
 
-  public void setUiSchema(String uiSchema){
+  public void setUiSchema(String uiSchema) {
     this.uiSchema = uiSchema;
   }
 
@@ -131,7 +134,14 @@ public class FedexSchema {
     }
 
     public FedexSchema build() {
-      return new FedexSchema(this.globalId, this.name, this.uiSchema, this.schema, this.indexSchema, this.version, this.description);
+      return new FedexSchema(
+        this.globalId,
+        this.name,
+        this.uiSchema,
+        this.schema,
+        this.indexSchema,
+        this.version,
+        this.description);
     }
   }
 }

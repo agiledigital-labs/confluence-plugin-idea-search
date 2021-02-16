@@ -1,6 +1,4 @@
 #* @vtlvariable name="blueprint" type="au.com.agiledigital.idea_search.macros.transport.BlueprintContainer" *#
-#* @vtlvariable name="row" type="au.com.agiledigital.idea_search.macros.transport.IdeaContainer" *#
-#* @vtlvariable name="rows" type="java.lang.reflect.Array" *#
 <p class="add-button">
     #if($blueprint.blueprintId != "")
       <a class="aui-button create-from-template-button conf-macro output-inline"
@@ -10,10 +8,8 @@
          data-macro-name="create-from-template">Add Fedex Idea</a>
     #end
 </p>
-<table>
 
   <div id="maincontainer">
-    <div id="container">
+    <div id="index-container">
     </div>
   </div>
-</table>

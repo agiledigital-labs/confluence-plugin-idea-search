@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import TextArea from "@atlaskit/textarea";
 import Button from "@atlaskit/button/standard-button";
 import SectionMessage from "@atlaskit/section-message";
+import TextArea from "@atlaskit/textarea";
 import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { version } from "./index";
 
 interface formDataType {
   schema: JSONSchema7;
@@ -15,8 +15,6 @@ interface formDataType {
 
 // minimum number of rows for TextArea
 const minRows: number = 12;
-// the rest endpoint version
-const version: string = "1";
 
 // custom JSX.Element with atlaskit's TextArea
 const atlasTextArea = (props: WidgetProps) => {
@@ -107,7 +105,7 @@ const OuterAdminForm = () => {
         indexSchema: response.data.indexSchema,
       })
     );
-  }, []);
+  });
 
   const onFormChange = (event: IChangeEvent) => {
     setFormData(event.formData);
@@ -180,9 +178,3 @@ const OuterAdminForm = () => {
 };
 
 export default OuterAdminForm;
-
-window.addEventListener("load", function () {
-  const wrapper = document.getElementById("admincontainer");
-  // @ts-ignore
-  wrapper ? ReactDOM.render(<OuterAdminForm />, wrapper) : false;
-});

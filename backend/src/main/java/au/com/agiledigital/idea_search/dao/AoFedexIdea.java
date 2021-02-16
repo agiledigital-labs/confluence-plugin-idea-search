@@ -1,6 +1,5 @@
 package au.com.agiledigital.idea_search.dao;
 
-import net.java.ao.OneToMany;
 import net.java.ao.RawEntity;
 import net.java.ao.schema.*;
 
@@ -18,14 +17,6 @@ public interface AoFedexIdea extends RawEntity<Long> {
   @PrimaryKey
   long getGlobalId();
 
-  String getOwner();
-
-  void setOwner(String owner);
-
-  String getVersion();
-
-  void setVersion(String version);
-
   @StringLength(-1)
   String getTitle();
 
@@ -36,37 +27,14 @@ public interface AoFedexIdea extends RawEntity<Long> {
 
   void setContentId(long contentId);
 
-  @OneToMany
-  AoFedexTechnology[] getTechnologies();
-
-  @StringLength(-1)
-  String getStatus();
-
-  void setStatus(String status);
-
-  @StringLength(-1)
-  String getDescription();
-
-  void setDescription(String team);
-
   @Indexed
   String getCreatorUserKey();
 
   void setCreatorUserKey(String creatorUserKey);
 
-  void setSchema(AoSchema aoSchema);
-
-  long getSchemaIdManual();
-
-  void setSchemaIdManual(long schemaIdManual);
 
   @StringLength(-1)
   String getFormData();
-
-  @StringLength(-1)
-  String getUrl();
-
-  void setUrl(String team);
 
   void setFormData(String formData);
 }

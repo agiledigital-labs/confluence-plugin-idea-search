@@ -257,7 +257,7 @@ const updateMacro = function (macroNode, params, newBody) {
   AJS.Rte.BookmarkManager.storeBookmark();
 
   const macroRenderRequest = {
-    contentId: Confluence.Editor.getContentId(),
+    contentId: AJS.Confluence.Editor.getContentId(),
     macro: {
       name: "idea-structured-field",
       params,

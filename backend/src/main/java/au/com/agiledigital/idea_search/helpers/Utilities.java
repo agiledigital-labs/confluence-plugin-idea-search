@@ -1,106 +1,94 @@
 package au.com.agiledigital.idea_search.helpers;
 
-import au.com.agiledigital.idea_search.macros.MacroRepresentation;
-import au.com.agiledigital.idea_search.macros.StructuredCategory;
-import com.atlassian.confluence.xhtml.api.XhtmlContent;
-import org.w3c.dom.Element;
+
+import au.com.agiledigital.idea_search.model.FedexIdea;
+import com.atlassian.confluence.core.BodyContent;
+import com.atlassian.confluence.pages.AbstractPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.SAXException;
+
+import javax.annotation.Nonnull;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import static au.com.agiledigital.idea_search.helpers.PageHelper.wrapBody;
 
 public class Utilities {
-  private static XhtmlContent xhtmlContent;
+  private static final Logger log = LoggerFactory.getLogger(Utilities.class);
+  private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
-  private Utilities() {throw new IllegalStateException("Utility class"); }
-
-  /**
-   * Remove tags and give only wrapped text
-   *
-   * @param rawData the string to be stripped off tags
-   * @return string without any tags wrapping it
-   */
-  public static String removeTags(String rawData) {
-    return rawData.replaceAll("\\<[^>]+>\\>", "");
+  private Utilities() {
+    throw new IllegalStateException("Utility class");
   }
 
-  public static MacroRepresentation getMacroRepresentation(NodeList macros, StructuredCategory category, LSSerializer serializer, XhtmlContent xhtmlContent) {
+  /**
+   * Extract form data string from macro
+   *
+   * @param macros NodeList of macro elements
+   * @return the data from a idea-structured-data macro
+   */
+  public static String getFormData(NodeList macros) {
     for (int i = 0; i < macros.getLength(); i++) {
       Node node = macros.item(i);
 
       String nodeName = node.getAttributes().getNamedItem("ac:name").getNodeValue();
-      if (nodeName.equals("idea-structured-field") || nodeName.equals("Blueprint Id Storage")) {
-        Node child = node.getFirstChild();
-        do {
-          if (child instanceof Element
-            && child.getNodeName().equals("ac:parameter")
-            && child.getTextContent().equals(category.getKey())) {
-            return new MacroRepresentation(node, category, serializer, xhtmlContent);
-          }
-        } while ((child = child.getNextSibling()) != null);
+      if (nodeName.equals("idea-structured-data")) {
+        return node.getTextContent();
       }
     }
 
     return null;
   }
 
-  public static String DEFAULT_SCHEMA = "{\n" +
-    "  \"title\": \"A fedex Idea or puzzle\",\n" +
-    "  \"description\": \"Something interesting that could be worked on either in downtime or a fedex day\",\n" +
-    "  \"type\": \"object\",\n" +
-    "  \"required\": [\n" +
-    "    \"ideaTitle\"\n" +
-    "  ],\n" +
-    "  \"properties\": {\n" +
-    "    \"ideaTitle\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Idea Title (or how it should be know)\",\n" +
-    "      \"default\": \"Other things\"\n" +
-    "    },\n" +
-    "    \"description\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Description\"\n" +
-    "    },\n" +
-    "    \"owner\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Idea owner\"\n" +
-    "    },\n" +
-    "    \"status\":{\n" +
-    "          \"type\": \"string\",\n" +
-    "          \"enum\": [\n" +
-    "            \"new\",\n" +
-    "            \"inProgress\",\n" +
-    "            \"completed\",\n" +
-    "            \"abandoned\"\n" +
-    "          ],\"enumNames\": [\"New\", \"In Progress\", \"Completed\", \"Abandoned\"],\n" +
-    "          \"default\": \"New\"\n" +
-    "        \n" +
-    "    },\n" +
-    "        \"team\": {\n" +
-    "      \"type\": \"array\",\n" +
-    "      \"title\": \"The team\",\n" +
-    "      \"items\":{\n" +
-    "        \"type\": \"string\"\n" +
-    "      }\n" +
-    "    },\n" +
-    "       \"technologies\": {\n" +
-    "      \"type\": \"array\",\n" +
-    "      \"title\": \"The tech\",\n" +
-    "      \"items\":{\n" +
-    "        \"type\": \"string\"\n" +
-    "      }\n" +
-    "    },\n" +
-    "           \"links\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Links to resources for this idea\"\n" +
-    "    },\n" +
-    "           \"tickets\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Links to issues or tickets that track this\"\n" +
-    "    },\n" +
-    "           \"talks\": {\n" +
-    "      \"type\": \"string\",\n" +
-    "      \"title\": \"Presentations on the idea\"\n" +
-    "    }\n" +
-    "  }\n" +
-    "}";
+  /**
+   * Parses XML to Java Dom objects
+   *
+   * @param xml string of read-in XML content
+   * @return Object containing the structure of the XML which has functionality for navigating the
+   * dom
+   */
+  private static Document parseXML(String xml)
+    throws ParserConfigurationException, IOException, SAXException {
+    DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+
+    return builder.parse(new ByteArrayInputStream(xml.getBytes()));
+  }
+
+  /**
+   * Extracts the formData from the macro object in the confluence page
+   *
+   * @param page that the data macro is on
+   * @return a FedexIdea from the page data.
+   */
+  @Nonnull
+  public static FedexIdea fedexIdeaFromPage(AbstractPage page) {
+
+    BodyContent content = page.getBodyContent();
+
+    try {
+      Document bodyParsed = parseXML(wrapBody(content.getBody()));
+      NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
+
+      String formData = getFormData(macros);
+
+      return new FedexIdea.Builder().withTitle(page.getTitle())
+        .withFormData(formData)
+        .withContentId(page.getContentId())
+        .withCreator(page.getCreator())
+        .build();
+
+
+    } catch (ParserConfigurationException | IOException | SAXException e) {
+      log.warn(e.toString());
+    }
+
+    return new FedexIdea.Builder().build();
+  }
 }

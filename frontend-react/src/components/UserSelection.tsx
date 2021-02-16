@@ -27,10 +27,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const UserSelection = (props: any) => {
-  console.log(props);
   const classes = useStyles();
   const [user, setUser] = useState<string>(props.value);
-  // @ts-ignore
   const [userList, setUserList] = useState<
     Array<{ username: string; userKey: string; href: string }>
   >([]);
@@ -44,7 +42,7 @@ export const UserSelection = (props: any) => {
               ({
                 username,
                 userKey,
-                thumbnailLink: { href, type, rel },
+                thumbnailLink: { href },
               }: {
                 username: string;
                 userKey: string;
@@ -104,7 +102,7 @@ export const UserSelection = (props: any) => {
           <Typography>Select a user</Typography>
           <List component="nav" aria-labelledby="nested-list-subheader">
             {userList
-              ? userList.map(({ username, userKey, href }, index) => (
+              ? userList.map(({ username, userKey, href }) => (
                   <ListItem
                     button
                     onClick={() => {

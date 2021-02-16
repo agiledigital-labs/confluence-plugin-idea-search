@@ -1,0 +1,39 @@
+@startuml
+actor User #red
+participant Page
+participant macro as ":StructuredData"
+participant EventBus
+participant ":FedexIdeaEventListener" as listen
+participant ":FedexIdeaService"  as serve
+participant ":FedexIdeaDao" as dao
+participant ":ActiveObjects" as ao
+
+User -> Page : Opens page
+User -> Page : Starts editing page
+User -> Page : Opens form
+Page -> serve : GET schema
+serve --> Page : return schema
+User -> Page : Edits form
+User -> Page : Closes form
+Page -> Page : Saves form data to page
+User -> Page : Publishes Page
+Page -> EventBus : Page event created
+Page -> macro : Convert saved JSON data to velocity context
+macro --> Page : return rendered from as HTML string
+
+Page --> User : Return rendered page as html
+
+EventBus -> listen : PageCreation/PageUpdate
+
+listen -> serve : upsert
+
+serve -> dao : upsert
+
+dao -> ao : create or update
+
+ao --> dao : return
+
+dao --> serve : return
+
+serve--> listen : return
+@enduml

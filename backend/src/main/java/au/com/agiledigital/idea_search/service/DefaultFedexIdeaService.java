@@ -1,19 +1,21 @@
 package au.com.agiledigital.idea_search.service;
 
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
+import au.com.agiledigital.idea_search.dao.FedexSchemaDao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexSchema;
-import au.com.agiledigital.idea_search.rest.TechnologyAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
   private final FedexIdeaDao fedexIdeaDao;
+  private final FedexSchemaDao fedexSchemaDao;
 
   @Autowired
-  public DefaultFedexIdeaService(FedexIdeaDao fedexIdeaDao) {
+  public DefaultFedexIdeaService(FedexIdeaDao fedexIdeaDao, FedexSchemaDao fedexSchemaDao) {
     this.fedexIdeaDao = fedexIdeaDao;
+    this.fedexSchemaDao = fedexSchemaDao;
   }
 
   /**
@@ -23,7 +25,6 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return FedexIdea that was created
    */
   public FedexIdea createIdea(FedexIdea fedexIdea) {
-    fedexIdea.getContentId();
 
     return this.fedexIdeaDao.createIdea(fedexIdea);
   }
@@ -35,17 +36,17 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return FedexIdea that was created
    */
   public FedexSchema createSchema(FedexSchema fedexSchema) {
-    return this.fedexIdeaDao.createSchema(fedexSchema);
+    return this.fedexSchemaDao.createSchema(fedexSchema);
   }
 
   /**
    * Gets the schema with query id
    *
    * @param id of the requested schema
-   * @return
+   * @return FedexSchema for the id
    */
-  public  FedexSchema getSchema(long id) {
-    return this.fedexIdeaDao.findOneSchema(id);
+  public FedexSchema getSchema(long id) {
+    return this.fedexSchemaDao.findOneSchema(id);
   }
 
   /**
@@ -54,16 +55,16 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return a list of schemas
    */
   public List<FedexSchema> listSchemas() {
-    return this.fedexIdeaDao.findAllSchema();
+    return this.fedexSchemaDao.findAllSchema();
   }
 
   /**
    * Gets a fedex idea by content id
    *
    * @param contentId of the FedexIdea
-   * @return
+   * @return FedexId by the confluence content id
    */
-  public FedexIdea getByContentId(long contentId){
+  public FedexIdea getByContentId(long contentId) {
     return this.fedexIdeaDao.getByContentId(contentId);
   }
 
@@ -86,43 +87,22 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   }
 
   /**
-   * Update an existing FedexIdea
+   * Create or Update an existing FedexIdea
    *
    * @param fedexIdea to be updated
    * @param contentId of idea to be updated
    * @return FedexIdea that was updated
    */
-  public FedexIdea updateIdea(FedexIdea fedexIdea, long contentId) {
+  public FedexIdea upsertIdea(FedexIdea fedexIdea, long contentId) {
     return this.fedexIdeaDao.upsertByContentId(fedexIdea, contentId);
   }
 
   /**
-   * Pass through a list of distinct technology strings from dao Overload to take a search string
+   * Return every idea from the database
    *
-   * @param searchString of the technology be searched for
-   * @return A string list of technology names
+   * @return List<FedexIdea> with no filtering or selection
    */
-  public List<TechnologyAPI> queryTechList(String searchString) {
-    return fedexIdeaDao.queryTechList(searchString);
+  public List<FedexIdea> queryAllFedexIdea() {
+    return fedexIdeaDao.findAll();
   }
-
-  /**
-   * Pass through a list of distinct technology strings from dao
-   *
-   * @return A string list of technology names
-   */
-  public List<TechnologyAPI> queryTechList() {
-    return fedexIdeaDao.queryTechList();
-  }
-
-  /**
-   * Searches and collects all matching fedex ideas
-   *
-   * @param title the query on title field
-   * @param description the query on description field
-   * @param status the query on status
-   * @param owner the query on owner
-   * @return A list of fedex ideas matching search query
-   */
-  public List<FedexIdea> queryAllFedexIdea(String title, String description, String status, String owner) { return fedexIdeaDao.findAll(title, description, status, owner); }
 }

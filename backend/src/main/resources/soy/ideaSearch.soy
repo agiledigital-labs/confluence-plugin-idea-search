@@ -12,51 +12,5 @@
                name="vIdeaTitle">*
       </div>
     </fieldset>
-    <fieldset>
-      <div class="field-group">
-        <label
-            for="videadescription">{getText('ideaSearch.blueprint.page.form.label.idea.description')}</label>
-        <input id="videadescription" class="text" type="text"
-               name="vIdeaDescription"/>
-      </div>
-    </fieldset>
-    <fieldset>
-      <div class="field-group">
-        <label for="videaowner">{getText('ideaSearch.blueprint.page.form.label.idea.owner')}</label>
-        <input id="videaowner" class="autocomplete-multiuser" type="text"
-               name="vIdeaOwner" data-none-message="No users found"
-               data-template="{literal}{username}{/literal}"/>
-      </div>
-    </fieldset>
-    <fieldset>
-      <div class="field-group">
-        <label
-            for="videastatus">{getText('ideaSearch.blueprint.page.form.label.idea.status')}</label>
-        <select id="videastatus" name="vIdeaStatus">
-          <option value="new">New</option>
-          <option value="inProgress">In progress</option>
-          <option value="completed">Completed</option>
-          <option value="abandoned">Abandoned</option>
-        </select>
-      </div>
-    </fieldset>
-    <fieldset>
-      <div class="field-group">
-        <label for="videateam">{getText('ideaSearch.blueprint.page.form.label.idea.team')}</label>
-        <input id="videateam" class="autocomplete-multiuser" type="text"
-               name="vIdeaTeam" data-none-message="No users found"
-               data-template="{literal}{username}{/literal}"/>
-      </div>
-    </fieldset>
-    <fieldset>
-      <div class="field-group">
-        <label for="videatechnology">{getText('ideaSearch.blueprint.page.form.label.idea.technology')}</label>
-        <input  multiple=true
-         name="vIdeaTechnology"
-                id="videatechnology"
-        >
-        </input>
-      </div>
-    </fieldset>
   </form>
 {/template}

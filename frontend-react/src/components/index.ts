@@ -1,8 +1,20 @@
 declare global {
   interface Window {
+    tinymce: {
+      confluence: {
+        MacroUtils: { insertMacro: (input: object) => void };
+      };
+    };
     AJS?: {
       contextPath: () => string;
+      dialog2: any;
+      $: any;
+      Rte: {
+        getEditor: () => any;
+        BookmarkManager: { storeBookmark: () => void };
+      };
       Confluence: {
+        Editor: { getContentId: () => string };
         PropertyPanel: {
           Macro: {
             registerButtonHandler: (
@@ -16,6 +28,5 @@ declare global {
   }
 }
 
-export { default as Form } from "./Table";
-export { default as Idea } from "./Idea";
-export { default as Admin } from "./AdminPage";
+// the rest endpoint version
+export const version: string = "1";

@@ -4,17 +4,19 @@
   xmlns:osgi="http://www.springframework.org/schema/osgi"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd"
-  default-autowire="autodetect"
-  osgi:default-timeout="30000"
 >
     <beans:bean
     id="fedexIdeaService"
-    autowire="default"
     class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"
   >
         <beans:constructor-arg name="fedexIdeaDao" ref="fedexIdeaDao" />
+        <beans:constructor-arg name="fedexSchemaDao" ref="fedexSchemaDao" />
     </beans:bean>
-    <osgi:service id="fedexIdeaService_osgiService" ref="fedexIdeaService">
+  <beans:bean id="fedexIdeaDao" class="au.com.agiledigital.idea_search.dao.FedexIdeaDao">
+  </beans:bean>
+  <beans:bean id="fedexSchemaDao" class="au.com.agiledigital.idea_search.dao.FedexSchemaDao">
+  </beans:bean>
+  <osgi:service id="fedexIdeaService_osgiService" ref="fedexIdeaService">
         <osgi:interfaces>
             <beans:value
       >au.com.agiledigital.idea_search.service.FedexIdeaService
