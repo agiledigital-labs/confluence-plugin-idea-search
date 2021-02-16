@@ -106,11 +106,15 @@ public class Index {
     newSet.add("fedex-ideas");
 
     List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea();
+    String indexSchema = this.fedexIdeaService.getCurrentSchema().getIndexSchema();
 
     List<Map> preConvert = allIdeas.stream().map(idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", getPageUrl(idea.getContentId()));
+      preJsonIdea.put("creator", idea.getCreator());
+      preJsonIdea.put("indexData", idea.getIndexData());
+      preJsonIdea.put("indexSchema", indexSchema);
 
       return preJsonIdea;
     }).collect(Collectors.toList());

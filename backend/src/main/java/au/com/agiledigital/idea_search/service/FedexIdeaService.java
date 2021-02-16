@@ -48,6 +48,13 @@ public interface FedexIdeaService {
   FedexSchema getSchema(long id);
 
   /**
+   * Lists all schema
+   *
+   * @return a list of schemas
+   */
+  FedexSchema getCurrentSchema();
+
+  /**
    * Gets a FedexIdea by contentId
    *
    * @param contentId of the FedexIdea

@@ -1,21 +1,40 @@
 package au.com.agiledigital.idea_search.service;
 
+import au.com.agiledigital.idea_search.dao.AoFedexIdea;
 import au.com.agiledigital.idea_search.dao.FedexIdeaDao;
 import au.com.agiledigital.idea_search.dao.FedexSchemaDao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexSchema;
+import com.atlassian.confluence.content.service.PageService;
+import com.atlassian.confluence.user.UserAccessor;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static au.com.agiledigital.idea_search.helpers.Utilities.asFedexIdea;
+import static au.com.agiledigital.idea_search.helpers.Utilities.getUsername;
 
 public class DefaultFedexIdeaService implements FedexIdeaService {
   private final FedexIdeaDao fedexIdeaDao;
   private final FedexSchemaDao fedexSchemaDao;
+  private Gson gson = new Gson();
+  @ComponentImport
+  private final PageService pageService;
+  @ComponentImport
+  private final UserAccessor userAccessor;
 
   @Autowired
-  public DefaultFedexIdeaService(FedexIdeaDao fedexIdeaDao, FedexSchemaDao fedexSchemaDao) {
+  public DefaultFedexIdeaService(FedexIdeaDao fedexIdeaDao, FedexSchemaDao fedexSchemaDao, PageService pageService, UserAccessor userAccessor) {
     this.fedexIdeaDao = fedexIdeaDao;
     this.fedexSchemaDao = fedexSchemaDao;
+    this.pageService = pageService;
+    this.userAccessor = userAccessor;
   }
 
   /**
@@ -56,6 +75,15 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    */
   public List<FedexSchema> listSchemas() {
     return this.fedexSchemaDao.findAllSchema();
+  }
+
+  /**
+   * Lists all schema
+   *
+   * @return a list of schemas
+   */
+  public FedexSchema getCurrentSchema() {
+    return this.fedexSchemaDao.findCurrentSchema();
   }
 
   /**
@@ -103,6 +131,38 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
    * @return List<FedexIdea> with no filtering or selection
    */
   public List<FedexIdea> queryAllFedexIdea() {
-    return fedexIdeaDao.findAll();
+
+    return asListFedexIdea(fedexIdeaDao.findAll());
+
+  }
+
+  /**
+   * Convert array of active objects to a list of model objects
+   *
+   * @param aoFedexIdeas list of active object ideas to be converted to a list of the model
+   *                     FedexIdea
+   * @return List<FedexIdea>
+   */
+  private List<FedexIdea> asListFedexIdea(AoFedexIdea[] aoFedexIdeas) {
+
+    return Arrays.stream(aoFedexIdeas)
+      .map(aoIdea -> asFedexIdea(aoIdea, this.pageService, getUsername(aoIdea.getCreatorUserKey(), this.userAccessor), getIndexData(aoIdea)))
+      .collect(Collectors.toList());
+  }
+
+
+  private List<String> getIndexData(AoFedexIdea idea) {
+    LinkedHashMap<String, String> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
+
+    LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.fedexSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
+    JsonElement jsonElementIndexSchema = gson.toJsonTree(jsonIndexSchema);
+
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+      jsonElementIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+      .map(r -> jsonFromData.get(r.getAsString()))
+      .collect(Collectors.toList());
+
   }
 }
+
+

@@ -3,10 +3,8 @@ package au.com.agiledigital.idea_search.dao;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.confluence.content.service.PageService;
-import com.atlassian.confluence.user.ConfluenceUser;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.user.UserKey;
 import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static au.com.agiledigital.idea_search.helpers.Utilities.asFedexIdea;
+import static au.com.agiledigital.idea_search.helpers.Utilities.getUsername;
 
 /**
  * Fedex Idea Dao
@@ -31,6 +32,7 @@ public class FedexIdeaDao {
   private final UserAccessor userAccessor;
   @ComponentImport
   private final PageService pageService;
+  
 
   @Autowired
   public FedexIdeaDao(ActiveObjects ao, UserAccessor userAccessor, PageService pageService) {
@@ -52,7 +54,7 @@ public class FedexIdeaDao {
 
     aoFedexIdea.save();
 
-    return this.asFedexIdea(aoFedexIdea);
+    return asFedexIdea(aoFedexIdea, this.pageService, getUsername(aoFedexIdea.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -123,7 +125,7 @@ public class FedexIdeaDao {
 
     aoFedexIdea.save();
 
-    return this.asFedexIdea(aoFedexIdea);
+    return asFedexIdea(aoFedexIdea, this.pageService, getUsername(aoFedexIdea.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -139,7 +141,7 @@ public class FedexIdeaDao {
       Query.select().where("CONTENT_ID = ?", contentId)
     )).collect(Collectors.toList());
 
-    return test.stream().map(this::asFedexIdea).collect(Collectors.toList()).get(0);
+    return test.stream().map(aoIdea -> asFedexIdea(aoIdea, this.pageService, getUsername(aoIdea.getCreatorUserKey(), this.userAccessor))).collect(Collectors.toList()).get(0);
   }
 
   /**
@@ -147,39 +149,15 @@ public class FedexIdeaDao {
    *
    * @return a list of all available FedexIdea
    */
-  public List<FedexIdea> findAll() {
+  public AoFedexIdea[] findAll() {
      Query query = Query
        .select();
 
-    AoFedexIdea[] aoFedexIdeas = this.ao.find(AO_FEDEX_IDEA_TYPE, query);
-    return this.asListFedexIdea(aoFedexIdeas);
-  }
+    return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
 
-  /**
-   * Convert array of active objects to a list of model objects
-   *
-   * @param aoFedexIdeas list of active object ideas to be converted to a list of the model
-   *                     FedexIdea
-   * @return List<FedexIdea>
-   */
-  private List<FedexIdea> asListFedexIdea(AoFedexIdea[] aoFedexIdeas) {
-    return Arrays.stream(aoFedexIdeas).map(this::asFedexIdea).collect(Collectors.toList());
   }
 
 
-  /**
-   * Convert a user key ID to the users name
-   *
-   * @param userKey string of the user key id
-   * @return userName string
-   */
-  private ConfluenceUser getUsername(String userKey) {
-    if (userKey != null) {
-      return this.userAccessor.getUserByKey(new UserKey(userKey));
-    }
-
-    return null;
-  }
 
   /**
    * Prepare fedex active object with the data from a fedex idea
@@ -194,23 +172,5 @@ public class FedexIdeaDao {
     aoFedexIdea.setFormData(fedexIdea.getFormData());
   }
 
-  /**
-   * Convert fedex idea active object to a fedex idea model object
-   *
-   * @param aoFedexIdea active object to be converted
-   * @return FedexIdea object
-   */
-  private FedexIdea asFedexIdea(AoFedexIdea aoFedexIdea) {
-    try {
-      return new FedexIdea.Builder()
-        .withGlobalId(aoFedexIdea.getGlobalId())
-        .withTitle(aoFedexIdea.getTitle())
-        .withContentId(this.pageService.getIdPageLocator(aoFedexIdea.getContentId()).getPage().getContentId())
-        .withCreator(this.getUsername(aoFedexIdea.getCreatorUserKey()))
-        .withFormData(aoFedexIdea.getFormData())
-        .build();
-    } catch (NullPointerException nullPointerException){
-      return new FedexIdea.Builder().build();
-    }
-  }
+  
 }

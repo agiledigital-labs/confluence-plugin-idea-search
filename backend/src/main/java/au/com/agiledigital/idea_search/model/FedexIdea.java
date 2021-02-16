@@ -6,6 +6,9 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
+import java.util.List;
+
+
 /**
  * Internal model of the idea
  */
@@ -16,6 +19,7 @@ public class FedexIdea {
   private final ConfluenceUser creator;
   private final String title;
   private final String formData;
+  private List<String> indexData;
 
 
   @JsonCreator
@@ -24,13 +28,15 @@ public class FedexIdea {
     @JsonProperty("contentId") ContentId contentId,
     @JsonProperty("creator") ConfluenceUser creator,
     @JsonProperty("title") String title,
-    @JsonProperty("formData") String formData
+    @JsonProperty("formData") String formData,
+    @JsonProperty("indexData") List<String> indexData
   ) {
     this.globalId = globalId;
     this.contentId = contentId;
     this.creator = creator;
     this.title = title;
     this.formData = formData;
+    this.indexData = indexData;
   }
 
   public long getGlobalId() {
@@ -52,6 +58,7 @@ public class FedexIdea {
 
   public String getFormData() {return this.formData;}
 
+  public List<String> getIndexData() {return this.indexData;}
 
   public String toString() {
     return ("Idea [globalId="
@@ -62,6 +69,8 @@ public class FedexIdea {
       + this.creator
       + ", title="
       + this.title
+      + ", indexData="
+      + this.indexData
       + "]");
   }
 
@@ -72,6 +81,7 @@ public class FedexIdea {
     private ConfluenceUser creator;
     private String title;
     private String formData;
+    private List<String> indexData;
 
     public Builder() {
     }
@@ -82,6 +92,7 @@ public class FedexIdea {
       this.creator = fedexIdea.creator;
       this.title = fedexIdea.title;
       this.formData = fedexIdea.formData;
+      this.indexData = fedexIdea.indexData;
     }
 
     public FedexIdea.Builder withTitle(String title) {
@@ -110,6 +121,10 @@ public class FedexIdea {
       return this;
     }
 
+    public FedexIdea.Builder withIndexData(List<String> indexData) {
+      this.indexData = indexData;
+      return this;
+    }
 
     public FedexIdea build() {
       return new FedexIdea(
@@ -117,7 +132,8 @@ public class FedexIdea {
         this.contentId,
         this.creator,
         this.title,
-        this.formData);
+        this.formData,
+        this.indexData);
     }
   }
 }
