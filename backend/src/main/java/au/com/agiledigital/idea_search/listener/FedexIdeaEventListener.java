@@ -4,11 +4,11 @@ import au.com.agiledigital.idea_search.service.DefaultFedexIdeaService;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
+import com.atlassian.confluence.labels.Label;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
 import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
 import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
-import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.ModuleCompleteKey;
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import static au.com.agiledigital.idea_search.helpers.Utilities.getPageData;
+import static au.com.agiledigital.idea_search.helpers.Utilities.fedexIdeaFromPage;
 
 /**
  * Listens to confluence events Connects to event publisher, and sends filtered events to the idea
@@ -40,7 +40,6 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     new ModuleCompleteKey("au.com.agiledigital.idea_search", "idea-blueprint");
   private static final String FEDEX_IDEA_BLUEPRINT_LABEL = "fedex-ideas";
   private final ContentBlueprint contentBlueprint;
-  private SettingsManager settingsManager;
 
   /**
    * Construct with connection to the event publisher and FedexIdea service.
@@ -52,7 +51,6 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
   @Inject
   public FedexIdeaEventListener(
     EventPublisher eventPublisher,
-    SettingsManager settingsManager,
     DefaultFedexIdeaService fedexIdeaService,
     IndexPageManager indexPageManager) {
     this.eventPublisher = eventPublisher;
@@ -60,7 +58,6 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
     this.indexPageManager = indexPageManager;
     this.contentBlueprint = new ContentBlueprint();
     this.contentBlueprint.setModuleCompleteKey(FEDEX_IDEA_BLUEPRINT_KEY.toString());
-    this.settingsManager = settingsManager;
   }
 
   @Override
@@ -119,11 +116,11 @@ public class FedexIdeaEventListener implements InitializingBean, DisposableBean 
 
   private void pageEventHandler(ContentEntityObject content, Page page) {
     if (
-      content.getLabels().stream().anyMatch(label -> label.getName().equals(FEDEX_IDEA_BLUEPRINT_LABEL))
+      content.getLabels().contains(new Label(FEDEX_IDEA_BLUEPRINT_LABEL))
     ) {
       makeChildOfIndex(page);
 
-      this.fedexIdeaService.upsertIdea(getPageData(this.settingsManager, page), page.getId());
+      this.fedexIdeaService.upsertIdea(fedexIdeaFromPage(page), page.getId());
     }
   }
 

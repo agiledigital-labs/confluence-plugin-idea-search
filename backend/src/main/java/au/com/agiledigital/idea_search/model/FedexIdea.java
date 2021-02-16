@@ -16,7 +16,6 @@ public class FedexIdea {
   private final ConfluenceUser creator;
   private final String title;
   private final String formData;
-  private final String url;
 
 
   @JsonCreator
@@ -25,15 +24,13 @@ public class FedexIdea {
     @JsonProperty("contentId") ContentId contentId,
     @JsonProperty("creator") ConfluenceUser creator,
     @JsonProperty("title") String title,
-    @JsonProperty("formData") String formData,
-    @JsonProperty("url") String url
+    @JsonProperty("formData") String formData
   ) {
     this.globalId = globalId;
     this.contentId = contentId;
     this.creator = creator;
     this.title = title;
     this.formData = formData;
-    this.url = url;
   }
 
   public long getGlobalId() {
@@ -55,7 +52,6 @@ public class FedexIdea {
 
   public String getFormData() {return this.formData;}
 
-  public String getUrl() {return this.url;}
 
   public String toString() {
     return ("Idea [globalId="
@@ -76,7 +72,6 @@ public class FedexIdea {
     private ConfluenceUser creator;
     private String title;
     private String formData;
-    private String url;
 
     public Builder() {
     }
@@ -87,7 +82,6 @@ public class FedexIdea {
       this.creator = fedexIdea.creator;
       this.title = fedexIdea.title;
       this.formData = fedexIdea.formData;
-      this.url = fedexIdea.url;
     }
 
     public FedexIdea.Builder withTitle(String title) {
@@ -115,10 +109,7 @@ public class FedexIdea {
       this.formData = formData;
       return this;
     }
-    public FedexIdea.Builder withUrl(String url) {
-      this.url = url;
-      return this;
-    }
+
 
     public FedexIdea build() {
       return new FedexIdea(
@@ -126,8 +117,7 @@ public class FedexIdea {
         this.contentId,
         this.creator,
         this.title,
-        this.formData,
-        this.url);
+        this.formData);
     }
   }
 }

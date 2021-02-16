@@ -27,7 +27,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const UserSelection = (props: any) => {
-  console.log(props);
   const classes = useStyles();
   const [user, setUser] = useState<string>(props.value);
   const [userList, setUserList] = useState<

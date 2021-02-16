@@ -7,6 +7,7 @@ import axios from "axios";
 import UserSelection from "./UserSelection";
 import RestSelection from "./RestSelection";
 import { version } from "./index";
+import SectionMessage from "@atlaskit/section-message";
 
 const Form = withTheme(Theme);
 
@@ -45,6 +46,7 @@ const InnerFrom = ({ schema, uiSchema, formData, onFormChange }: any) => {
           schema,
           uiSchema,
           widgets,
+          liveValidate: true,
         }}
       >
         <></>
@@ -59,8 +61,6 @@ const OuterIdea = ({
   formData?: object;
   setFormData: React.Dispatch<React.SetStateAction<object>>;
 }) => {
-  const classes = useStyles();
-
   const [restSchema, setRestSchema] = useState<JSONSchema7>({});
   const [uiSchema, setUiSchema] = useState<JSONSchema7>({});
   const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
@@ -80,16 +80,18 @@ const OuterIdea = ({
 
   if (!validateSchema.valid) {
     return (
-      <div className={classes.root}>
-        There {validateSchema.errors.length > 1 ? "are" : "is"} the following
-        error
-        {validateSchema.errors.length > 1 ? "s" : ""} in the schema
-        <ul>
-          {validateSchema.errors.map((error, index) => (
-            <li key={index}>error</li>
-          ))}
-        </ul>
-      </div>
+      <SectionMessage title={"Errors in the provided schema"}>
+        <p>
+          There {validateSchema.errors.length > 1 ? "are" : "is"} the following
+          error
+          {validateSchema.errors.length > 1 ? "s" : ""} in the schema
+          <ul>
+            {validateSchema.errors.map((error, index) => (
+              <li key={index}>error</li>
+            ))}
+          </ul>
+        </p>
+      </SectionMessage>
     );
   }
   return (

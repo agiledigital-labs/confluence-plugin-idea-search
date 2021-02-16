@@ -4,7 +4,6 @@ package au.com.agiledigital.idea_search.helpers;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import com.atlassian.confluence.core.BodyContent;
 import com.atlassian.confluence.pages.AbstractPage;
-import com.atlassian.confluence.setup.settings.SettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -25,10 +24,12 @@ public class Utilities {
   private static final Logger log = LoggerFactory.getLogger(Utilities.class);
   private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
-  private Utilities() {throw new IllegalStateException("Utility class"); }
+  private Utilities() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
-   * Extract form data string form macro
+   * Extract form data string from macro
    *
    * @param macros NodeList of macro elements
    * @return the data from a idea-structured-data macro
@@ -63,33 +64,31 @@ public class Utilities {
   /**
    * Extracts the formData from the macro object in the confluence page
    *
-   * @param settingsManager from confluence
    * @param page that the data macro is on
    * @return a FedexIdea from the page data.
    */
   @Nonnull
-  public static FedexIdea getPageData(SettingsManager settingsManager, AbstractPage page) {
+  public static FedexIdea fedexIdeaFromPage(AbstractPage page) {
 
-      BodyContent content = page.getBodyContent();
+    BodyContent content = page.getBodyContent();
 
-      try {
-        Document bodyParsed = parseXML(wrapBody(content.getBody()));
-        NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
+    try {
+      Document bodyParsed = parseXML(wrapBody(content.getBody()));
+      NodeList macros = bodyParsed.getElementsByTagName("ac:structured-macro");
 
-        String formData = getFormData(macros);
+      String formData = getFormData(macros);
 
-        return new FedexIdea.Builder().withTitle(page.getTitle())
-          .withUrl(settingsManager.getGlobalSettings().getBaseUrl() + page.getUrlPath())
-          .withFormData(formData)
-          .withContentId(page.getContentId())
-          .withCreator(page.getCreator())
-          .build();
+      return new FedexIdea.Builder().withTitle(page.getTitle())
+        .withFormData(formData)
+        .withContentId(page.getContentId())
+        .withCreator(page.getCreator())
+        .build();
 
 
-      } catch (ParserConfigurationException | IOException | SAXException e) {
-        log.warn(e.toString());
-      }
-
-      return new FedexIdea.Builder().build();
+    } catch (ParserConfigurationException | IOException | SAXException e) {
+      log.warn(e.toString());
     }
+
+    return new FedexIdea.Builder().build();
+  }
 }

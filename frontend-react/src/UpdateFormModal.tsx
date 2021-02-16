@@ -9,11 +9,10 @@ const tinymce = window.tinymce ? window.tinymce : undefined;
  * Updates the macro on the page with the new body supplied
  *
  * @param macroNode that will be updated
- * @param params to be attached to the macro
  * @param newBody to be added as the body of the macro
  */
 const updateMacro = function (macroNode: any, newBody: any) {
-  var $macroDiv = AJS?.$(macroNode);
+  let $macroDiv = AJS?.$(macroNode);
   AJS?.Rte.getEditor().selection.select($macroDiv[0]);
   AJS?.Rte.BookmarkManager.storeBookmark();
 
@@ -29,7 +28,6 @@ const updateMacro = function (macroNode: any, newBody: any) {
 };
 
 const OpenModal = (event: any, macroNode: any) => {
-  console.log(macroNode.innerText.trim().length);
   const initFormData =
     macroNode.innerText.trim().length > 0
       ? JSON.parse(macroNode.innerText)

@@ -25,7 +25,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const RestSelection = (props: any) => {
-  console.log(props);
   const classes = useStyles();
   const [rest, setRest] = useState<string>(props.value);
   const [restList, setRestList] = useState<Array<string>>([]);

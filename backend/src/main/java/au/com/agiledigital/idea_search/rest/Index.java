@@ -3,11 +3,15 @@ package au.com.agiledigital.idea_search.rest;
 import au.com.agiledigital.idea_search.model.FedexIdea;
 import au.com.agiledigital.idea_search.model.FedexSchema;
 import au.com.agiledigital.idea_search.service.FedexIdeaService;
+import com.atlassian.confluence.api.model.content.id.ContentId;
+import com.atlassian.confluence.content.service.PageService;
+import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.web.filter.CachingHeaders;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -25,11 +29,16 @@ public class Index {
 
   private final FedexIdeaService fedexIdeaService;
   private Gson gson = new Gson();
-
+  private SettingsManager settingsManager;
+  private PageService pageService;
 
   @Autowired
-  public Index(FedexIdeaService fedexIdeaService) {
+  public Index(FedexIdeaService fedexIdeaService,
+               SettingsManager settingsManager,
+               PageService pageService) {
     this.fedexIdeaService = fedexIdeaService;
+    this.settingsManager = settingsManager;
+    this.pageService = pageService;
   }
 
   /**
@@ -41,7 +50,7 @@ public class Index {
   @Path("/schema")
   @Produces({"application/json"})
   @GET
-  public String getSchema( @Context HttpServletResponse response){
+  public String getSchema(@Context HttpServletResponse response) {
     List<FedexSchema> allSchema = this.fedexIdeaService.listSchemas();
     FedexSchema latestSchema = allSchema.isEmpty() ? (new FedexSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
 
@@ -58,27 +67,27 @@ public class Index {
   @Path("/schema/ids")
   @Produces({"application/json"})
   @GET
-  public String getSchemaIds( @Context HttpServletResponse response){
+  public String getSchemaIds(@Context HttpServletResponse response) {
     List<Map> schemaIds = this.fedexIdeaService.listSchemas().stream().map(schema -> {
       Map schemaReturn = new HashMap<String, String>();
-      schemaReturn.put("id",  schema.getGlobalId());
-      schemaReturn.put("name",  schema.getName());
-      schemaReturn.put("version",  schema.getVersion());
-      schemaReturn.put("description",  schema.getDescription());
-      return  schemaReturn;
+      schemaReturn.put("id", schema.getGlobalId());
+      schemaReturn.put("name", schema.getName());
+      schemaReturn.put("version", schema.getVersion());
+      schemaReturn.put("description", schema.getDescription());
+      return schemaReturn;
     }).collect(Collectors.toList());
 
-    return this.gson.toJson( schemaIds);
+    return this.gson.toJson(schemaIds);
   }
 
   /**
    * Find and return idea pages based on query
    *
-   * @param title the query on title field
+   * @param title       the query on title field
    * @param description the query on description field
-   * @param status the query on status
-   * @param owner the query on owner
-   * @param response the servlet response to populate
+   * @param status      the query on status
+   * @param owner       the query on owner
+   * @param response    the servlet response to populate
    * @return A json string containing all found idea pages
    */
   @Path("/ideapages")
@@ -98,15 +107,27 @@ public class Index {
 
     List<FedexIdea> allIdeas = this.fedexIdeaService.queryAllFedexIdea();
 
-    List<Map> preConvert = allIdeas.stream().map( idea -> {
+    List<Map> preConvert = allIdeas.stream().map(idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
-      preJsonIdea.put("url", idea.getUrl());
+      preJsonIdea.put("url", getPageUrl(idea.getContentId()));
 
       return preJsonIdea;
     }).collect(Collectors.toList());
 
     return this.gson.toJson(preConvert);
+  }
+
+  @Nonnull
+  private String getPageUrl(ContentId contentId) {
+    try{
+      return new StringBuilder()
+        .append(this.settingsManager.getGlobalSettings().getBaseUrl())
+        .append(this.pageService.getIdPageLocator(contentId.asLong()).getPage().getUrlPath())
+        .toString();
+    } catch (NullPointerException nullPointerException) {
+      return this.settingsManager.getGlobalSettings().getBaseUrl();
+    }
   }
 
   // extracts body from request
@@ -115,7 +136,7 @@ public class Index {
       try {
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
-      } catch (IOException e){
+      } catch (IOException e) {
         throw new IOException("Failed to parse request body.", e);
       }
     }
@@ -125,7 +146,7 @@ public class Index {
   /**
    * Posts a complete schema (schema, uiSchema and indexSchema)
    *
-   * @param request Servlet request to extract post body from
+   * @param request  Servlet request to extract post body from
    * @param response Servlet response to populate
    * @return JSON string representation of the updated schema
    */

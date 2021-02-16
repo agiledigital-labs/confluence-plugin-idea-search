@@ -13,9 +13,9 @@ public class DefaultFedexIdeaService implements FedexIdeaService {
   private final FedexSchemaDao fedexSchemaDao;
 
   @Autowired
-  public DefaultFedexIdeaService(FedexIdeaDao fedexIdeaDao, FedexSchemaDao fedexSchema) {
+  public DefaultFedexIdeaService(FedexIdeaDao fedexIdeaDao, FedexSchemaDao fedexSchemaDao) {
     this.fedexIdeaDao = fedexIdeaDao;
-    this.fedexSchemaDao = fedexSchema;
+    this.fedexSchemaDao = fedexSchemaDao;
   }
 
   /**
