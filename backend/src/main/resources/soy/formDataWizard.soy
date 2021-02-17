@@ -1,0 +1,31 @@
+{namespace structured_form.blueprint.page.formData}
+
+/**
+*  A form that accepts the basic information for an idea
+*/
+{template .page1Form}
+  <form action="#" method="post" class="aui">
+    <fieldset>
+      <div class="field-group">
+        <label for="videatitle">{getText('ideaSearch.blueprint.page.form.label.idea.title')}</label>
+        <input id="videatitle" class="text" type="text"
+               name="vIdeaTitle">
+      </div>
+    </fieldset>
+  </form>
+{/template}
+/**
+*  A form that accepts the basic information for an idea
+*/
+{template .page2Form}
+    <div id="form-container"/>
+      <form action="#" method="post" class="aui">
+        <fieldset>
+          <div class="field-group" hidden>
+            <label for="vformdata">aHack</label>
+            <input id="vformdata" class="text" type="text"
+                 name="vFormData" value="">
+          </div>
+        </fieldset>
+      </form>
+{/template}

@@ -12,3 +12,5 @@ log.log
 target/
 .idea
 backend/idea_search.iml
+backend/**/bundled.*.js
+

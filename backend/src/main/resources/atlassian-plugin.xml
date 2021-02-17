@@ -29,18 +29,54 @@
         description-content-key="ideaSearch.blueprint.page.wizard.page1.desc.content"
         description-header-key="ideaSearch.blueprint.page.wizard.page1.desc.header"
         id="page1Id"
-        last="true"
-        template-key="ideaSearch.blueprint.page.fedexIdea.page1Form"
+        last="false"
+        template-key="structured_form.blueprint.page.formData.page1Form"
         title-key="ideaSearch.blueprint.page.wizard.page1.title"
+      />
+      <dialog-page
+        description-content-key="ideaSearch.blueprint.page.wizard.page2.desc.content"
+        description-header-key="ideaSearch.blueprint.page.wizard.page2.desc.header"
+        id="page2Id"
+        last="true"
+        template-key="structured_form.blueprint.page.formData.page2Form"
+        title-key="ideaSearch.blueprint.page.wizard.page2.title"
       />
     </dialog-wizard>
   </blueprint>
+
+  <web-resource
+    key="structured_form.blueprint.page.wizard"
+    name="Fedex create blueprint wizard">
+    <context>create-content</context>
+    <dependency>
+      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
+    </dependency>
+    <resource
+      location="/frontend/bundled.simpleForm.js"
+      name="simpleForm.js"
+      type="download"/>
+    <resource
+      location="/soy/formDataWizard.soy"
+      name="formDataWizard.soy.js"
+      type="download"/>
+
+    <resource location="/images" name="images/" type="download"/>
+
+    <transformation extension="soy">
+      <transformer key="soyTransformer">
+        <functions>com.atlassian.confluence.plugins.soy:soy-core-functions
+        </functions>
+      </transformer>
+    </transformation>
+  </web-resource>
+
+
 
   <content-template
     i18n-name-key="ideaSearch.blueprint.page.title"
     key="ideaSearch-page-template">
     <context-provider
-      class="au.com.agiledigital.idea_search.blueprints.BlueprintPageContextProvider"/>
+      class="au.com.agiledigital.structured_form.blueprints.BlueprintPageContextProvider"/>
     <resource
       location="/templates/pageBlueprint.xml"
       name="template"
@@ -66,7 +102,7 @@
     <link linkId="idea-admin-link">/plugins/servlet/idea/admin</link>
   </web-item>
 
-  <servlet key="admin-servlet" class="au.com.agiledigital.idea_search.adminui.AdminServlet">
+  <servlet key="admin-servlet" class="au.com.agiledigital.structured_form.adminui.AdminServlet">
     <url-pattern>/idea/admin</url-pattern>
   </servlet>
 
@@ -83,35 +119,7 @@
     />
   </web-resource>
 
-  <web-resource
-    key="ideaSearch.blueprint.page.wizard"
-    name="Fedex create blueprint wizard">
-    <context>create-content</context>
-    <dependency>
-      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
-    </dependency>
 
-    <dependency>com.atlassian.auiplugin:ajs</dependency>
-    <dependency>com.atlassian.auiplugin:aui-select</dependency>
-    <dependency>com.atlassian.auiplugin:aui-select2</dependency>
-    <resource
-      location="/js/ideaSearch.js"
-      name="ideaSearch.js"
-      type="download"/>
-    <resource
-      location="/soy/ideaSearch.soy"
-      name="ideaSearch.soy.js"
-      type="download"/>
-
-    <resource location="/images" name="images/" type="download"/>
-
-    <transformation extension="soy">
-      <transformer key="soyTransformer">
-        <functions>com.atlassian.confluence.plugins.soy:soy-core-functions
-        </functions>
-      </transformer>
-    </transformation>
-  </web-resource>
 
   <!-- Index Blueprint -->
   <content-template
@@ -122,13 +130,13 @@
       type="download"
       location="templates/indexBlueprint.xml"/>
     <context-provider
-      class="au.com.agiledigital.idea_search.blueprints.IndexPageContextProvider"/>
+      class="au.com.agiledigital.structured_form.blueprints.IndexPageContextProvider"/>
   </content-template>
 
   <!-- Structured Macro -->
   <xhtml-macro
     name="idea-structured-data"
-    class="au.com.agiledigital.idea_search.macros.StructuredData"
+    class="au.com.agiledigital.structured_form.macros.StructuredData"
     key='ideaSearch-macro-structuredData'>
     <description key="ideaSearch.macro.structuredField.desc"/>
     <category name="hidden"/>
@@ -144,7 +152,6 @@
       location="/frontend/bundled.editModal.js"
       name="bundled.editModal.js"
       type="download"/>
-
     <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
     <transformation extension="js">
       <transformer key="jsI18n"/>
@@ -153,9 +160,9 @@
 
   <ao key="ao-module" namespace="fedex-idea">
     <description>The module configuring the active objects data storage service for this plugin</description>
-    <entity>au.com.agiledigital.idea_search.dao.AoFedexIdea</entity>
-    <entity>au.com.agiledigital.idea_search.dao.AoIdeaBlueprint</entity>
-    <entity>au.com.agiledigital.idea_search.dao.AoSchema</entity>
+    <entity>au.com.agiledigital.structured_form.dao.AoFromData</entity>
+    <entity>au.com.agiledigital.structured_form.dao.AoFormBlueprint</entity>
+    <entity>au.com.agiledigital.structured_form.dao.AoFormSchema</entity>
   </ao>
 
   <component-import
@@ -166,16 +173,16 @@
   </component-import>
 
   <component
-    key="fedexIdeaService"
-    class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"/>
+    key="formDataService"
+    class="au.com.agiledigital.structured_form.service.DefaultFormDataService"/>
   <component
-    key="fedexIdeaDao"
-    class="au.com.agiledigital.idea_search.dao.FedexIdeaDao"/>
+    key="formDataDao"
+    class="au.com.agiledigital.structured_form.dao.FormDataDao"/>
 
   <!-- Index Table Macro -->
   <xhtml-macro
     name="Ideas index table"
-    class="au.com.agiledigital.idea_search.macros.IndexTable"
+    class="au.com.agiledigital.structured_form.macros.IndexTable"
     key='ideaSearch-macro-indexTable'>
     <description key="ideaSearch.macro.indexTable.desc"/>
     <category name="hidden"/>
@@ -196,7 +203,7 @@
   <!-- Blueprint ID Storage -->
   <xhtml-macro
     name="Blueprint Id Storage"
-    class="au.com.agiledigital.idea_search.macros.TemplateId"
+    class="au.com.agiledigital.structured_form.macros.TemplateId"
     key='ideaSearch-macro-templateId'
   >
     <description key="ideaSearch.macro.templateId.desc"/>

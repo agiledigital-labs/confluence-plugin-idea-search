@@ -6,20 +6,20 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd"
 >
     <beans:bean
-    id="fedexIdeaService"
-    class="au.com.agiledigital.idea_search.service.DefaultFedexIdeaService"
+    id="formDataService"
+    class="au.com.agiledigital.structured_form.service.DefaultFormDataService"
   >
-        <beans:constructor-arg name="fedexIdeaDao" ref="fedexIdeaDao" />
-        <beans:constructor-arg name="fedexSchemaDao" ref="fedexSchemaDao" />
+        <beans:constructor-arg name="formDataDao" ref="formDataDao" />
+        <beans:constructor-arg name="formSchemaDao" ref="formSchemaDao" />
     </beans:bean>
-  <beans:bean id="fedexIdeaDao" class="au.com.agiledigital.idea_search.dao.FedexIdeaDao">
+  <beans:bean id="formDataDao" class="au.com.agiledigital.structured_form.dao.FormDataDao">
   </beans:bean>
-  <beans:bean id="fedexSchemaDao" class="au.com.agiledigital.idea_search.dao.FedexSchemaDao">
+  <beans:bean id="formSchemaDao" class="au.com.agiledigital.structured_form.dao.FormSchemaDao">
   </beans:bean>
-  <osgi:service id="fedexIdeaService_osgiService" ref="fedexIdeaService">
+  <osgi:service id="fedexIdeaService_osgiService" ref="formDataService">
         <osgi:interfaces>
             <beans:value
-      >au.com.agiledigital.idea_search.service.FedexIdeaService
+      >au.com.agiledigital.structured_form.service.FormDataService
             </beans:value>
         </osgi:interfaces>
     </osgi:service>

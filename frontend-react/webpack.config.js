@@ -17,6 +17,7 @@ module.exports = {
     indexTable: "./src/IndexTable.tsx",
     adminPage: "./src/AdminPage.tsx",
     editModal: "./src/UpdateFormModal.tsx",
+    simpleForm: "./src/SimpleForm.tsx",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],

@@ -1,11 +1,11 @@
-#* @vtlvariable name="blueprint" type="au.com.agiledigital.idea_search.macros.transport.BlueprintContainer" *#
+#* @vtlvariable name="blueprint" type="au.com.agiledigital.structured_form.macros.transport.BlueprintContainer" *#
 <p class="add-button">
     #if($blueprint.blueprintId != "")
       <a class="aui-button create-from-template-button conf-macro output-inline"
          data-space-key="$blueprint.spaceKey"
          href="$blueprint.baseUrl?createDialogSpaceKey=$blueprint.spaceKey&createDialogBlueprintId=$blueprint.blueprintId"
          data-content-blueprint-id="$blueprint.blueprintId" data-hasbody="false"
-         data-macro-name="create-from-template">Add Fedex Idea</a>
+         data-macro-name="create-from-template">Add new page</a>
     #end
 </p>
 

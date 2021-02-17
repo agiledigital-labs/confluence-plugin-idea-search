@@ -1,4 +1,4 @@
-au.com.agiledigital.idea_search.listener.FedexIdeaEventListener
-au.com.agiledigital.idea_search.listener.FedexIdeaDiscoveryEventListener
-au.com.agiledigital.idea_search.listener.FedexIdeaDao
-au.com.agiledigital.idea_search.rest.Index
+au.com.agiledigital.structured_form.listener.FedexIdeaEventListener
+au.com.agiledigital.structured_form.listener.FedexIdeaDiscoveryEventListener
+au.com.agiledigital.structured_form.listener.FedexIdeaDao
+au.com.agiledigital.structured_form.rest.Index

@@ -23,6 +23,14 @@
     <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
     <resource type="download" name="bundled.editModal.js" location="frontend/bundled.editModal.js"/>
   </web-resource>
+  <web-resource key="entrypoint-simpleForm">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>simpleForm</context>
+    <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+    <resource type="download" name="bundled.simpleForm.js" location="frontend/bundled.simpleForm.js"/>
+  </web-resource>
   <web-resource key="assets-DEV_PSEUDO_HASH">
     <transformation extension="js">
       <transformer key="jsI18n"/>

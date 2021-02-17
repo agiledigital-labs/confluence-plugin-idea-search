@@ -5,6 +5,7 @@ import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { FormDataType, version } from "./index";
+import { get, startCase } from "lodash/fp";
 
 type IdeaPage = {
   creator: {
@@ -61,10 +62,11 @@ const OuterTable = () => {
   const [searchTerm, setSearchTerm] = useState(initSearch);
 
   const handleChange = (term: string, value: string) => {
-    setSearchTerm((prevTerm) => ({
-      ...prevTerm,
+    console.log(term, value);
+    setSearchTerm({
+      ...searchTerm,
       [term.toLowerCase()]: value,
-    }));
+    });
   };
 
   const [justPages, setJustPages] = useState<Array<IdeaPage>>();
@@ -83,7 +85,7 @@ const OuterTable = () => {
     formData?.indexSchema?.index
       ? formData.indexSchema.index.map((item, index) => ({
           key: `cell-${item}`,
-          content: page.indexData[index],
+          content: get(index)(page.indexData),
         }))
       : [];
 
@@ -92,7 +94,7 @@ const OuterTable = () => {
     cells: [
       {
         key: `cell-${page.title}`,
-        content: <a href={`${contextPath}/${page.url}`}>{page.title}</a>,
+        content: <a href={page.url}>{page.title}</a>,
       },
       ...row(page),
     ],
@@ -100,34 +102,36 @@ const OuterTable = () => {
 
   console.log(formData?.indexSchema?.index);
 
-  const headers = formData?.indexSchema?.index
-    ? ["Title", ...formData.indexSchema.index]
-    : ["Title", "The rest of the headers could not be loaded"];
+  if (!formData?.indexSchema?.index) {
+    return <>loading...</>;
+  }
+  const headersList = ["Title", ...formData.indexSchema.index];
 
-  const head = {
+  const head = (headers: Array<string>) => ({
     cells: headers.map((header) => ({
       key: header,
       content: (
         <div>
-          <div className={classes.heading}>{header}</div>
+          <div className={classes.heading}>{startCase(header)}</div>
           <Textfield
-            id={`${header}`}
+            id={header}
             placeholder={header}
             // specifying className to use useStyle() for css
             className={classes.root}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              console.log(e);
               handleChange(header, e.target.value);
             }}
           />
         </div>
       ),
     })),
-  };
+  });
 
   return (
     <div>
       <DynamicTable
-        head={head}
+        head={head(headersList)}
         rows={rows}
         rowsPerPage={rowsPerPage}
         defaultPage={defaultPage}
