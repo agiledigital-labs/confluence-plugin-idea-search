@@ -1,6 +1,6 @@
 package au.com.agiledigital.structured_form.service;
 
-import au.com.agiledigital.structured_form.dao.AoFromData;
+import au.com.agiledigital.structured_form.dao.AoFormData;
 import au.com.agiledigital.structured_form.dao.FormDataDao;
 import au.com.agiledigital.structured_form.dao.FormSchemaDao;
 import au.com.agiledigital.structured_form.model.FormData;
@@ -43,8 +43,8 @@ public class DefaultFormDataService implements FormDataService {
    * @return FormData that was created
    */
   public FormData createIdea(FormData formData) {
-
-    return this.formDataDao.createIdea(formData);
+    Map indexes = getIndexData(formData);
+    return this.formDataDao.createIdea(formData, ((List<String>) indexes.get("stringIndex")), ((List<Double>) indexes.get("numberIndex")));
   }
 
   /**
@@ -121,7 +121,10 @@ public class DefaultFormDataService implements FormDataService {
    * @return FormData that was updated
    */
   public FormData upsertIdea(FormData formData, long contentId) {
-    return this.formDataDao.upsertByContentId(formData, contentId);
+    Map indexes = getIndexData(formData);
+
+
+    return this.formDataDao.upsertByContentId(formData, contentId,  ((List<String>) indexes.get("stringIndex")), ((List<Double>) indexes.get("numberIndex")));
   }
 
   /**
@@ -132,35 +135,81 @@ public class DefaultFormDataService implements FormDataService {
   public List<FormData> queryAllFedexIdea() {
 
     return asListFedexIdea(formDataDao.findAll());
+  }
+  public List<FormData> queryAllFedexIdea(List<AbstractMap.SimpleEntry> search) {
 
+    return asListFedexIdea(formDataDao.findAll(search));
   }
 
   /**
    * Convert array of active objects to a list of model objects
    *
-   * @param aoFromData list of active object ideas to be converted to a list of the model
+   * @param aoFormData list of active object ideas to be converted to a list of the model
    *                     FormData
    * @return List<FormData>
    */
-  private List<FormData> asListFedexIdea(AoFromData[] aoFromData) {
+  private List<FormData> asListFedexIdea(AoFormData[] aoFormData) {
 
-    return Arrays.stream(aoFromData)
+    return Arrays.stream(aoFormData)
       .map(aoIdea -> asFedexIdea(aoIdea, this.pageService, getUsername(aoIdea.getCreatorUserKey(), this.userAccessor), getIndexData(aoIdea)))
       .collect(Collectors.toList());
   }
 
+  private boolean testVal(LinkedHashMap<String, ?> jsonFromData, String key, Class classTest) {
+    try {
+      return jsonFromData.get(key).getClass().isInstance(classTest);
+    } catch (NullPointerException e) {
+      return false;
+    }
+  }
 
-  private List<String> getIndexData(AoFromData idea) {
-    LinkedHashMap<String, String> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
-//{"index":["firstName","telephone"]}
-    LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
-    JsonElement jsonElementIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("index");
+  private Map<String, List<?>> getIndexData(AoFormData idea) {
+    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
 
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-      jsonElementIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
-      .map(r -> jsonFromData.get(r.getAsString()))
+    LinkedHashMap<String, String > jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
+    JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("stringIndex");
+    JsonElement jsonElementNumberIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("numberIndex");
+
+    List<String> stringsIndex = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+      jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+      .map(r -> testVal(jsonFromData, r.getAsString(), String.class)  ? ((String) jsonFromData.get(r.getAsString())) : "")
       .collect(Collectors.toList());
 
+
+    List<Double> numberIndex = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+      jsonElementNumberIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+      .map(r -> testVal(jsonFromData, r.getAsString(), Double.class)  ? ((Double) jsonFromData.get(r.getAsString())) : 0)
+      .collect(Collectors.toList());
+
+    Map<String, List<?>> test = new HashMap();
+    test.put("stringIndex", stringsIndex);
+
+    test.put("numberIndex",numberIndex);
+    return test;
+  } 
+  private Map<String, List<?>> getIndexData(FormData idea) {
+    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
+
+    LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
+    JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("stringIndex");
+    JsonElement jsonElementNumberIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("numberIndex");
+
+    List<String> stringsIndex = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+      jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+      .map(r -> ((String) jsonFromData.get(r.getAsString())))
+      .collect(Collectors.toList());
+
+
+    List<Double> numberIndex = StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+      jsonElementNumberIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+      .map(r -> ((Double) jsonFromData.get(r.getAsString())))
+      .collect(Collectors.toList());
+
+    Map<String, List<?>> test = new HashMap();
+    test.put("stringIndex", stringsIndex);
+
+    test.put("numberIndex",numberIndex);
+    return test;
   }
 }
 

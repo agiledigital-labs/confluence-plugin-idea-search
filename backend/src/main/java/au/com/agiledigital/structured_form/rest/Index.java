@@ -84,7 +84,7 @@ public class Index {
   /**
    * Find and return idea pages based on query
    *
-   * @param response    the servlet response to populate
+   * @param response the servlet response to populate
    * @return A json string containing all found idea pages
    */
   @Path("/ideapages")
@@ -96,14 +96,25 @@ public class Index {
   ) {
     this.applyNoCacheHeaders(response);
 
-   List<AbstractMap.SimpleEntry> test = Arrays.stream(StringUtils.split(request.getQueryString(), "&")).map(string -> StringUtils.split(string, "=")).map(r -> new AbstractMap.SimpleEntry(r[0], r[1])).collect(Collectors.toList());
+    List<AbstractMap.SimpleEntry> test = Arrays.stream(StringUtils.split(request.getQueryString(), "&"))
+      .map(string -> StringUtils.split(string, "="))
+      .filter(r -> r.length > 1)
+      .map(r -> new AbstractMap.SimpleEntry(r[0], r[1])).collect(Collectors.toList());
 
 
-    List<FormData> allIdeas = this.formDataService.queryAllFedexIdea();
-//    .stream().filter(idea -> idea.getIndexData().stream().anyMatch(r -> test.contains(r))).collect(Collectors.toList());
+    List<FormData> allIdeas = test.size() > 0 ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();
+
     String indexSchema = this.formDataService.getCurrentSchema().getIndexSchema();
 
-    List<Map> preConvert = allIdeas.stream().map(idea -> {
+    List<Map> preConvert = allIdeas.stream().filter(i -> {
+      try {
+        i.getFormData().toLowerCase();
+        i.getGlobalId();
+        return true;
+      } catch (NullPointerException e){
+        return false;
+      }
+    }).map(idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", getPageUrl(idea.getContentId()));
@@ -119,7 +130,7 @@ public class Index {
 
   @Nonnull
   private String getPageUrl(ContentId contentId) {
-    try{
+    try {
       return new StringBuilder()
         .append(this.settingsManager.getGlobalSettings().getBaseUrl())
         .append(this.pageService.getIdPageLocator(contentId.asLong()).getPage().getUrlPath())

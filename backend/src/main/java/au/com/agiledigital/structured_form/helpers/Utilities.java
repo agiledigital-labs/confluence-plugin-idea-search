@@ -1,7 +1,7 @@
 package au.com.agiledigital.structured_form.helpers;
 
 
-import au.com.agiledigital.structured_form.dao.AoFromData;
+import au.com.agiledigital.structured_form.dao.AoFormData;
 import au.com.agiledigital.structured_form.model.FormData;
 import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.core.BodyContent;
@@ -23,6 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static au.com.agiledigital.structured_form.helpers.PageHelper.wrapBody;
 
@@ -101,17 +102,17 @@ public class Utilities {
   /**
    * Convert fedex idea active object to a fedex idea model object
    *
-   * @param aoFromData active object to be converted
+   * @param aoFormData active object to be converted
    * @return FormData object
    */
-  public static FormData asFedexIdea(AoFromData aoFromData, PageService pageService, ConfluenceUser user ) {
+  public static FormData asFedexIdea(AoFormData aoFormData, PageService pageService, ConfluenceUser user ) {
     try {
       return new FormData.Builder()
-        .withGlobalId(aoFromData.getGlobalId())
-        .withTitle(aoFromData.getTitle())
-        .withContentId(pageService.getIdPageLocator(aoFromData.getContentId()).getPage().getContentId())
+        .withGlobalId(aoFormData.getGlobalId())
+        .withTitle(aoFormData.getTitle())
+        .withContentId(pageService.getIdPageLocator(aoFormData.getContentId()).getPage().getContentId())
         .withCreator(user)
-        .withFormData(aoFromData.getFormData())
+        .withFormData(aoFormData.getFormData())
         .build();
     } catch (NullPointerException nullPointerException){
       return new FormData.Builder().build();
@@ -121,17 +122,17 @@ public class Utilities {
   /**
    * Convert fedex idea active object to a fedex idea model object
    *
-   * @param aoFromData active object to be converted
+   * @param aoFormData active object to be converted
    * @return FormData object
    */
-  public static FormData asFedexIdea(AoFromData aoFromData, PageService pageService, ConfluenceUser user, List<String> indexData ) {
+  public static FormData asFedexIdea(AoFormData aoFormData, PageService pageService, ConfluenceUser user, Map<String, List<?>> indexData ) {
     try {
       return new FormData.Builder()
-        .withGlobalId(aoFromData.getGlobalId())
-        .withTitle(aoFromData.getTitle())
-        .withContentId(pageService.getIdPageLocator(aoFromData.getContentId()).getPage().getContentId())
+        .withGlobalId(aoFormData.getGlobalId())
+        .withTitle(aoFormData.getTitle())
+        .withContentId(pageService.getIdPageLocator(aoFormData.getContentId()).getPage().getContentId())
         .withCreator(user)
-        .withFormData(aoFromData.getFormData())
+        .withFormData(aoFormData.getFormData())
         .withIndexData(indexData)
         .build();
     } catch (NullPointerException nullPointerException){

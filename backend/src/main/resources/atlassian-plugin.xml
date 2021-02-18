@@ -106,21 +106,6 @@
     <url-pattern>/idea/admin</url-pattern>
   </servlet>
 
-
-  <web-resource
-    key="ideaAdminResource"
-    name="Idea admin page resource"
-  >
-    <context>atl.admin</context>
-    <resource
-      location="/frontend/bundled.adminPage.js"
-      name="bundled.adminPage.js"
-      type="download"
-    />
-  </web-resource>
-
-
-
   <!-- Index Blueprint -->
   <content-template
     key="ideaSearch-index-template"
@@ -160,7 +145,7 @@
 
   <ao key="ao-module" namespace="fedex-idea">
     <description>The module configuring the active objects data storage service for this plugin</description>
-    <entity>au.com.agiledigital.structured_form.dao.AoFromData</entity>
+    <entity>au.com.agiledigital.structured_form.dao.AoFormData</entity>
     <entity>au.com.agiledigital.structured_form.dao.AoFormBlueprint</entity>
     <entity>au.com.agiledigital.structured_form.dao.AoFormSchema</entity>
   </ao>
@@ -192,7 +177,6 @@
   <web-resource
     key="ideaSearch-macro-indexTable-macro-resource"
     name="Index Table Web Resources">
-
     <resource
       location="/frontend/bundled.indexTable.js"
       name="bundled.indexTable.js"

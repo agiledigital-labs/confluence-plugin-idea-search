@@ -53,7 +53,7 @@ public class AdminServlet extends HttpServlet {
       .assembler()
       .resources()
       .requireWebResource(
-        "au.com.agiledigital.structured_form:ideaAdminResource");
+        "au.com.agiledigital.structured_form:entrypoint-adminPage");
 
     // verify that admin user is requesting the page
     if (!userManager.isSystemAdmin(userManager.getRemoteUser(request).getUserKey())) {

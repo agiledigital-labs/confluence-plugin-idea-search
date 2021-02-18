@@ -4,6 +4,7 @@
 *  A form that accepts the basic information for an idea
 */
 {template .page1Form}
+  <div id="things">
   <form action="#" method="post" class="aui">
     <fieldset>
       <div class="field-group">
@@ -13,19 +14,22 @@
       </div>
     </fieldset>
   </form>
+  </div>
 {/template}
 /**
 *  A form that accepts the basic information for an idea
 */
 {template .page2Form}
-    <div id="form-container"/>
+  <div id="things">
+    <div id="form-container"></div>
       <form action="#" method="post" class="aui">
         <fieldset>
           <div class="field-group" hidden>
             <label for="vformdata">aHack</label>
             <input id="vformdata" class="text" type="text"
-                 name="vFormData" value="">
+                 name="vFormData" value="temp">
           </div>
         </fieldset>
       </form>
+  </div>
 {/template}

@@ -6,11 +6,18 @@ import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import net.java.ao.Query;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import oshi.util.StringUtil;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static au.com.agiledigital.structured_form.helpers.Utilities.asFedexIdea;
@@ -25,14 +32,14 @@ public class FormDataDao {
   @ComponentImport
   private final ActiveObjects ao;
 
-  private static final Class<AoFromData> AO_FEDEX_IDEA_TYPE = AoFromData.class;
+  private static final Class<AoFormData> AO_FEDEX_IDEA_TYPE = AoFormData.class;
   private static final Class<AoFormBlueprint> AO_IDEA_BLUEPRINT_TYPE = AoFormBlueprint.class;
 
   @ComponentImport
   private final UserAccessor userAccessor;
   @ComponentImport
   private final PageService pageService;
-  
+
 
   @Autowired
   public FormDataDao(ActiveObjects ao, UserAccessor userAccessor, PageService pageService) {
@@ -47,14 +54,17 @@ public class FormDataDao {
    * @param formData FormData model object
    * @return FormData object created in data store
    */
-  public FormData createIdea(FormData formData) {
-    AoFromData aoFromData = this.ao.create(AO_FEDEX_IDEA_TYPE);
+  public FormData createIdea(FormData formData, List<String> stringIndex, List<Double> numberIndex) {
+    AoFormData aoFormData = this.ao.create(AO_FEDEX_IDEA_TYPE);
 
-    this.prepareAOFedexIdea(aoFromData, formData);
+    this.prepareAOFedexIdea(aoFormData, formData);
 
-    aoFromData.save();
+    this.setIndexStrings(stringIndex, aoFormData);
+    this.setIndexNumbers(numberIndex, aoFormData);
 
-    return asFedexIdea(aoFromData, this.pageService, getUsername(aoFromData.getCreatorUserKey(), this.userAccessor));
+    aoFormData.save();
+
+    return asFedexIdea(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -102,30 +112,32 @@ public class FormDataDao {
   /**
    * Update a FormData by the page content id
    *
-   * @param formData New FormData for data store
+   * @param formData  New FormData for data store
    * @param contentId of the page containing the idea
    * @return FormData saved to the data store
    */
-  public FormData upsertByContentId(FormData formData, long contentId) {
-    AoFromData[] aoFromDatas =
+  public FormData upsertByContentId(FormData formData, long contentId, List<String> stringIndex, List<Double> numberIndex) {
+    AoFormData[] aoFormDatas =
       this.ao.find(
         AO_FEDEX_IDEA_TYPE,
         Query.select().where("CONTENT_ID = ?", contentId)
       );
 
-    boolean newIdea = aoFromDatas.length == 0;
+    boolean newIdea = aoFormDatas.length == 0;
 
     // If the title of the page already exists the create event fails and a page update event is fired on a successful save.
     // If this happens the aoFedexIdea will not exist in the data store and will need to be created.
-    AoFromData aoFromData = newIdea
+    AoFormData aoFormData = newIdea
       ? this.ao.create(AO_FEDEX_IDEA_TYPE)
-      : aoFromDatas[0];
+      : aoFormDatas[0];
 
-    this.prepareAOFedexIdea(aoFromData, formData);
+    this.prepareAOFedexIdea(aoFormData, formData);
+    this.setIndexStrings(stringIndex, aoFormData);
+    this.setIndexNumbers(numberIndex, aoFormData);
 
-    aoFromData.save();
+    aoFormData.save();
 
-    return asFedexIdea(aoFromData, this.pageService, getUsername(aoFromData.getCreatorUserKey(), this.userAccessor));
+    return asFedexIdea(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -136,7 +148,7 @@ public class FormDataDao {
    */
   public FormData getByContentId(long contentId) {
 
-    List<AoFromData> test = Arrays.stream(this.ao.find(
+    List<AoFormData> test = Arrays.stream(this.ao.find(
       AO_FEDEX_IDEA_TYPE,
       Query.select().where("CONTENT_ID = ?", contentId)
     )).collect(Collectors.toList());
@@ -149,28 +161,112 @@ public class FormDataDao {
    *
    * @return a list of all available FormData
    */
-  public AoFromData[] findAll() {
-     Query query = Query
-       .select();
+  public AoFormData[] findAll() {
+    Query query = Query
+      .select();
 
     return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
 
   }
 
+  public AoFormData[] findAll(List<AbstractMap.SimpleEntry> search) {
+
+    String whereClues = StringUtils.join(search.stream().map(r -> "index_" + r.getKey().toString() + " like ?").collect(Collectors.toList()).toArray(), " AND ");
+    Object[] whereParams = search.stream().map(r -> r.getValue().toString() + "%").collect(Collectors.toList()).toArray();
+
+    Query query = Query
+      .select().where(whereClues, whereParams);
+
+    return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
+
+  }
+
+  private <T> Consumer<T> withCounter(BiConsumer<Integer, T> consumer) {
+    AtomicInteger counter = new AtomicInteger(0);
+    return item -> consumer.accept(counter.getAndIncrement(), item);
+  }
+
+
+  public void setIndexStrings(List<String> indexStrings, AoFormData aoFormData) {
+    indexStrings.forEach(withCounter((s, i) -> setIndexString(aoFormData, i, s)));
+  }
+
+  private void setIndexString(AoFormData aoFormData, String value, Integer index) {
+    switch (index) {
+      case 0: {
+        aoFormData.setIndexString0(value);
+        break;
+      }
+      case 1: {
+        aoFormData.setIndexString1(value);
+        break;
+      }
+      case 2: {
+        aoFormData.setIndexString2(value);
+        break;
+      }
+      case 3: {
+        aoFormData.setIndexString3(value);
+        break;
+      }
+      case 4: {
+        aoFormData.setIndexString4(value);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
+  ;
+
+  public void setIndexNumbers(List<Double> indexNumbers, AoFormData aoFormData) {
+    indexNumbers.forEach(withCounter((s, i) -> setIndexNumber(aoFormData, i, s)));
+
+  }
+
+  private void setIndexNumber(AoFormData aoFormData, Double value, Integer index) {
+    switch (index) {
+      case 0: {
+        aoFormData.setIndexNumber0(value);
+        break;
+      }
+      case 1: {
+        aoFormData.setIndexNumber1(value);
+        break;
+      }
+      case 2: {
+        aoFormData.setIndexNumber2(value);
+        break;
+      }
+      case 3: {
+        aoFormData.setIndexNumber3(value);
+        break;
+      }
+      case 4: {
+        aoFormData.setIndexNumber4(value);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
 
 
   /**
    * Prepare fedex active object with the data from a fedex idea
    *
-   * @param aoFromData active object
+   * @param aoFormData active object
    * @param formData   with data to be added to the active object
    */
-  private void prepareAOFedexIdea(AoFromData aoFromData, FormData formData) {
-    aoFromData.setContentId(formData.getContentId().asLong());
-    aoFromData.setCreatorUserKey(formData.getCreator().getKey().toString());
-    aoFromData.setTitle(formData.getTitle());
-    aoFromData.setFormData(formData.getFormData());
+  private void prepareAOFedexIdea(AoFormData aoFormData, FormData formData) {
+    aoFormData.setContentId(formData.getContentId().asLong());
+    aoFormData.setCreatorUserKey(formData.getCreator().getKey().toString());
+    aoFormData.setTitle(formData.getTitle());
+    aoFormData.setFormData(formData.getFormData());
   }
 
-  
+
 }

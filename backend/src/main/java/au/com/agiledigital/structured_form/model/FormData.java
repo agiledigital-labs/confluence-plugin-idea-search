@@ -7,6 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -19,7 +20,7 @@ public class FormData {
   private final ConfluenceUser creator;
   private final String title;
   private final String formData;
-  private List<String> indexData;
+  private Map<String, List<?>> indexData;
 
 
   @JsonCreator
@@ -29,7 +30,7 @@ public class FormData {
     @JsonProperty("creator") ConfluenceUser creator,
     @JsonProperty("title") String title,
     @JsonProperty("formData") String formData,
-    @JsonProperty("indexData") List<String> indexData
+    @JsonProperty("indexData") Map<String, List<?>> indexData
   ) {
     this.globalId = globalId;
     this.contentId = contentId;
@@ -58,7 +59,7 @@ public class FormData {
 
   public String getFormData() {return this.formData;}
 
-  public List<String> getIndexData() {return this.indexData;}
+  public Map<String, List<?>> getIndexData() {return this.indexData;}
 
   public String toString() {
     return ("Idea [globalId="
@@ -81,7 +82,7 @@ public class FormData {
     private ConfluenceUser creator;
     private String title;
     private String formData;
-    private List<String> indexData;
+    private Map<String, List<?>> indexData;
 
     public Builder() {
     }
@@ -121,7 +122,7 @@ public class FormData {
       return this;
     }
 
-    public FormData.Builder withIndexData(List<String> indexData) {
+    public FormData.Builder withIndexData(Map<String, List<?>> indexData) {
       this.indexData = indexData;
       return this;
     }

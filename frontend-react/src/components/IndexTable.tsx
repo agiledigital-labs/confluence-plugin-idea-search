@@ -5,7 +5,7 @@ import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { FormDataType, version } from "./index";
-import { get, startCase } from "lodash/fp";
+import { get, startCase, flow, set, isNil, omitBy } from "lodash/fp";
 
 type IdeaPage = {
   creator: {
@@ -13,9 +13,9 @@ type IdeaPage = {
     name: string;
     lowerName: string;
   };
-  indexData: Array<string>;
+  indexData: { stringIndex: Array<string>; numberIndex: Array<number> };
   title: string;
-  indexSchema: { index: Array<string> };
+  indexSchema: { stringIndex: Array<string>; numberIndex: Array<number> };
   url: string;
 };
 
@@ -54,20 +54,17 @@ const OuterTable = () => {
     );
   }, []);
 
-  const initSearch = formData?.indexSchema?.index?.reduce(
-    (pre, cur) => ({ ...pre, [cur]: "" }),
-    {}
-  );
   // search term will be empty fields on initial render
-  const [searchTerm, setSearchTerm] = useState(initSearch);
+  const [searchTerm, setSearchTerm] = useState<{
+    [key: string]: string | number;
+  }>();
 
-  const handleChange = (term: string, value: string) => {
-    console.log(term, value);
-    setSearchTerm({
-      ...searchTerm,
-      [term.toLowerCase()]: value,
-    });
-  };
+  const handleChange = (term: string, value: string | number) =>
+    flow(
+      set(term.toLowerCase(), value),
+      omitBy(!isNil),
+      setSearchTerm
+    )(searchTerm);
 
   const [justPages, setJustPages] = useState<Array<IdeaPage>>();
 
@@ -82,11 +79,17 @@ const OuterTable = () => {
   }, [searchTerm, contextPath]);
 
   const row = (page: IdeaPage) =>
-    formData?.indexSchema?.index
-      ? formData.indexSchema.index.map((item, index) => ({
-          key: `cell-${item}`,
-          content: get(index)(page.indexData),
-        }))
+    formData?.indexSchema?.stringIndex && formData?.indexSchema?.numberIndex
+      ? [
+          ...formData.indexSchema.stringIndex.map((item, index) => ({
+            key: `cell-${item}`,
+            content: get(index)(page.indexData.stringIndex),
+          })),
+          ...formData.indexSchema.numberIndex.map((item, index) => ({
+            key: `cell-${item}`,
+            content: get(index)(page.indexData.numberIndex),
+          })),
+        ]
       : [];
 
   const rows = justPages?.map((page: IdeaPage) => ({
@@ -100,15 +103,26 @@ const OuterTable = () => {
     ],
   }));
 
-  console.log(formData?.indexSchema?.index);
-
-  if (!formData?.indexSchema?.index) {
+  if (
+    !formData?.indexSchema?.stringIndex ||
+    !formData.indexSchema.numberIndex
+  ) {
     return <>loading...</>;
   }
-  const headersList = ["Title", ...formData.indexSchema.index];
+  const headersList = [
+    { key: "Title", source: "atlas" },
+    ...formData.indexSchema.stringIndex.map((key, index) => ({
+      key,
+      source: `string${index}`,
+    })),
+    ...formData.indexSchema.numberIndex.map((key, index) => ({
+      key,
+      source: `number${index}`,
+    })),
+  ];
 
-  const head = (headers: Array<string>) => ({
-    cells: headers.map((header) => ({
+  const head = (headers: { key: string; source: string }[]) => ({
+    cells: headers.map(({ key: header, source }) => ({
       key: header,
       content: (
         <div>
@@ -118,10 +132,9 @@ const OuterTable = () => {
             placeholder={header}
             // specifying className to use useStyle() for css
             className={classes.root}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              console.log(e);
-              handleChange(header, e.target.value);
-            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleChange(source, e.target.value)
+            }
           />
         </div>
       ),

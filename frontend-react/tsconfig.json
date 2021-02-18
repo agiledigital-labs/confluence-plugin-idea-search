@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["es6", "dom"],
-    "module": "CommonJS",
+    "module": "es6",
     "moduleResolution": "node",
     "outDir": ".build",
     "noImplicitReturns": true,
@@ -13,7 +13,7 @@
     "inlineSourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "target": "ES2015",
+    "target": "ES5",
     "noImplicitAny": true,
     "baseUrl": "src"
   },

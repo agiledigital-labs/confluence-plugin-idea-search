@@ -7,12 +7,11 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: {
-          loader: "ts-loader",
-        },
+        loader: "ts-loader",
       },
     ],
   },
+  // mode: "production",
   entry: {
     indexTable: "./src/IndexTable.tsx",
     adminPage: "./src/AdminPage.tsx",

@@ -83,7 +83,7 @@ const validate = (formData: any, errors: any) => {
   return errors;
 };
 
-const OuterAdminForm = () => {
+export const OuterAdminForm = () => {
   // gets context path from atlassian
   // if not found, set to confluence as default
   const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
@@ -170,5 +170,3 @@ const OuterAdminForm = () => {
     </div>
   );
 };
-
-export default OuterAdminForm;

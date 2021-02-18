@@ -36,5 +36,5 @@ export const version: string = "1";
 export interface FormDataType {
   schema?: JSONSchema7;
   uiSchema?: JSONSchema7;
-  indexSchema?: { index?: Array<string> };
+  indexSchema?: { stringIndex?: Array<string>; numberIndex?: Array<string> };
 }
