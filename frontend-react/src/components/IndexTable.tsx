@@ -5,7 +5,7 @@ import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { FormDataType, version } from "./index";
-import { get, startCase, flow, set, isNil, omitBy } from "lodash/fp";
+import { startCase, flow, set, isNil, omitBy } from "lodash/fp";
 
 type IdeaPage = {
   creator: {
@@ -13,7 +13,11 @@ type IdeaPage = {
     name: string;
     lowerName: string;
   };
-  indexData: { stringIndex: Array<string>; numberIndex: Array<number> };
+  indexData: {
+    index: number;
+    type: "string" | "number";
+    value: string | number;
+  }[];
   title: string;
   indexSchema: { stringIndex: Array<string>; numberIndex: Array<number> };
   url: string;
@@ -41,7 +45,7 @@ const OuterTable = () => {
   const classes = useStyles();
   // gets context path from atlassian
   // if not found, set to confluence as default
-  const contextPath = AJS?.contextPath() ? AJS.contextPath() : "/confluence";
+  const contextPath = AJS?.contextPath() ? AJS.contextPath() : "";
 
   const [formData, setFormData] = useState<FormDataType>();
 
@@ -83,11 +87,15 @@ const OuterTable = () => {
       ? [
           ...formData.indexSchema.stringIndex.map((item, index) => ({
             key: `cell-${item}`,
-            content: get(index)(page.indexData.stringIndex),
+            content: page.indexData.find(
+              (v) => v.index === index && v.type === "string"
+            )?.value,
           })),
           ...formData.indexSchema.numberIndex.map((item, index) => ({
             key: `cell-${item}`,
-            content: get(index)(page.indexData.numberIndex),
+            content: page.indexData.find(
+              (v) => v.index === index && v.type === "number"
+            )?.value,
           })),
         ]
       : [];

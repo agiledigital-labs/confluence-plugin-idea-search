@@ -63,7 +63,7 @@ const OuterIdea = ({
 }) => {
   const [restSchema, setRestSchema] = useState<JSONSchema7>({});
   const [uiSchema, setUiSchema] = useState<JSONSchema7>({});
-  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
+  const contextPath = window.AJS ? window.AJS.contextPath() : "";
 
   useEffect(() => {
     axios.get(`${contextPath}/rest/idea/${version}/schema`).then((data) => {

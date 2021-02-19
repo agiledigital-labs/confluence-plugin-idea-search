@@ -1,6 +1,8 @@
 package au.com.agiledigital.structured_form.service;
 
 import au.com.agiledigital.structured_form.model.FormData;
+import au.com.agiledigital.structured_form.model.FormIndex;
+import au.com.agiledigital.structured_form.model.FormIndexQuery;
 import au.com.agiledigital.structured_form.model.FormSchema;
 
 import java.util.AbstractMap;
@@ -79,5 +81,5 @@ public interface FormDataService {
   void setBlueprintId(String blueprintId);
 
   List<FormData> queryAllFedexIdea();
-  List<FormData> queryAllFedexIdea(List<AbstractMap.SimpleEntry> search);
+  List<FormData> queryAllFedexIdea(List<FormIndexQuery> search);
 }

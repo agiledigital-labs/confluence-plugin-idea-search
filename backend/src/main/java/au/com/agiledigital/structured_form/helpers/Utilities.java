@@ -3,6 +3,7 @@ package au.com.agiledigital.structured_form.helpers;
 
 import au.com.agiledigital.structured_form.dao.AoFormData;
 import au.com.agiledigital.structured_form.model.FormData;
+import au.com.agiledigital.structured_form.model.FormIndex;
 import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.core.BodyContent;
 import com.atlassian.confluence.pages.AbstractPage;
@@ -24,6 +25,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static au.com.agiledigital.structured_form.helpers.PageHelper.wrapBody;
 
@@ -53,6 +59,15 @@ public class Utilities {
 
     return null;
   }
+
+
+  public static  <T> Consumer<T> withCounter(BiConsumer<Integer, T> consumer) {
+    AtomicInteger counter = new AtomicInteger(0);
+    return item -> consumer.accept(counter.getAndIncrement(), item);
+  }
+
+
+
 
   /**
    * Parses XML to Java Dom objects
@@ -125,7 +140,7 @@ public class Utilities {
    * @param aoFormData active object to be converted
    * @return FormData object
    */
-  public static FormData asFedexIdea(AoFormData aoFormData, PageService pageService, ConfluenceUser user, Map<String, List<?>> indexData ) {
+  public static FormData asFedexIdea(AoFormData aoFormData, PageService pageService, ConfluenceUser user,  Set<FormIndex> indexData ) {
     try {
       return new FormData.Builder()
         .withGlobalId(aoFormData.getGlobalId())

@@ -1,6 +1,8 @@
 package au.com.agiledigital.structured_form.rest;
 
 import au.com.agiledigital.structured_form.model.FormData;
+import au.com.agiledigital.structured_form.model.FormIndex;
+import au.com.agiledigital.structured_form.model.FormIndexQuery;
 import au.com.agiledigital.structured_form.model.FormSchema;
 import au.com.agiledigital.structured_form.service.FormDataService;
 import com.atlassian.confluence.api.model.content.id.ContentId;
@@ -96,10 +98,13 @@ public class Index {
   ) {
     this.applyNoCacheHeaders(response);
 
-    List<AbstractMap.SimpleEntry> test = Arrays.stream(StringUtils.split(request.getQueryString(), "&"))
+    List<FormIndexQuery> test = Arrays.stream(StringUtils.split(request.getQueryString(), "&"))
       .map(string -> StringUtils.split(string, "="))
       .filter(r -> r.length > 1)
-      .map(r -> new AbstractMap.SimpleEntry(r[0], r[1])).collect(Collectors.toList());
+      .map(r ->
+        new FormIndexQuery(r[1], Integer.parseInt(StringUtils.substring(r[0], r[0].length()-1), 10),(StringUtils.startsWith(r[0], "number")))
+    )
+      .collect(Collectors.toList());
 
 
     List<FormData> allIdeas = test.size() > 0 ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();
@@ -119,7 +124,7 @@ public class Index {
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", getPageUrl(idea.getContentId()));
       preJsonIdea.put("creator", idea.getCreator().getName());
-      preJsonIdea.put("indexData", idea.getIndexData());
+      preJsonIdea.put("indexData", idea.getIndexData().stream().map(FormIndex::getAsMap).toArray());
       preJsonIdea.put("indexSchema", this.gson.fromJson(indexSchema, Map.class));
 
       return preJsonIdea;
@@ -127,6 +132,7 @@ public class Index {
 
     return this.gson.toJson(preConvert);
   }
+
 
   @Nonnull
   private String getPageUrl(ContentId contentId) {
