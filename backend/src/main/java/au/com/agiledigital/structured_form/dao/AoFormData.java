@@ -68,4 +68,20 @@ public interface AoFormData extends RawEntity<Long> {
   String getIndexNumber4();
   void setIndexNumber4(double indexNumber4);
 
+  @Indexed
+  String getBooleanNumber0();
+  void setBooleanNumber0(boolean booleanNumber0);
+  @Indexed
+  String getBooleanNumber1();
+  void setBooleanNumber1(boolean booleanNumber1);
+  @Indexed
+  String getBooleanNumber2();
+  void setBooleanNumber2(boolean booleanNumber2);
+  @Indexed
+  String getBooleanNumber3();
+  void setBooleanNumber3(boolean booleanNumber3);
+  @Indexed
+  String getBooleanNumber4();
+  void setBooleanNumber4(boolean booleanNumber4);
+
 }

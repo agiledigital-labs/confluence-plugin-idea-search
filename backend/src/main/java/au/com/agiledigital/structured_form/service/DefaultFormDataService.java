@@ -67,25 +67,20 @@ public class DefaultFormDataService implements FormDataService {
     return test;
   }
 
-  private void updateIndex(FormSchema formSchema) {
+  private boolean updateIndex(FormSchema formSchema) {
     try {
-      int size = this.formDataDao.size();
 
-      for (int i = 0; i < (size / 4); i = i + 4) {
-
-        AoFormData[] data = this.formDataDao.find(i, i + 4);
+        AoFormData[] data = this.formDataDao.findAll();
         Arrays.asList(data).forEach(ao ->
           this.formDataDao.updateIndexValues(ao, this.getIndexData(ao, formSchema.getIndexSchema()))
         );
-      }
+
+      return true;
     } catch (Throwable t){
-      log(t.toString());
+      return false;
     }
   }
 
-  private void log(String toString) {
-    log(toString);
-  }
 
   /**
    * Gets the schema with query id
@@ -164,12 +159,12 @@ public class DefaultFormDataService implements FormDataService {
    */
   public List<FormData> queryAllFedexIdea() {
 
-    return asListFedexIdea(formDataDao.findAll());
+    return asListFedexIdea(formDataDao.find(0, 10));
   }
 
   public List<FormData> queryAllFedexIdea(List<FormIndexQuery> search) {
 
-    return asListFedexIdea(formDataDao.findAll(search));
+    return asListFedexIdea(formDataDao.find(search, 0, 10));
   }
 
   /**

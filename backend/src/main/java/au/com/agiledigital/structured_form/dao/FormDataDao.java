@@ -14,11 +14,13 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static au.com.agiledigital.structured_form.helpers.Utilities.*;
+import static au.com.agiledigital.structured_form.helpers.Utilities.asFedexIdea;
+import static au.com.agiledigital.structured_form.helpers.Utilities.getUsername;
 
 /**
  * Fedex Idea Dao
@@ -136,7 +138,7 @@ public class FormDataDao {
     return asFedexIdea(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
-  public FormData updateIndexValues(AoFormData aoFormData, Set<FormIndex>indices){
+  public FormData updateIndexValues(AoFormData aoFormData, Set<FormIndex> indices) {
     this.setIndexStrings(indices, aoFormData);
     this.setIndexNumbers(indices, aoFormData);
 
@@ -173,46 +175,37 @@ public class FormDataDao {
 
   }
 
-  public AoFormData[] findAll(List<FormIndexQuery> search) {
-
-    String whereClues = StringUtils.join(search.stream().map(this::indexSearchString).map(s -> s.toUpperCase()).toArray(), " AND ");
-    Object[] whereParams = search.stream().map(this::indexSearchParams).toArray();
-
-    Query query = Query
-      .select().where(whereClues, whereParams);
-
-    return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
-
-  }
-
-  public AoFormData[] find( int offset, int limit){
+  public AoFormData[] find(int offset, int limit) {
 
     Query query = Query
       .select().limit(10).offset(0);
 
     return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
   }
-  public AoFormData[] find(List<FormIndexQuery> search){
-    String whereClues = StringUtils.join(search.stream().map(this::indexSearchString).map(s -> s.toUpperCase()).toArray(), " AND ");
-    Object[] whereParams = search.stream().map(this::indexSearchParams).toArray();
+
+  public AoFormData[] find(List<FormIndexQuery> search) {
+    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), " AND ");
+    List<String> whereParams = (search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).collect(Collectors.toList()));
 
     Query query = Query
       .select().where(whereClues, whereParams).limit(10).offset(0);
 
     return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
   }
-  public AoFormData[] find(List<FormIndexQuery> search, int offset){
-    String whereClues = StringUtils.join(search.stream().map(this::indexSearchString).map(s -> s.toUpperCase()).toArray(), " AND ");
-    Object[] whereParams = search.stream().map(this::indexSearchParams).toArray();
+
+  public AoFormData[] find(List<FormIndexQuery> search, int offset) {
+    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), " AND ");
+    List<String> whereParams = (search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).collect(Collectors.toList()));
 
     Query query = Query
       .select().where(whereClues, whereParams).limit(10).offset(offset);
 
     return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
   }
-  public AoFormData[] find(List<FormIndexQuery> search, int offset, int limit){
-    String whereClues = StringUtils.join(search.stream().map(this::indexSearchString).map(s -> s.toUpperCase()).toArray(), " AND ");
-    Object[] whereParams = search.stream().map(this::indexSearchParams).toArray();
+
+  public AoFormData[] find(List<FormIndexQuery> search, int offset, int limit) {
+    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), " AND ");
+    Object[] whereParams = (search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).collect(Collectors.toList()).toArray());
 
     Query query = Query
       .select().where(whereClues, whereParams).limit(limit).offset(offset);
@@ -220,12 +213,6 @@ public class FormDataDao {
     return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
   }
 
-
-
-  @Nonnull
-  private String indexSearchParams(FormIndex formIndex) {
-    return formIndex.getSearchableAsString() + "%";
-  }
 
   @Nonnull
   private String indexSearchString(FormIndex formIndex) {
@@ -304,8 +291,8 @@ public class FormDataDao {
     aoFormData.setFormData(formData.getFormData());
   }
 
-  public int size(){
-    return  this.ao.count(AO_FEDEX_IDEA_TYPE);
+  public int size() {
+    return this.ao.count(AO_FEDEX_IDEA_TYPE);
   }
 
 

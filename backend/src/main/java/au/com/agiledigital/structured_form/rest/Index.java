@@ -20,6 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,13 +103,19 @@ public class Index {
   ) {
     this.applyNoCacheHeaders(response);
 
-    List<FormIndexQuery> test = Arrays.stream(StringUtils.split(request.getQueryString(), "&"))
-      .map(string -> StringUtils.split(string, "="))
-      .filter(r -> r.length > 1)
-      .map(r ->
-        new FormIndexQuery(r[1], Integer.parseInt(StringUtils.substring(r[0], r[0].length()-1), 10),(StringUtils.startsWith(r[0], "number")))
-    )
-      .collect(Collectors.toList());
+
+    List<FormIndexQuery> test = null;
+    try {
+      test = Arrays.stream(StringUtils.split(URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8.toString()), "&"))
+        .map(string -> StringUtils.split(string, "="))
+        .filter(r -> r.length > 1)
+        .map(r ->
+          new FormIndexQuery( Integer.parseInt(StringUtils.substring(r[0], r[0].length()-1), 10),r[0], r[1])
+      )
+        .collect(Collectors.toList());
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
 
 
     List<FormData> allIdeas = test.size() > 0 ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();

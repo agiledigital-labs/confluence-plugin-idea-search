@@ -25,8 +25,6 @@ type IdeaPage = {
 
 const AJS = window.AJS ? window.AJS : undefined;
 
-// rows to be shown on each page of the paginated table
-const rowsPerPage: number = 10;
 // the default rendered page for paginated table
 const defaultPage: number = 1;
 
@@ -47,15 +45,21 @@ const OuterTable = () => {
   // if not found, set to confluence as default
   const contextPath = AJS?.contextPath() ? AJS.contextPath() : "";
 
+  // rows to be shown on each page of the paginated table
+  const rowsPerPage = 10;
+
   const [formData, setFormData] = useState<FormDataType>();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   // populate form data with schema from the database
   useEffect(() => {
-    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((response) =>
+    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((response) => {
       setFormData({
         indexSchema: JSON.parse(response.data.indexSchema),
-      })
-    );
+      });
+      setIsLoading(false);
+    });
   }, []);
 
   // search term will be empty fields on initial render
@@ -118,7 +122,7 @@ const OuterTable = () => {
     return <>loading...</>;
   }
   const headersList = [
-    { key: "Title", source: "atlas" },
+    { key: "Title", source: "title" },
     ...formData.indexSchema.stringIndex.map((key, index) => ({
       key,
       source: `string${index}`,
@@ -152,12 +156,13 @@ const OuterTable = () => {
   return (
     <div>
       <DynamicTable
+        isLoading={isLoading}
         head={head(headersList)}
         rows={rows}
+        emptyView={<>loading...</>}
         rowsPerPage={rowsPerPage}
         defaultPage={defaultPage}
         loadingSpinnerSize="large"
-        isLoading={false}
         isFixedSize
         defaultSortKey="Title"
         defaultSortOrder="ASC"

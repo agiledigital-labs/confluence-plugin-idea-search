@@ -1,7 +1,6 @@
 package au.com.agiledigital.structured_form.model;
 
 import com.atlassian.fugue.Either;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +17,9 @@ public class FormIndex {
     } else {
       this.value = Either.left(value);
     }
+  }
+  public FormIndex(int indexNumber) {
+    this.indexNumber = indexNumber;
   }
 
   public FormIndex(String value,  int indexNumber) {
@@ -39,13 +41,7 @@ public class FormIndex {
       return value.getOrElse(Double.NaN).toString();
     }
   }
-  public String getSearchableAsString() {
-    if (value.isLeft()) {
-      return value.swap().getOrElse("");
-    } else {
-      return StringUtils.split(value.getOrElse(Double.NaN).toString(), ".")[0];
-    }
-  }
+
 
   public void setValue(String value){
     this.value = Either.left(value);
