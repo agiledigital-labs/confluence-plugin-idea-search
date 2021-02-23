@@ -1,84 +1,127 @@
 package au.com.agiledigital.structured_form.model;
 
 import com.atlassian.fugue.Either;
+import com.google.gson.JsonElement;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class FormIndex {
+  public enum Possibles {STRING, NUMBER, BOOLEAN, STATIC}
 
-  private Either<String, Double> value;
+  private Object value;
   private Integer indexNumber;
+  private Possibles type;
+  private String key;
 
-  public FormIndex(String value, int indexNumber, boolean isNumber) {
+  public FormIndex(String value, int indexNumber, Possibles type, String key) {
     this.indexNumber = indexNumber;
-    if (isNumber) {
-      this.value = Either.right(Double.parseDouble(value));
-    } else {
-      this.value = Either.left(value);
+this.key = key;
+    this.type = type;
+    this.value = value;
+
+  }
+  public FormIndex(Object value, JsonElement indexNumber, String type, String key) {
+    this.key = key;
+
+    switch(type){
+      case "NUMBER":
+        this.type = Possibles.NUMBER;
+    this.indexNumber = indexNumber.getAsInt();
+        break;
+      case "STATIC":
+        this.type = Possibles.STATIC;
+        this.indexNumber = Integer.MIN_VALUE;
+        break;
+      case "BOOLEAN":
+        this.type = Possibles.BOOLEAN;
+        this.indexNumber = indexNumber.getAsInt();
+        break;
+      default:
+        this.type = Possibles.STRING;
+        this.indexNumber = indexNumber.getAsInt();
+        break;
     }
+    this.value = value;
+
   }
-  public FormIndex(int indexNumber) {
-    this.indexNumber = indexNumber;
+  public FormIndex(Object value,  String type, String key) {
+    this.indexNumber = Integer.MIN_VALUE;
+    this.value = value;
+    this.key = key;
+
+    switch(type){
+      case "NUMBER":
+        this.type = Possibles.NUMBER;
+        break;
+      case "STATIC":
+        this.type = Possibles.STATIC;
+        this.indexNumber = Integer.MIN_VALUE;
+        break;
+      case "BOOLEAN":
+        this.type = Possibles.BOOLEAN;
+        break;
+      default:
+        this.type = Possibles.STRING;
+        break;
+    }
+
   }
 
-  public FormIndex(String value,  int indexNumber) {
-    this.indexNumber = indexNumber;
-
-    this.value = Either.left(value);
-  }
-
-  public FormIndex(Double value, int indexNumber) {
-    this.indexNumber = indexNumber;
-
-    this.value = Either.right(value);
-  }
 
   public String getValueAsString() {
-    if (value.isLeft()) {
-      return value.swap().getOrElse("");
-    } else {
-      return value.getOrElse(Double.NaN).toString();
+    switch (this.type) {
+      case NUMBER:
+        return ((Double) this.value).toString();
+      case BOOLEAN:
+        return ((Boolean) this.value).toString();
+      default:
+        return ((String) this.value);
+
     }
   }
 
 
-  public void setValue(String value){
+  public void setValue(String value) {
     this.value = Either.left(value);
   }
 
-  public void setValue(Double value){
+  public void setValue(Double value) {
     this.value = Either.right(value);
   }
 
-  public String getString() {
-    return value.swap().getOrElse("");
+
+  public boolean isString() {
+    return this.type == Possibles.STRING || this.type == Possibles.STATIC;
   }
-  public Double getNumber() {
-    return value.getOrElse(Double.NaN);
-  }
-    public boolean isString() {
-    return value.isLeft();
-  }
+
   public boolean isNumber() {
-    return value.isRight();
+    return this.type == Possibles.NUMBER;
+  }
+
+  public boolean isBoolean() {
+    return this.type == Possibles.BOOLEAN;
   }
 
   public Map getAsMap() {
-    Map<String, java.io.Serializable> test = new HashMap<>();
+    Map<String, Object> test = new HashMap<>();
 
     test.put("index", this.indexNumber);
-    if(this.value.isRight()) {
-      test.put("value", this.value.getOrElse(Double.NEGATIVE_INFINITY));
-    } else {
-      test.put("value", this.value.swap().getOrElse(""));
-    }
-    test.put("type", this.value.isRight() ? "number" : "string");
+
+    test.put("value", this.getValue());
+
+    test.put("type", this.type.toString().toLowerCase());
+
+    test.put("key", this.key);
 
     return test;
   }
 
+  public Object getValue() {
+    return this.value;
+  }
+
   public Integer getIndexNumber() {
-    return indexNumber;
+    return this.indexNumber;
   }
 }

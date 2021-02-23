@@ -19,7 +19,7 @@ public interface AoFormData extends RawEntity<Long> {
 
   @StringLength(-1)
   String getTitle();
-  void setTitle(String ideaTitle);
+  void setTitle(String title);
 
   @Indexed
   long getContentId();
@@ -37,7 +37,6 @@ public interface AoFormData extends RawEntity<Long> {
   @Indexed
   String getIndexString0();
   void setIndexString0(String indexString0);
-
   @Indexed
   String getIndexString1();
   void setIndexString1(String indexString1);
@@ -69,19 +68,19 @@ public interface AoFormData extends RawEntity<Long> {
   void setIndexNumber4(double indexNumber4);
 
   @Indexed
-  String getBooleanNumber0();
-  void setBooleanNumber0(boolean booleanNumber0);
+  String getIndexBoolean0();
+  void setIndexBoolean0(boolean indexBoolean0);
   @Indexed
-  String getBooleanNumber1();
-  void setBooleanNumber1(boolean booleanNumber1);
+  String getIndexBoolean1();
+  void setIndexBoolean1(boolean indexBoolean1);
   @Indexed
-  String getBooleanNumber2();
-  void setBooleanNumber2(boolean booleanNumber2);
+  String getIndexBoolean2();
+  void setIndexBoolean2(boolean indexBoolean2);
   @Indexed
-  String getBooleanNumber3();
-  void setBooleanNumber3(boolean booleanNumber3);
+  String getIndexBoolean3();
+  void setIndexBoolean3(boolean indexBoolean3);
   @Indexed
-  String getBooleanNumber4();
-  void setBooleanNumber4(boolean booleanNumber4);
+  String getIndexBoolean4();
+  void setIndexBoolean4(boolean indexBoolean4);
 
 }

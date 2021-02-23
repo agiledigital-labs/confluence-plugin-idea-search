@@ -110,7 +110,7 @@ public class Index {
         .map(string -> StringUtils.split(string, "="))
         .filter(r -> r.length > 1)
         .map(r ->
-          new FormIndexQuery( Integer.parseInt(StringUtils.substring(r[0], r[0].length()-1), 10),r[0], r[1])
+          new FormIndexQuery( r[0], r[1])
       )
         .collect(Collectors.toList());
     } catch (UnsupportedEncodingException e) {
@@ -120,23 +120,12 @@ public class Index {
 
     List<FormData> allIdeas = test.size() > 0 ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();
 
-    String indexSchema = this.formDataService.getCurrentSchema().getIndexSchema();
-
-    List<Map> preConvert = allIdeas.stream().filter(i -> {
-      try {
-        i.getFormData().toLowerCase();
-        i.getGlobalId();
-        return true;
-      } catch (NullPointerException e){
-        return false;
-      }
-    }).map(idea -> {
+    List<Map> preConvert = allIdeas.stream().map(idea -> {
       Map preJsonIdea = new HashMap<String, String>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", getPageUrl(idea.getContentId()));
       preJsonIdea.put("creator", idea.getCreator().getName());
       preJsonIdea.put("indexData", idea.getIndexData().stream().map(FormIndex::getAsMap).toArray());
-      preJsonIdea.put("indexSchema", this.gson.fromJson(indexSchema, Map.class));
 
       return preJsonIdea;
     }).collect(Collectors.toList());
@@ -148,10 +137,8 @@ public class Index {
   @Nonnull
   private String getPageUrl(ContentId contentId) {
     try {
-      return new StringBuilder()
-        .append(this.settingsManager.getGlobalSettings().getBaseUrl())
-        .append(this.pageService.getIdPageLocator(contentId.asLong()).getPage().getUrlPath())
-        .toString();
+      return this.settingsManager.getGlobalSettings().getBaseUrl() +
+        this.pageService.getIdPageLocator(contentId.asLong()).getPage().getUrlPath();
     } catch (NullPointerException nullPointerException) {
       return this.settingsManager.getGlobalSettings().getBaseUrl();
     }

@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static au.com.agiledigital.structured_form.helpers.Utilities.*;
 
@@ -159,7 +160,7 @@ public class DefaultFormDataService implements FormDataService {
    */
   public List<FormData> queryAllFedexIdea() {
 
-    return asListFedexIdea(formDataDao.find(0, 10));
+    return asListFedexIdea(formDataDao.find());
   }
 
   public List<FormData> queryAllFedexIdea(List<FormIndexQuery> search) {
@@ -176,61 +177,157 @@ public class DefaultFormDataService implements FormDataService {
    */
   private List<FormData> asListFedexIdea(AoFormData[] aoFormData) {
 
-    return Arrays.stream(aoFormData)
+    return Arrays.stream(aoFormData).filter(form -> form.getFormData() != null)
       .map(aoIdea -> asFedexIdea(aoIdea, this.pageService, getUsername(aoIdea.getCreatorUserKey(), this.userAccessor), getIndexData(aoIdea)))
       .collect(Collectors.toList());
   }
 
 
-  private void createIndex(JsonElement indexElement, int index, LinkedHashMap<String, ?> jsonFromData, Set<FormIndex> indexSet, boolean shouldBeNumber) {
-    String key = indexElement.getAsString();
-    if (jsonFromData != null && jsonFromData.containsKey(key) && (shouldBeNumber)) {
-      indexSet.add(new FormIndex(jsonFromData.get(key).toString(), index, true));
-    } else if (jsonFromData != null && jsonFromData.containsKey(key) && (!shouldBeNumber)) {
-      indexSet.add(new FormIndex(jsonFromData.get(key).toString(), index, false));
-    }
-  }
+
 
 
   private Set<FormIndex> getIndexData(AoFormData idea, String indexSchema) {
-    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
 
-    return (Set<FormIndex>) getFormIndices(jsonFromData, indexSchema);
+    return getFormIndices(asFedexIdea(idea, this.pageService, getUsername(idea.getCreatorUserKey(), this.userAccessor)), indexSchema);
   }
 
   private Set<FormIndex> getIndexData(AoFormData idea) {
-    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
 
-    return (Set<FormIndex>) getFormIndices(jsonFromData);
+    return  getFormIndices(asFedexIdea(idea, this.pageService, getUsername(idea.getCreatorUserKey(), this.userAccessor)));
   }
 
   private Set<FormIndex> getIndexData(FormData idea) {
-    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
 
-    return (Set<FormIndex>) getFormIndices(jsonFromData);
+    return getFormIndices(idea);
   }
 
   @Nonnull
-  private Set<FormIndex> getFormIndices(LinkedHashMap<String, ?> jsonFromData) {
+  private Set<FormIndex> getFormIndices(FormData idea) {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
-    return getFormIndices(jsonFromData, jsonIndexSchema);
+    return getFormIndices(idea, jsonIndexSchema);
   }
   @Nonnull
-  private Set<FormIndex> getFormIndices(LinkedHashMap<String, ?> jsonFromData, String indexSchema) {
+  private Set<FormIndex> getFormIndices(FormData idea, String indexSchema) {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(indexSchema, LinkedHashMap.class);
-    return getFormIndices(jsonFromData, jsonIndexSchema);
+    return getFormIndices(idea, jsonIndexSchema);
   }
+
 
   @Nonnull
-  private Set<FormIndex> getFormIndices(LinkedHashMap<String, ?> jsonFromData, LinkedHashMap<String, String> jsonIndexSchema) {
-    JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("stringIndex");
-    JsonElement jsonElementNumberIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("numberIndex");
+  private Set<FormIndex> getFormIndices(FormData idea, LinkedHashMap<String, String> jsonIndexSchema) {
 
-    Set<FormIndex> index = new HashSet<>(Collections.emptySet());
-    jsonElementStringIndexSchema.getAsJsonArray().forEach(withCounter((i, r) -> createIndex(r, i, jsonFromData, index, false)));
-    jsonElementNumberIndexSchema.getAsJsonArray().forEach(withCounter((i, r) -> createIndex(r, i, jsonFromData, index, true)));
-    return index;
+
+//    {"stringIndex":["firstName","lastName"],
+//      "numberIndex":[  "age", "telephone"]
+//    }
+
+//    "index": [{
+//    "key": "firstName",
+//    "index": 1,
+//    "type": "string"
+//    }, {
+//    "key": "lastName",
+//    "index": 2
+//    "type": "string"
+//    },{
+//    "key": "title"
+//    "type": "static"
+//    }]
+
+    JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("index");
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+      jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
+      .map(element -> this.createIndex(element, idea)).collect(Collectors.toSet());
+
   }
+
+  private FormIndex createIndex(JsonElement indexElement, FormData idea) {
+     String key = indexElement.getAsJsonObject().get("key").getAsString();
+     String type = indexElement.getAsJsonObject().get("type").getAsString().toUpperCase();
+     JsonElement index = indexElement.getAsJsonObject().get("index");
+    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
+     if (index != null) {
+       return new FormIndex(jsonFromData.get(key), index, type, key);
+     }else if(jsonFromData.get(key) == null){
+       return new FormIndex(idea.get(key), type, key);
+     }
+     else{
+       return new FormIndex(jsonFromData.get(key).toString(), type, key);
+
+     }
+  }
+
 }
 
-
+/**
+ * [{
+ *   "creator": "admin",
+ *   "indexData": [{"index": 2, "type": "string", "value": "asdf", "key": "lastName"}, {
+ *     "index": -2147483648,
+ *     "type": "static",
+ *     "value": "asdf",
+ *     "key": "title"
+ *   }, {"index": 1, "type": "string", "value": "asd", "key": "firstName"}],
+ *   "title": "asdf",
+ *   "url": "http://wren:1990/confluence/display/ds/asdf"
+ * }, {
+ *   "creator": "admin",
+ *   "indexData": [{"index": -2147483648, "type": "static", "value": "fdsg", "key": "title"}, {
+ *     "index": 2,
+ *     "type": "string",
+ *     "value": "df",
+ *     "key": "lastName"
+ *   }, {"index": 1, "type": "string", "value": "dv", "key": "firstName"}],
+ *   "title": "fdsg",
+ *   "url": "http://wren:1990/confluence/display/ds/fdsg"
+ * }, {
+ *   "creator": "admin",
+ *   "indexData": [{"index": 1, "type": "string", "value": "asdf", "key": "firstName"}, {
+ *     "index": 2,
+ *     "type": "string",
+ *     "value": "asfd",
+ *     "key": "lastName"
+ *   }, {"index": -2147483648, "type": "static", "value": "asf", "key": "title"}],
+ *   "title": "asf",
+ *   "url": "http://wren:1990/confluence/display/ds/asf"
+ * }, {
+ *   "creator": "admin",
+ *   "indexData": [{"index": 1, "type": "string", "value": "sdfg", "key": "firstName"}, {
+ *     "index": 2,
+ *     "type": "string",
+ *     "value": "sdfg",
+ *     "key": "lastName"
+ *   }, {"index": -2147483648, "type": "static", "value": "sdfg", "key": "title"}],
+ *   "title": "sdfg",
+ *   "url": "http://wren:1990/confluence/display/ds/sdfg"
+ * }, {
+ *   "creator": "admin",
+ *   "indexData": [{"index": 2, "type": "string", "value": "Mca", "key": "lastName"}, {
+ *     "index": -2147483648,
+ *     "type": "static",
+ *     "value": "Title",
+ *     "key": "title"
+ *   }, {"index": 1, "type": "string", "value": "Rboi", "key": "firstName"}],
+ *   "title": "Title",
+ *   "url": "http://wren:1990/confluence/display/ds/Title"
+ * }, {
+ *   "creator": "admin",
+ *   "indexData": [{"index": -2147483648, "type": "static", "value": "fdg", "key": "title"}, {
+ *     "index": 1,
+ *     "type": "string",
+ *     "key": "firstName"
+ *   }, {"index": 2, "type": "string", "key": "lastName"}],
+ *   "title": "fdg",
+ *   "url": "http://wren:1990/confluence/display/ds/fdg"
+ * }, {
+ *   "creator": "admin",
+ *   "indexData": [{"index": 2, "type": "string", "value": "S", "key": "lastName"}, {
+ *     "index": 1,
+ *     "type": "string",
+ *     "value": "Shove",
+ *     "key": "firstName"
+ *   }, {"index": -2147483648, "type": "static", "value": "shouv", "key": "title"}],
+ *   "title": "shouv",
+ *   "url": "http://wren:1990/confluence/display/ds/shouv"
+ * }]
+ */

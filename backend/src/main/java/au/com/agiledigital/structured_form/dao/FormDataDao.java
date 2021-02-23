@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +27,7 @@ import static au.com.agiledigital.structured_form.helpers.Utilities.getUsername;
 @Component
 public class FormDataDao {
 
+  public static final String AND = " AND ";
   @ComponentImport
   private final ActiveObjects ao;
 
@@ -114,7 +114,7 @@ public class FormDataDao {
    * @param contentId of the page containing the idea
    * @return FormData saved to the data store
    */
-  public FormData upsertByContentId(FormData formData, long contentId, Set<FormIndex> indexes) {
+  public FormData upsertByContentId(FormData formData, long contentId, Set<FormIndex> indices) {
     AoFormData[] aoFormDatas =
       this.ao.find(
         AO_FEDEX_IDEA_TYPE,
@@ -128,22 +128,23 @@ public class FormDataDao {
     AoFormData aoFormData = newIdea
       ? this.ao.create(AO_FEDEX_IDEA_TYPE)
       : aoFormDatas[0];
-
     this.prepareAOFedexIdea(aoFormData, formData);
-    this.setIndexStrings(indexes, aoFormData);
-    this.setIndexNumbers(indexes, aoFormData);
+    this.setIndexStrings(indices, aoFormData);
+    this.setIndexNumbers(indices, aoFormData);
+    this.setIndexBooleans(indices, aoFormData);
 
     aoFormData.save();
 
     return asFedexIdea(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
-  public FormData updateIndexValues(AoFormData aoFormData, Set<FormIndex> indices) {
+  public void updateIndexValues(AoFormData aoFormData, Set<FormIndex> indices) {
     this.setIndexStrings(indices, aoFormData);
     this.setIndexNumbers(indices, aoFormData);
+    this.setIndexBooleans(indices, aoFormData);
 
     aoFormData.save();
-    return asFedexIdea(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
+    asFedexIdea(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -175,7 +176,7 @@ public class FormDataDao {
 
   }
 
-  public AoFormData[] find(int offset, int limit) {
+  public AoFormData[] find() {
 
     Query query = Query
       .select().limit(10).offset(0);
@@ -183,29 +184,9 @@ public class FormDataDao {
     return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
   }
 
-  public AoFormData[] find(List<FormIndexQuery> search) {
-    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), " AND ");
-    List<String> whereParams = (search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).collect(Collectors.toList()));
-
-    Query query = Query
-      .select().where(whereClues, whereParams).limit(10).offset(0);
-
-    return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
-  }
-
-  public AoFormData[] find(List<FormIndexQuery> search, int offset) {
-    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), " AND ");
-    List<String> whereParams = (search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).collect(Collectors.toList()));
-
-    Query query = Query
-      .select().where(whereClues, whereParams).limit(10).offset(offset);
-
-    return this.ao.find(AO_FEDEX_IDEA_TYPE, query);
-  }
-
   public AoFormData[] find(List<FormIndexQuery> search, int offset, int limit) {
-    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), " AND ");
-    Object[] whereParams = (search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).collect(Collectors.toList()).toArray());
+    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), AND);
+    Object[] whereParams = search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).toArray();
 
     Query query = Query
       .select().where(whereClues, whereParams).limit(limit).offset(offset);
@@ -214,18 +195,8 @@ public class FormDataDao {
   }
 
 
-  @Nonnull
-  private String indexSearchString(FormIndex formIndex) {
-
-    String suffix = formIndex.isString() ? "string" : "number";
-
-    String index = formIndex.getIndexNumber().toString();
-
-    return "index_" + suffix + index + " like ?";
-  }
-
   public void setIndexStrings(Set<FormIndex> indices, AoFormData aoFormData) {
-    indices.stream().filter(FormIndex::isString).forEach((s -> setIndexString(aoFormData, s.getString(), s.getIndexNumber())));
+    indices.stream().filter(FormIndex::isString).forEach((s -> setIndexString(aoFormData, ((String) s.getValue()), s.getIndexNumber())));
   }
 
   private void setIndexString(AoFormData aoFormData, String value, Integer index) {
@@ -249,10 +220,34 @@ public class FormDataDao {
         break;
     }
   }
+  public void setIndexBooleans(Set<FormIndex> indices, AoFormData aoFormData) {
+    indices.stream().filter(FormIndex::isBoolean).forEach((s -> setIndexBoolean(aoFormData, ((boolean) s.getValue()), s.getIndexNumber())));
+  }
+
+  private void setIndexBoolean(AoFormData aoFormData, boolean value, Integer index) {
+    switch (index) {
+      case 0:
+        aoFormData.setIndexBoolean0(value);
+        break;
+      case 1:
+        aoFormData.setIndexBoolean1(value);
+        break;
+      case 2:
+        aoFormData.setIndexBoolean2(value);
+        break;
+      case 3:
+        aoFormData.setIndexBoolean3(value);
+        break;
+      case 4:
+        aoFormData.setIndexBoolean4(value);
+        break;
+      default:
+        break;
+    }
+  }
 
   public void setIndexNumbers(Set<FormIndex> indices, AoFormData aoFormData) {
-    indices.stream().filter(FormIndex::isNumber).forEach((s -> setIndexNumber(aoFormData, s.getNumber(), s.getIndexNumber())));
-
+    indices.stream().filter(FormIndex::isNumber).forEach((s -> setIndexNumber(aoFormData, ((Double) s.getValue()), s.getIndexNumber())));
   }
 
   private void setIndexNumber(AoFormData aoFormData, Double value, Integer index) {
@@ -289,10 +284,6 @@ public class FormDataDao {
     aoFormData.setCreatorUserKey(formData.getCreator().getKey().toString());
     aoFormData.setTitle(formData.getTitle());
     aoFormData.setFormData(formData.getFormData());
-  }
-
-  public int size() {
-    return this.ao.count(AO_FEDEX_IDEA_TYPE);
   }
 
 

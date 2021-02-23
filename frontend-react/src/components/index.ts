@@ -30,11 +30,22 @@ declare global {
   }
 }
 
+const indexType = ["string", "number", "boolean", "static"] as const;
+
+export type IndexType = typeof indexType[number];
+
 // the rest endpoint version
 export const version: string = "1";
+
+export type IndexItem = {
+  key: string;
+  type: IndexType;
+  index?: number;
+  value: string | number | boolean;
+};
 
 export interface FormDataType {
   schema?: JSONSchema7;
   uiSchema?: JSONSchema7;
-  indexSchema?: { stringIndex?: Array<string>; numberIndex?: Array<string> };
+  indexSchema?: { index?: Array<Omit<IndexItem, "value">> };
 }

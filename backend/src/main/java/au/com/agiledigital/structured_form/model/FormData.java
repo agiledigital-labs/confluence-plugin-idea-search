@@ -62,6 +62,19 @@ public class FormData {
 
   public  Set<FormIndex> getIndexData() {return this.indexData;}
 
+  public Object get(String key) {
+    switch(key.toLowerCase()){
+      case "creator":
+        return this.getCreator();
+      case "globalid":
+        return this.getGlobalId();
+      case "contentid":
+        return this.getContentId();
+      default :
+        return this.getTitle();
+    }
+  }
+
   public String toString() {
     return ("Idea [globalId="
       + this.globalId

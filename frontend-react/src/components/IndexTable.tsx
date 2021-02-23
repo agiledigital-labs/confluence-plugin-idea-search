@@ -4,8 +4,9 @@ import { makeStyles } from "@material-ui/core";
 import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { FormDataType, version } from "./index";
+import { FormDataType, IndexItem, version } from "./index";
 import { startCase, flow, set, isNil, omitBy } from "lodash/fp";
+import { lowerCase } from "lodash";
 
 type IdeaPage = {
   creator: {
@@ -13,13 +14,8 @@ type IdeaPage = {
     name: string;
     lowerName: string;
   };
-  indexData: {
-    index: number;
-    type: "string" | "number";
-    value: string | number;
-  }[];
+  indexData: Array<IndexItem>;
   title: string;
-  indexSchema: { stringIndex: Array<string>; numberIndex: Array<number> };
   url: string;
 };
 
@@ -86,52 +82,42 @@ const OuterTable = () => {
       .then((response) => setJustPages(response.data));
   }, [searchTerm, contextPath]);
 
-  const row = (page: IdeaPage) =>
-    formData?.indexSchema?.stringIndex && formData?.indexSchema?.numberIndex
-      ? [
-          ...formData.indexSchema.stringIndex.map((item, index) => ({
-            key: `cell-${item}`,
-            content: page.indexData.find(
-              (v) => v.index === index && v.type === "string"
-            )?.value,
-          })),
-          ...formData.indexSchema.numberIndex.map((item, index) => ({
-            key: `cell-${item}`,
-            content: page.indexData.find(
-              (v) => v.index === index && v.type === "number"
-            )?.value,
-          })),
-        ]
+  const order: string[] | undefined = formData?.indexSchema?.index?.map(
+    (item) => item.key
+  );
+
+  const content = (page: IdeaPage) =>
+    order
+      ? order
+          .map((itemKey) => page.indexData.find((inx) => inx.key === itemKey))
+          .map((row) => ({
+            key: `cell-${row?.key}`,
+            content: row?.value,
+          }))
       : [];
 
   const rows = justPages?.map((page: IdeaPage) => ({
     key: `row-${page.title}`,
-    cells: [
-      {
-        key: `cell-${page.title}`,
-        content: <a href={page.url}>{page.title}</a>,
-      },
-      ...row(page),
-    ],
+    cells: content(page),
   }));
 
-  if (
-    !formData?.indexSchema?.stringIndex ||
-    !formData.indexSchema.numberIndex
-  ) {
+  if (!formData?.indexSchema?.index) {
     return <>loading...</>;
   }
-  const headersList = [
-    { key: "Title", source: "title" },
-    ...formData.indexSchema.stringIndex.map((key, index) => ({
-      key,
-      source: `string${index}`,
-    })),
-    ...formData.indexSchema.numberIndex.map((key, index) => ({
-      key,
-      source: `number${index}`,
-    })),
-  ];
+  const headersList = formData.indexSchema.index.map(
+    (indexSchemaItem, index) => ({
+      key: indexSchemaItem.key,
+      source: `${
+        lowerCase(indexSchemaItem.type) !== "static"
+          ? indexSchemaItem.type
+          : indexSchemaItem.key
+      }${
+        lowerCase(indexSchemaItem.type) !== "static"
+          ? indexSchemaItem.index
+          : ""
+      }`,
+    })
+  );
 
   const head = (headers: { key: string; source: string }[]) => ({
     cells: headers.map(({ key: header, source }) => ({
