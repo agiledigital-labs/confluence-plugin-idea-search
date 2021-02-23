@@ -90,9 +90,9 @@ const OuterTable = () => {
     order
       ? order
           .map((itemKey) => page.indexData.find((inx) => inx.key === itemKey))
-          .map((row) => ({
+          .map((row, i) => ({
             key: `cell-${row?.key}`,
-            content: row?.value,
+            content: i === 0 ? <a href={page.url}>{row?.value}</a> : row?.value,
           }))
       : [];
 

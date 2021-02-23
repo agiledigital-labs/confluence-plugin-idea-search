@@ -6,8 +6,8 @@ import au.com.agiledigital.structured_form.model.FormIndexQuery;
 import au.com.agiledigital.structured_form.model.FormSchema;
 import au.com.agiledigital.structured_form.service.FormDataService;
 import com.atlassian.confluence.api.model.content.id.ContentId;
+import com.atlassian.confluence.api.service.settings.SettingsService;
 import com.atlassian.confluence.content.service.PageService;
-import com.atlassian.confluence.setup.settings.SettingsManager;
 import com.atlassian.confluence.web.filter.CachingHeaders;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
@@ -21,8 +21,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -36,16 +34,16 @@ import java.util.stream.Collectors;
 public class Index {
 
   private final FormDataService formDataService;
-  private Gson gson = new Gson();
-  private SettingsManager settingsManager;
-  private PageService pageService;
+  private final Gson gson = new Gson();
+  private final SettingsService settingsService;
+  private final PageService pageService;
 
   @Autowired
   public Index(FormDataService formDataService,
-               SettingsManager settingsManager,
+               SettingsService settingsService,
                PageService pageService) {
     this.formDataService = formDataService;
-    this.settingsManager = settingsManager;
+    this.settingsService = settingsService;
     this.pageService = pageService;
   }
 
@@ -76,8 +74,8 @@ public class Index {
   @Produces({"application/json"})
   @GET
   public String getSchemaIds(@Context HttpServletResponse response) {
-    List<Map> schemaIds = this.formDataService.listSchemas().stream().map(schema -> {
-      Map schemaReturn = new HashMap<String, String>();
+    List<?> schemaIds = this.formDataService.listSchemas().stream().map(schema -> {
+      Map<String,Object> schemaReturn = new HashMap<>();
       schemaReturn.put("id", schema.getGlobalId());
       schemaReturn.put("name", schema.getName());
       schemaReturn.put("version", schema.getVersion());
@@ -118,10 +116,11 @@ public class Index {
     }
 
 
-    List<FormData> allIdeas = test.size() > 0 ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();
+    assert test != null;
+    List<FormData> allIdeas = test.size() > 0  ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();
 
-    List<Map> preConvert = allIdeas.stream().map(idea -> {
-      Map preJsonIdea = new HashMap<String, String>();
+    List<?> preConvert = allIdeas.stream().map(idea -> {
+      Map<String, Object> preJsonIdea = new HashMap<>();
       preJsonIdea.put("title", idea.getTitle());
       preJsonIdea.put("url", getPageUrl(idea.getContentId()));
       preJsonIdea.put("creator", idea.getCreator().getName());
@@ -137,10 +136,10 @@ public class Index {
   @Nonnull
   private String getPageUrl(ContentId contentId) {
     try {
-      return this.settingsManager.getGlobalSettings().getBaseUrl() +
+      return this.settingsService.getGlobalSettings().getBaseUrl() +
         this.pageService.getIdPageLocator(contentId.asLong()).getPage().getUrlPath();
     } catch (NullPointerException nullPointerException) {
-      return this.settingsManager.getGlobalSettings().getBaseUrl();
+      return this.settingsService.getGlobalSettings().getBaseUrl();
     }
   }
 

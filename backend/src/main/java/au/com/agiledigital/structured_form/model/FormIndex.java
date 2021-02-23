@@ -56,7 +56,6 @@ this.key = key;
         break;
       case "STATIC":
         this.type = Possibles.STATIC;
-        this.indexNumber = Integer.MIN_VALUE;
         break;
       case "BOOLEAN":
         this.type = Possibles.BOOLEAN;
@@ -103,7 +102,7 @@ this.key = key;
     return this.type == Possibles.BOOLEAN;
   }
 
-  public Map getAsMap() {
+  public Map<String,Object> getAsMap() {
     Map<String, Object> test = new HashMap<>();
 
     test.put("index", this.indexNumber);

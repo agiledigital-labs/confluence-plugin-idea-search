@@ -6,8 +6,6 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -20,8 +18,8 @@ public class FormData {
   private final ContentId contentId;
   private final ConfluenceUser creator;
   private final String title;
-  private final String formData;
-  private  Set<FormIndex> indexData;
+  private final String formDataValue;
+  private final Set<FormIndex> indexData;
 
 
   @JsonCreator
@@ -37,7 +35,7 @@ public class FormData {
     this.contentId = contentId;
     this.creator = creator;
     this.title = title;
-    this.formData = formData;
+    this.formDataValue = formData;
     this.indexData = indexData;
   }
 
@@ -58,7 +56,7 @@ public class FormData {
     return this.title;
   }
 
-  public String getFormData() {return this.formData;}
+  public String getFormDataValue() {return this.formDataValue;}
 
   public  Set<FormIndex> getIndexData() {return this.indexData;}
 
@@ -106,7 +104,7 @@ public class FormData {
       this.contentId = formData.contentId;
       this.creator = formData.creator;
       this.title = formData.title;
-      this.formData = formData.formData;
+      this.formData = formData.formDataValue;
       this.indexData = formData.indexData;
     }
 

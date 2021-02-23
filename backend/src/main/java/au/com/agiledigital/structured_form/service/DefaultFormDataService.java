@@ -12,13 +12,10 @@ import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -33,7 +30,6 @@ public class DefaultFormDataService implements FormDataService {
   @ComponentImport
   private final UserAccessor userAccessor;
 
-  private Logger log = LoggerFactory.getLogger(DefaultFormDataService.class);
 
   @Autowired
   public DefaultFormDataService(FormDataDao formDataDao, FormSchemaDao formSchemaDao, PageService pageService, UserAccessor userAccessor) {
@@ -68,18 +64,12 @@ public class DefaultFormDataService implements FormDataService {
     return test;
   }
 
-  private boolean updateIndex(FormSchema formSchema) {
-    try {
-
+  private void updateIndex(FormSchema formSchema) throws NullPointerException {
         AoFormData[] data = this.formDataDao.findAll();
         Arrays.asList(data).forEach(ao ->
           this.formDataDao.updateIndexValues(ao, this.getIndexData(ao, formSchema.getIndexSchema()))
         );
 
-      return true;
-    } catch (Throwable t){
-      return false;
-    }
   }
 
 
@@ -217,23 +207,6 @@ public class DefaultFormDataService implements FormDataService {
   private Set<FormIndex> getFormIndices(FormData idea, LinkedHashMap<String, String> jsonIndexSchema) {
 
 
-//    {"stringIndex":["firstName","lastName"],
-//      "numberIndex":[  "age", "telephone"]
-//    }
-
-//    "index": [{
-//    "key": "firstName",
-//    "index": 1,
-//    "type": "string"
-//    }, {
-//    "key": "lastName",
-//    "index": 2
-//    "type": "string"
-//    },{
-//    "key": "title"
-//    "type": "static"
-//    }]
-
     JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("index");
     return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
       jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
@@ -245,7 +218,7 @@ public class DefaultFormDataService implements FormDataService {
      String key = indexElement.getAsJsonObject().get("key").getAsString();
      String type = indexElement.getAsJsonObject().get("type").getAsString().toUpperCase();
      JsonElement index = indexElement.getAsJsonObject().get("index");
-    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormData(), LinkedHashMap.class);
+    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormDataValue(), LinkedHashMap.class);
      if (index != null) {
        return new FormIndex(jsonFromData.get(key), index, type, key);
      }else if(jsonFromData.get(key) == null){

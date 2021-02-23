@@ -283,7 +283,7 @@ public class FormDataDao {
     aoFormData.setContentId(formData.getContentId().asLong());
     aoFormData.setCreatorUserKey(formData.getCreator().getKey().toString());
     aoFormData.setTitle(formData.getTitle());
-    aoFormData.setFormData(formData.getFormData());
+    aoFormData.setFormData(formData.getFormDataValue());
   }
 
 

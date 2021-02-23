@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Servlet to serve a admin configuration page on Configuration UI.
@@ -56,7 +57,7 @@ public class AdminServlet extends HttpServlet {
         "au.com.agiledigital.structured_form:entrypoint-adminPage");
 
     // verify that admin user is requesting the page
-    if (!userManager.isSystemAdmin(userManager.getRemoteUser(request).getUserKey())) {
+    if (!userManager.isSystemAdmin(Objects.requireNonNull(userManager.getRemoteUser(request)).getUserKey())) {
       redirectToLogin(request, response);
       return;
     }
