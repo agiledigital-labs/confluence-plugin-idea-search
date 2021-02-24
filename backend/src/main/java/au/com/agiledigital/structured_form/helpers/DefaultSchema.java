@@ -20,7 +20,7 @@ public class DefaultSchema {
     + "  \"type\": \"object\",\n"
     + "  \"properties\": {\n"
     + "    \"status\": {\n"
-    + "      \"type\": \"string\",\n" // NOSONAR default string schema declaration
+    + "      \"type\": \"string\",\n" // NOSONAR string schema declaration can contain duplicates
     + "      \"title\": \"Status\",\n"
     + "      \"enum\": [\n"
     + "        \"proposed\",\n"
@@ -29,7 +29,7 @@ public class DefaultSchema {
     + "        \"deprecated\",\n"
     + "        \"superseded\"\n"
     + "      ]\n"
-    + "    },\n"
+    + "    },\n" // NOSONAR string schema declaration can contain duplicates
     + "    \"deciders\": {\n"
     + "      \"type\": \"string\",\n"
     + "      \"title\": \"Deciders\"\n"
@@ -48,12 +48,12 @@ public class DefaultSchema {
     + "      \"title\": \"Problem Statement\"\n"
     + "    },\n"
     + "    \"listOfDecisionDrivers\": {\n"
-    + "      \"type\": \"array\",\n"
+    + "      \"type\": \"array\",\n" // NOSONAR string schema declaration can contain duplicates
     + "      \"title\": \"A list of decision drivers\",\n"
-    + "      \"minItems\": 1,\n"
-    + "      \"items\": {\n"
-    + "        \"type\": \"string\"\n"
-    + "      }\n"
+    + "      \"minItems\": 1,\n" // NOSONAR string schema declaration can contain duplicates
+    + "      \"items\": {\n" // NOSONAR string schema declaration can contain duplicates
+    + "        \"type\": \"string\"\n" // NOSONAR string schema declaration can contain duplicates
+    + "      }\n" // NOSONAR string schema declaration can contain duplicates
     + "    },\n"
     + "    \"listOfConsideredOptions\": {\n"
     + "      \"type\": \"array\",\n"
@@ -119,10 +119,10 @@ public class DefaultSchema {
    */
   public static final String INDEX_SCHEMA = "{\n"
     + "  \"index\": [\n"
-    + "    {\n"
+    + "    {\n" // NOSONAR string schema declaration can contain duplicates
     + "      \"key\": \"status\",\n"
     + "      \"index\": 1,\n"
-    + "      \"type\": \"string\"\n"
+    + "      \"type\": \"string\"\n" // NOSONAR string schema declaration can contain duplicates
     + "    },\n"
     + "    {\n"
     + "      \"key\": \"date\",\n"
