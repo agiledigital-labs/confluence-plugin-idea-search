@@ -1,7 +1,7 @@
 package au.com.agiledigital.structured_form.dao;
 
 import au.com.agiledigital.structured_form.model.FormSchema;
-import au.com.agiledigital.structured_form.helpers.SchemaHelper;
+import au.com.agiledigital.structured_form.helpers.DefaultSchema;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import net.java.ao.Query;
@@ -78,7 +78,8 @@ public class FormSchemaDao {
 
     // create and return default schema if none is in the database
     if (aoFormSchema.length == 0){
-      return this.createSchema(new FormSchema.Builder().withSchema(SchemaHelper.defaultSchema).withUiSchema(SchemaHelper.defaultUiSchema).withIndexSchema(SchemaHelper.defaultIndex).build());
+      return this.createSchema(new FormSchema.Builder().withSchema(DefaultSchema.schema).withUiSchema(
+        DefaultSchema.uiSchema).withIndexSchema(DefaultSchema.indexSchema).build());
     }
 
     return this.asSchema(aoFormSchema[0]);
