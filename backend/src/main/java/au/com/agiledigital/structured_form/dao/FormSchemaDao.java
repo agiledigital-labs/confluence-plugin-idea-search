@@ -1,6 +1,7 @@
 package au.com.agiledigital.structured_form.dao;
 
 import au.com.agiledigital.structured_form.model.FormSchema;
+import au.com.agiledigital.structured_form.helpers.SchemaHelper;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import net.java.ao.Query;
@@ -68,18 +69,19 @@ public class FormSchemaDao {
   }
 
   /**
-   * Retrieve one schema from the database by the global id
+   * Retrieve current schema from the database by looking for latest global id
    *
    * @return FormSchema object
    */
   public FormSchema findCurrentSchema() {
-    AoFormSchema aoFormSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"))[0];
+    AoFormSchema[] aoFormSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
 
-    if (aoFormSchema == null){
-      return this.createSchema(new FormSchema.Builder().withSchema("{}").withUiSchema("{}").withIndexSchema("[]").build());
+    // create and return default schema if none is in the database
+    if (aoFormSchema.length == 0){
+      return this.createSchema(new FormSchema.Builder().withSchema(SchemaHelper.defaultSchema).withUiSchema(SchemaHelper.defaultUiSchema).withIndexSchema(SchemaHelper.defaultIndex).build());
     }
 
-    return this.asSchema(aoFormSchema);
+    return this.asSchema(aoFormSchema[0]);
   }
 
   /**

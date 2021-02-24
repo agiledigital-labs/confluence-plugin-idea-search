@@ -57,10 +57,7 @@ public class Index {
   @Produces({"application/json"})
   @GET
   public String getSchema(@Context HttpServletResponse response) {
-    List<FormSchema> allSchema = this.formDataService.listSchemas();
-    FormSchema latestSchema = allSchema.isEmpty() ? (new FormSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
-
-    return this.gson.toJson(latestSchema);
+    return this.gson.toJson(this.formDataService.getCurrentSchema());
   }
 
   /**
