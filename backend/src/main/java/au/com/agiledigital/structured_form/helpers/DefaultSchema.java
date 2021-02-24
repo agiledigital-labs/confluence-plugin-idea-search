@@ -5,12 +5,16 @@ package au.com.agiledigital.structured_form.helpers;
  */
 public class DefaultSchema {
 
+  private DefaultSchema(){
+    throw new IllegalStateException("Utility class");
+  }
+
   /**
    * The default page schema, this will show up when trying to create a page
    * from this plugin without setting a custom schema.
    * Currently it is from markdown ADR: https://adr.github.io/madr/#the-template.
    */
-  public static final String schema = "{\n"
+  public static final String SCHEMA = "{\n"
     + "  \"title\": \"Architectural Decision Records form\",\n"
     + "  \"description\": \"Default schema (for capturing Architectural Decision Records) \",\n"
     + "  \"type\": \"object\",\n"
@@ -101,7 +105,7 @@ public class DefaultSchema {
   /**
    * Default schema for ui styling.
    */
-  public static final String uiSchema = "{\n"
+  public static final String UI_SCHEMA = "{\n"
     + "  \"technicalStory\": {\n"
     + "    \"ui:widget\": \"textarea\"\n"
     + "  },\n"
@@ -113,7 +117,7 @@ public class DefaultSchema {
   /**
    * Default index fields for ADR schema.
    */
-  public static final String indexSchema = "{\n"
+  public static final String INDEX_SCHEMA = "{\n"
     + "  \"index\": [\n"
     + "    {\n"
     + "      \"key\": \"status\",\n"

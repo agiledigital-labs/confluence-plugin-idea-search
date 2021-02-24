@@ -78,8 +78,8 @@ public class FormSchemaDao {
 
     // create and return default schema if none is in the database
     if (aoFormSchema.length == 0){
-      return this.createSchema(new FormSchema.Builder().withSchema(DefaultSchema.schema).withUiSchema(
-        DefaultSchema.uiSchema).withIndexSchema(DefaultSchema.indexSchema).build());
+      return this.createSchema(new FormSchema.Builder().withSchema(DefaultSchema.SCHEMA).withUiSchema(
+        DefaultSchema.UI_SCHEMA).withIndexSchema(DefaultSchema.INDEX_SCHEMA).build());
     }
 
     return this.asSchema(aoFormSchema[0]);
