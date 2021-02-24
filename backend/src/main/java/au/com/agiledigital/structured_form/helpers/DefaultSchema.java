@@ -20,7 +20,7 @@ public class DefaultSchema {
     + "  \"type\": \"object\",\n"
     + "  \"properties\": {\n"
     + "    \"status\": {\n"
-    + "      \"type\": \"string\",\n"
+    + "      \"type\": \"string\",\n" // NOSONAR default string schema declaration
     + "      \"title\": \"Status\",\n"
     + "      \"enum\": [\n"
     + "        \"proposed\",\n"
