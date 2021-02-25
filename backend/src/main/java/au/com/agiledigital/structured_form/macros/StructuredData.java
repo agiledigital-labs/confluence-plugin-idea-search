@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
  * for the velocity template
  */
 public class StructuredData implements Macro {
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
@@ -46,7 +46,7 @@ public class StructuredData implements Macro {
    * @return Map of key and String
    */
   @Nonnull
-  private Map<String, String> getStringMap(JsonElement data) {
+  private Map<String, String> getStringMap(@Nonnull JsonElement data) {
     return data.getAsJsonObject().entrySet()
       .stream().map(entry ->
         new AbstractMap.SimpleEntry<String, String>(headingTransformation(entry.getKey()), this.handleComplexObject(entry.getValue()))
@@ -65,7 +65,7 @@ public class StructuredData implements Macro {
    * @param displayData value from the structured data json to be converted into a string
    * @return paragraph text to be shown on the macro page
    */
-  private String handleComplexObject(JsonElement displayData) {
+  private String handleComplexObject(@Nonnull JsonElement displayData) {
     if (displayData.isJsonNull()) {
       return "No data on this element";
     } else if (displayData.isJsonPrimitive()) {
@@ -103,11 +103,13 @@ public class StructuredData implements Macro {
     return StringUtils.join(headingList, " ");
   }
 
+  @Nonnull
   @Override
   public BodyType getBodyType() {
     return BodyType.RICH_TEXT;
   }
 
+  @Nonnull
   @Override
   public OutputType getOutputType() {
     return OutputType.BLOCK;

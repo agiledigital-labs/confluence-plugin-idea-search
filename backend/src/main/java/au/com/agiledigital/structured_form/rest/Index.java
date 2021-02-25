@@ -9,9 +9,11 @@ import com.atlassian.confluence.api.model.content.id.ContentId;
 import com.atlassian.confluence.api.service.settings.SettingsService;
 import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.web.filter.CachingHeaders;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
@@ -35,13 +37,15 @@ public class Index {
 
   private final FormDataService formDataService;
   private final Gson gson = new Gson();
+  @ComponentImport
   private final SettingsService settingsService;
   private final PageService pageService;
 
   @Autowired
   public Index(FormDataService formDataService,
-               SettingsService settingsService,
-               PageService pageService) {
+               @Qualifier("settingsService")
+               @ComponentImport SettingsService settingsService,
+               @ComponentImport PageService pageService) {
     this.formDataService = formDataService;
     this.settingsService = settingsService;
     this.pageService = pageService;
@@ -57,8 +61,8 @@ public class Index {
   @Produces({"application/json"})
   @GET
   public String getSchema(@Context HttpServletResponse response) {
-    List<FormSchema> allSchema = this.formDataService.listSchemas();
-    FormSchema latestSchema = allSchema.isEmpty() ? (new FormSchema.Builder()).build() : allSchema.get(allSchema.size() - 1);
+    FormSchema schema = this.formDataService.getCurrentSchema();
+    FormSchema latestSchema = schema == null ? (new FormSchema.Builder()).build() : schema;
 
     return this.gson.toJson(latestSchema);
   }
@@ -75,7 +79,7 @@ public class Index {
   @GET
   public String getSchemaIds(@Context HttpServletResponse response) {
     List<?> schemaIds = this.formDataService.listSchemas().stream().map(schema -> {
-      Map<String,Object> schemaReturn = new HashMap<>();
+      Map<String, Object> schemaReturn = new HashMap<>();
       schemaReturn.put("id", schema.getGlobalId());
       schemaReturn.put("name", schema.getName());
       schemaReturn.put("version", schema.getVersion());
@@ -87,44 +91,37 @@ public class Index {
   }
 
   /**
-   * Find and return idea pages based on query
+   * Find and return form data pages based on query
    *
    * @param response the servlet response to populate
-   * @return A json string containing all found idea pages
+   * @return A json string containing all found form data pages
    */
-  @Path("/ideapages")
+  @Path("/form-data")
   @Produces({"application/json"})
   @GET
   public String getIdeaPages(
-    @Context HttpServletRequest request,
+    @Nonnull @Context HttpServletRequest request,
     @Context HttpServletResponse response
-  ) {
+  ) throws UnsupportedEncodingException {
     this.applyNoCacheHeaders(response);
 
 
-    List<FormIndexQuery> test = null;
-    try {
-      test = Arrays.stream(StringUtils.split(URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8.toString()), "&"))
-        .map(string -> StringUtils.split(string, "="))
-        .filter(r -> r.length > 1)
-        .map(r ->
-          new FormIndexQuery( r[0], r[1])
+    List<FormIndexQuery> queries = Arrays.stream(StringUtils.split(URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8.toString()), "&"))
+      .map(queryStrings -> StringUtils.split(queryStrings, "="))
+      .filter(queryStrings -> queryStrings.length > 1)
+      .map(queryStrings ->
+        new FormIndexQuery(queryStrings[0], queryStrings[1])
       )
-        .collect(Collectors.toList());
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
+      .collect(Collectors.toList());
 
+    List<FormData> allIdeas = queries.isEmpty() ?  this.formDataService.queryAllFormData():this.formDataService.queryAllFormData(queries);
 
-    assert test != null;
-    List<FormData> allIdeas = test.size() > 0  ? this.formDataService.queryAllFedexIdea(test) : this.formDataService.queryAllFedexIdea();
-
-    List<?> preConvert = allIdeas.stream().map(idea -> {
+    List<?> preConvert = allIdeas.stream().map(formData -> {
       Map<String, Object> preJsonIdea = new HashMap<>();
-      preJsonIdea.put("title", idea.getTitle());
-      preJsonIdea.put("url", getPageUrl(idea.getContentId()));
-      preJsonIdea.put("creator", idea.getCreator().getName());
-      preJsonIdea.put("indexData", idea.getIndexData().stream().map(FormIndex::getAsMap).toArray());
+      preJsonIdea.put("title", formData.getTitle());
+      preJsonIdea.put("url", getPageUrl(formData.getContentId()));
+      preJsonIdea.put("creator", formData.getCreator().getName());
+      preJsonIdea.put("indexData", formData.getIndexData().stream().map(FormIndex::getAsMap).toArray());
 
       return preJsonIdea;
     }).collect(Collectors.toList());
@@ -134,7 +131,7 @@ public class Index {
 
 
   @Nonnull
-  private String getPageUrl(ContentId contentId) {
+  private String getPageUrl(@Nonnull ContentId contentId) {
     try {
       return this.settingsService.getGlobalSettings().getBaseUrl() +
         this.pageService.getIdPageLocator(contentId.asLong()).getPage().getUrlPath();
@@ -144,7 +141,8 @@ public class Index {
   }
 
   // extracts body from request
-  private static String extractPostRequestBody(HttpServletRequest request) throws IOException {
+  @Nonnull
+  private static String extractPostRequestBody(@Nonnull HttpServletRequest request) throws IOException {
     if ("POST".equalsIgnoreCase(request.getMethod())) {
       try {
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
@@ -167,7 +165,7 @@ public class Index {
   @Consumes({"application/json"})
   @POST
   public String postSchema(
-    @Context HttpServletRequest request,
+    @Nonnull @Context HttpServletRequest request,
     @Context HttpServletResponse response
   ) throws IOException {
     this.applyNoCacheHeaders(response);

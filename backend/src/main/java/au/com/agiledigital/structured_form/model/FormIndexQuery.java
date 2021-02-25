@@ -1,5 +1,6 @@
 package au.com.agiledigital.structured_form.model;
 
+import au.com.agiledigital.structured_form.helpers.Utilities.PossiblesIndexEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -9,34 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static au.com.agiledigital.structured_form.helpers.Utilities.PossiblesIndexEnum.*;
+
 public class FormIndexQuery {
 
-  private enum Possibles {STRING, NUMBER, BOOLEAN, STATIC}
 
-  private List<?> queries;
-  private Possibles type;
-  private Integer indexNumber;
-  private String queryParam;
+  private final List<?> queries;
+  @Nonnull
+  private final PossiblesIndexEnum type;
+  private final Integer indexNumber;
+  @Nonnull
+  private final String queryParam;
 
 
-  public FormIndexQuery(int indexNumber, Possibles possibles, String queries) {
-    this.indexNumber = indexNumber;
-
-    this.type = possibles;
-    switch (possibles) {
-      case NUMBER:
-        this.queries = (Arrays.stream(StringUtils.split(queries, ",")).map(Double::parseDouble).collect(Collectors.toList()));
-        break;
-      case BOOLEAN:
-        this.queries = (Arrays.stream(StringUtils.split(queries, ",")).map(Boolean::parseBoolean).collect(Collectors.toList()));
-        break;
-      default:
-        this.queries = (Arrays.asList((StringUtils.split(queries, ",")).clone()));
-
-    }
-  }
-
-  public FormIndexQuery(String queryParam, String queries) {
+  public FormIndexQuery(@Nonnull String queryParam, String queries) {
     this.type = getPossibles(queryParam);
     this.queryParam = queryParam;
     switch (getPossibles(queryParam)) {
@@ -55,23 +42,23 @@ public class FormIndexQuery {
       default:
         this.queries = (Arrays.asList((StringUtils.split(queries, ","))));
         this.indexNumber = Integer.parseInt(StringUtils.substring(queryParam, queryParam.length() - 1), 10);
-
     }
   }
 
   @Nonnull
-  private Possibles getPossibles(String key) {
+  private PossiblesIndexEnum getPossibles(String key) {
     if (StringUtils.startsWith(key, "number")) {
-      return Possibles.NUMBER;
+      return NUMBER;
     } else if (StringUtils.startsWith(key, "string")) {
-      return Possibles.STRING;
+      return STRING;
     } else if (StringUtils.startsWith(key, "boolean")) {
-      return Possibles.BOOLEAN;
+      return BOOLEAN;
     } else {
-      return Possibles.STATIC;
+      return STATIC;
     }
   }
 
+  @Nonnull
   private String getSuffix() {
     switch (type) {
       case BOOLEAN:
@@ -89,15 +76,16 @@ public class FormIndexQuery {
     return this.queries.size();
   }
 
+  @Nonnull
   public Pair<String, List<String>> getQuery() {
     if (this.queries != null && this.getLength() > 0) {
       switch (type) {
         case BOOLEAN:
-          return this.getListBooleanFunction(((List<Boolean>) this.queries));
+          return this.getListBooleanFunction((List<Boolean>) this.queries);
         case NUMBER:
-          return this.getListDoubleFunction(((List<Double>) this.queries));
+          return this.getListDoubleFunction((List<Double>) this.queries);
         default:
-          return this.getListStringFunction(((List<String>) this.queries));
+          return this.getListStringFunction((List<String>) this.queries);
       }
 
     } else {
@@ -106,26 +94,26 @@ public class FormIndexQuery {
   }
 
   @Nonnull
-  private List<String> indexSearchParams(List<String> list) {
-    return list.stream().map(r -> r + "%").collect(Collectors.toList());
+  private List<String> indexSearchParams(@Nonnull List<String> list) {
+    return list.stream().map(search -> search + "%").collect(Collectors.toList());
   }
 
   @Nonnull
-  private Pair<String, List<String>> getListStringFunction(List<String> objects) {
-    return Pair.of("(" + StringUtils.join(objects.stream().map(ll ->
+  private Pair<String, List<String>> getListStringFunction(@Nonnull List<String> objects) {
+    return Pair.of("(" + StringUtils.join(objects.stream().map(aString ->
       getQueryString()).toArray(), " OR ").toUpperCase() + ")", this.indexSearchParams(objects));
   }
 
   @Nonnull
-  private Pair<String, List<String>> getListDoubleFunction(List<Double> objects) {
-    return Pair.of("(" + StringUtils.join(objects.stream().map(ll ->
+  private Pair<String, List<String>> getListDoubleFunction(@Nonnull List<Double> objects) {
+    return Pair.of("(" + StringUtils.join(objects.stream().map(aDouble ->
         getQueryString()).toArray(), " OR ").toUpperCase() + ")",
-      this.indexSearchParams(objects.stream().map(v -> String.valueOf(v.intValue())).collect(Collectors.toList())));
+      this.indexSearchParams(objects.stream().map(aDouble -> String.valueOf(aDouble.intValue())).collect(Collectors.toList())));
   }
 
   @Nonnull
-  private Pair<String, List<String>> getListBooleanFunction(List<Boolean> objects) {
-    return Pair.of("(" + StringUtils.join(objects.stream().map(ll ->
+  private Pair<String, List<String>> getListBooleanFunction(@Nonnull List<Boolean> objects) {
+    return Pair.of("(" + StringUtils.join(objects.stream().map(aBoolean ->
         getQueryString()).toArray(), " OR ").toUpperCase() + ")",
       this.indexSearchParams(objects.stream().map(Object::toString).collect(Collectors.toList())));
   }

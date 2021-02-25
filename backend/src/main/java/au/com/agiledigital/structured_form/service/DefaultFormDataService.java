@@ -15,16 +15,18 @@ import com.google.gson.JsonElement;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static au.com.agiledigital.structured_form.helpers.Utilities.*;
+import static au.com.agiledigital.structured_form.helpers.Utilities.asFormData;
+import static au.com.agiledigital.structured_form.helpers.Utilities.getUsername;
 
 public class DefaultFormDataService implements FormDataService {
   private final FormDataDao formDataDao;
   private final FormSchemaDao formSchemaDao;
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
   @ComponentImport
   private final PageService pageService;
   @ComponentImport
@@ -42,29 +44,21 @@ public class DefaultFormDataService implements FormDataService {
   /**
    * Create a new FormData
    *
-   * @param formData to be created
-   * @return FormData that was created
-   */
-  public FormData createIdea(FormData formData) {
-    Set<FormIndex> indexes = getIndexData(formData);
-    return this.formDataDao.createIdea(formData, indexes);
-  }
-
-  /**
-   * Create a new FormData
-   *
    * @param formSchema to be created
    * @return FormData that was created
    */
-  public FormSchema createSchema(FormSchema formSchema) {
+  @Nullable
+  public FormSchema createSchema(@Nonnull FormSchema formSchema) {
     FormSchema test = this.formSchemaDao.createSchema(formSchema);
-
-    this.updateIndex( formSchema);
+    AoFormData[] formDataDao =this.formDataDao.findAll();
+    if (formDataDao.length>0) {
+  this.updateIndex(formSchema);
+}
 
     return test;
   }
 
-  private void updateIndex(FormSchema formSchema) throws NullPointerException {
+  private void updateIndex(@Nonnull FormSchema formSchema) throws NullPointerException {
         AoFormData[] data = this.formDataDao.findAll();
         Arrays.asList(data).forEach(ao ->
           this.formDataDao.updateIndexValues(ao, this.getIndexData(ao, formSchema.getIndexSchema()))
@@ -72,13 +66,13 @@ public class DefaultFormDataService implements FormDataService {
 
   }
 
-
   /**
    * Gets the schema with query id
    *
    * @param id of the requested schema
    * @return FormSchema for the id
    */
+  @Nullable
   public FormSchema getSchema(long id) {
     return this.formSchemaDao.findOneSchema(id);
   }
@@ -97,15 +91,16 @@ public class DefaultFormDataService implements FormDataService {
    *
    * @return a list of schemas
    */
+  @Nullable
   public FormSchema getCurrentSchema() {
     return this.formSchemaDao.findCurrentSchema();
   }
 
   /**
-   * Gets a fedex idea by content id
+   * Gets a Form Data by content id
    *
    * @param contentId of the FormData
-   * @return FedexId by the confluence content id
+   * @return FormData by the confluence content id
    */
   public FormData getByContentId(long contentId) {
     return this.formDataDao.getByContentId(contentId);
@@ -116,6 +111,7 @@ public class DefaultFormDataService implements FormDataService {
    *
    * @return the current blueprint id
    */
+  @Nonnull
   public String getBlueprintId() {
     return this.formDataDao.getBlueprintId();
   }
@@ -133,42 +129,44 @@ public class DefaultFormDataService implements FormDataService {
    * Create or Update an existing FormData
    *
    * @param formData  to be updated
-   * @param contentId of idea to be updated
-   * @return FormData that was updated
+   * @param contentId of formData to be updated
    */
-  public FormData upsertIdea(FormData formData, long contentId) {
+  public void upsertFormData(@Nonnull FormData formData, long contentId) {
     Set<FormIndex> indexes = getIndexData(formData);
 
 
-    return this.formDataDao.upsertByContentId(formData, contentId, indexes);
+    this.formDataDao.upsertByContentId(formData, contentId, indexes);
   }
 
   /**
-   * Return every idea from the database
+   * Return every formData from the database
    *
    * @return List<FormData> with no filtering or selection
    */
-  public List<FormData> queryAllFedexIdea() {
+  public List<FormData> queryAllFormData() {
 
-    return asListFedexIdea(formDataDao.find());
+    return asListFormData(formDataDao.find());
   }
 
-  public List<FormData> queryAllFedexIdea(List<FormIndexQuery> search) {
+  public List<FormData> queryAllFormData(@Nonnull List<FormIndexQuery> search) {
 
-    return asListFedexIdea(formDataDao.find(search, 0, 10));
+    return asListFormData(formDataDao.find(search, 0, 10));
   }
 
   /**
    * Convert array of active objects to a list of model objects
    *
-   * @param aoFormData list of active object ideas to be converted to a list of the model
+   * @param aoFormData list of active object formData to be converted to a list of the model
    *                   FormData
    * @return List<FormData>
    */
-  private List<FormData> asListFedexIdea(AoFormData[] aoFormData) {
+  private List<FormData> asListFormData(@Nonnull AoFormData[] aoFormData) {
 
-    return Arrays.stream(aoFormData).filter(form -> form.getFormData() != null)
-      .map(aoIdea -> asFedexIdea(aoIdea, this.pageService, getUsername(aoIdea.getCreatorUserKey(), this.userAccessor), getIndexData(aoIdea)))
+    return Arrays.stream(aoFormData).filter(form -> {
+      form.getFormData();
+      return true;
+    })
+      .map(formData -> asFormData(formData, this.pageService, getUsername(formData.getCreatorUserKey(), this.userAccessor), getIndexData(formData)))
       .collect(Collectors.toList());
   }
 
@@ -176,53 +174,56 @@ public class DefaultFormDataService implements FormDataService {
 
 
 
-  private Set<FormIndex> getIndexData(AoFormData idea, String indexSchema) {
+  @Nonnull
+  private Set<FormIndex> getIndexData(@Nonnull AoFormData aoFormData, String indexSchema) {
 
-    return getFormIndices(asFedexIdea(idea, this.pageService, getUsername(idea.getCreatorUserKey(), this.userAccessor)), indexSchema);
-  }
-
-  private Set<FormIndex> getIndexData(AoFormData idea) {
-
-    return  getFormIndices(asFedexIdea(idea, this.pageService, getUsername(idea.getCreatorUserKey(), this.userAccessor)));
-  }
-
-  private Set<FormIndex> getIndexData(FormData idea) {
-
-    return getFormIndices(idea);
+    return getFormIndices(asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor)), indexSchema);
   }
 
   @Nonnull
-  private Set<FormIndex> getFormIndices(FormData idea) {
+  private Set<FormIndex> getIndexData(@Nonnull AoFormData aoFormData) {
+
+    return  getFormIndices(asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor)));
+  }
+
+  @Nonnull
+  private Set<FormIndex> getIndexData(@Nonnull FormData formData) {
+
+    return getFormIndices(formData);
+  }
+
+  @Nonnull
+  private Set<FormIndex> getFormIndices(@Nonnull FormData formData) {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
-    return getFormIndices(idea, jsonIndexSchema);
+    return getFormIndices(formData, jsonIndexSchema);
   }
   @Nonnull
-  private Set<FormIndex> getFormIndices(FormData idea, String indexSchema) {
+  private Set<FormIndex> getFormIndices(@Nonnull FormData formData, String indexSchema) {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(indexSchema, LinkedHashMap.class);
-    return getFormIndices(idea, jsonIndexSchema);
+    return getFormIndices(formData, jsonIndexSchema);
   }
 
 
   @Nonnull
-  private Set<FormIndex> getFormIndices(FormData idea, LinkedHashMap<String, String> jsonIndexSchema) {
+  private Set<FormIndex> getFormIndices(@Nonnull FormData formData, LinkedHashMap<String, String> jsonIndexSchema) {
 
 
     JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("index");
     return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-      jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false)
-      .map(element -> this.createIndex(element, idea)).collect(Collectors.toSet());
-
+      jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false).filter(Objects::nonNull)
+      .map(element -> this.createIndex(element, formData)).collect(Collectors.toSet());
   }
 
-  private FormIndex createIndex(JsonElement indexElement, FormData idea) {
+  @Nonnull
+  private FormIndex createIndex(@Nonnull JsonElement indexElement, @Nonnull FormData formData) {
      String key = indexElement.getAsJsonObject().get("key").getAsString();
      String type = indexElement.getAsJsonObject().get("type").getAsString().toUpperCase();
      JsonElement index = indexElement.getAsJsonObject().get("index");
-    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(idea.getFormDataValue(), LinkedHashMap.class);
-     if (index != null) {
+    LinkedHashMap<String, ?> jsonFromData = gson.fromJson(formData.getFormDataValue(), LinkedHashMap.class);
+     if (index != null && jsonFromData != null) {
        return new FormIndex(jsonFromData.get(key), index, type, key);
-     }else if(jsonFromData.get(key) == null){
-       return new FormIndex(idea.get(key), type, key);
+     }else if(jsonFromData.get(key) == null ){
+       return new FormIndex(formData.get(key), type, key);
      }
      else{
        return new FormIndex(jsonFromData.get(key).toString(), type, key);
@@ -231,76 +232,3 @@ public class DefaultFormDataService implements FormDataService {
   }
 
 }
-
-/**
- * [{
- *   "creator": "admin",
- *   "indexData": [{"index": 2, "type": "string", "value": "asdf", "key": "lastName"}, {
- *     "index": -2147483648,
- *     "type": "static",
- *     "value": "asdf",
- *     "key": "title"
- *   }, {"index": 1, "type": "string", "value": "asd", "key": "firstName"}],
- *   "title": "asdf",
- *   "url": "http://wren:1990/confluence/display/ds/asdf"
- * }, {
- *   "creator": "admin",
- *   "indexData": [{"index": -2147483648, "type": "static", "value": "fdsg", "key": "title"}, {
- *     "index": 2,
- *     "type": "string",
- *     "value": "df",
- *     "key": "lastName"
- *   }, {"index": 1, "type": "string", "value": "dv", "key": "firstName"}],
- *   "title": "fdsg",
- *   "url": "http://wren:1990/confluence/display/ds/fdsg"
- * }, {
- *   "creator": "admin",
- *   "indexData": [{"index": 1, "type": "string", "value": "asdf", "key": "firstName"}, {
- *     "index": 2,
- *     "type": "string",
- *     "value": "asfd",
- *     "key": "lastName"
- *   }, {"index": -2147483648, "type": "static", "value": "asf", "key": "title"}],
- *   "title": "asf",
- *   "url": "http://wren:1990/confluence/display/ds/asf"
- * }, {
- *   "creator": "admin",
- *   "indexData": [{"index": 1, "type": "string", "value": "sdfg", "key": "firstName"}, {
- *     "index": 2,
- *     "type": "string",
- *     "value": "sdfg",
- *     "key": "lastName"
- *   }, {"index": -2147483648, "type": "static", "value": "sdfg", "key": "title"}],
- *   "title": "sdfg",
- *   "url": "http://wren:1990/confluence/display/ds/sdfg"
- * }, {
- *   "creator": "admin",
- *   "indexData": [{"index": 2, "type": "string", "value": "Mca", "key": "lastName"}, {
- *     "index": -2147483648,
- *     "type": "static",
- *     "value": "Title",
- *     "key": "title"
- *   }, {"index": 1, "type": "string", "value": "Rboi", "key": "firstName"}],
- *   "title": "Title",
- *   "url": "http://wren:1990/confluence/display/ds/Title"
- * }, {
- *   "creator": "admin",
- *   "indexData": [{"index": -2147483648, "type": "static", "value": "fdg", "key": "title"}, {
- *     "index": 1,
- *     "type": "string",
- *     "key": "firstName"
- *   }, {"index": 2, "type": "string", "key": "lastName"}],
- *   "title": "fdg",
- *   "url": "http://wren:1990/confluence/display/ds/fdg"
- * }, {
- *   "creator": "admin",
- *   "indexData": [{"index": 2, "type": "string", "value": "S", "key": "lastName"}, {
- *     "index": 1,
- *     "type": "string",
- *     "value": "Shove",
- *     "key": "firstName"
- *   }, {"index": -2147483648, "type": "static", "value": "shouv", "key": "title"}],
- *   "title": "shouv",
- *   "url": "http://wren:1990/confluence/display/ds/shouv"
- * }]
- */

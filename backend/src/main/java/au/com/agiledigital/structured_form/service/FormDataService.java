@@ -1,29 +1,18 @@
 package au.com.agiledigital.structured_form.service;
 
 import au.com.agiledigital.structured_form.model.FormData;
-import au.com.agiledigital.structured_form.model.FormIndex;
 import au.com.agiledigital.structured_form.model.FormIndexQuery;
 import au.com.agiledigital.structured_form.model.FormSchema;
 
-import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
 
 public interface FormDataService {
-
-  /**
-   * Create an idea in the data store
-   *
-   * @param formData to be created in the store
-   * @return created formData
-   */
-  FormData createIdea(FormData formData);
 
   /**
    * Saves the supplied FormSchema object
    *
    * @param formSchema to be saved in the active object database
-   * @return
+   * @return form schema saved to the database
    */
   FormSchema createSchema(FormSchema formSchema);
 
@@ -35,13 +24,12 @@ public interface FormDataService {
   List<FormSchema> listSchemas();
 
   /**
-   * Update an idea in the data store by the contentID
+   * Update an formData in the data store by the contentID
    *
    * @param formData updated
-   * @param contentId of idea to be updated
-   * @return updated fedex idea
+   * @param contentId of formData to be updated
    */
-  FormData upsertIdea(FormData formData, long contentId);
+  void upsertFormData(FormData formData, long contentId);
 
   /**
    * Gets a schema by id
@@ -80,6 +68,6 @@ public interface FormDataService {
    */
   void setBlueprintId(String blueprintId);
 
-  List<FormData> queryAllFedexIdea();
-  List<FormData> queryAllFedexIdea(List<FormIndexQuery> search);
+  List<FormData> queryAllFormData();
+  List<FormData> queryAllFormData(List<FormIndexQuery> search);
 }

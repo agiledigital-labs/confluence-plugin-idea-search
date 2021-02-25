@@ -30,7 +30,7 @@ const Test = ({ data, changeData }: any) => {
 
 // @ts-ignore
 window.Confluence.Blueprint.setWizard(
-  "au.com.agiledigital.structured_form:ideaSearch-page-blueprint-entry",
+  "au.com.agiledigital.structured_form:formDataSearch-page-blueprint-entry",
   // @ts-ignore
   function (wizard) {
     let data = {};
