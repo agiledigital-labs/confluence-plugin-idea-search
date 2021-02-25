@@ -61,10 +61,7 @@ public class Index {
   @Produces({"application/json"})
   @GET
   public String getSchema(@Context HttpServletResponse response) {
-    FormSchema schema = this.formDataService.getCurrentSchema();
-    FormSchema latestSchema = schema == null ? (new FormSchema.Builder()).build() : schema;
-
-    return this.gson.toJson(latestSchema);
+    return this.gson.toJson(this.formDataService.getCurrentSchema());
   }
 
   /**
