@@ -5,9 +5,7 @@ package au.com.agiledigital.structured_form.helpers;
  */
 public class DefaultSchema {
 
-  private DefaultSchema(){
-    throw new IllegalStateException("Utility class");
-  }
+  private DefaultSchema() { }
 
   /**
    * The default page schema, this will show up when trying to create a page
