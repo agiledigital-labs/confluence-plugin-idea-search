@@ -14,3 +14,5 @@ target/
 backend/idea_search.iml
 backend/**/bundled.*.js
 
+
+backend/src/main/resources/frontend/
