@@ -83,7 +83,7 @@ public class FormSchemaDao {
     AoFormSchema[] aoFormSchemas = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
 
     // create and return default schema if none is in the database
-    if (aoFormSchema.length == 0){
+    if (aoFormSchemas.length == 0){
       return this.createSchema(new FormSchema.Builder().withSchema(DefaultSchema.SCHEMA).withUiSchema(
         DefaultSchema.UI_SCHEMA).withIndexSchema(DefaultSchema.INDEX_SCHEMA).build());
     }

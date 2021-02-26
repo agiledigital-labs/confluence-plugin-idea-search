@@ -1,12 +1,12 @@
-import DynamicTable from "@atlaskit/dynamic-table";
+import { DynamicTableStateless as DynamicTable } from "@atlaskit/dynamic-table";
 import Textfield from "@atlaskit/textfield";
 import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { FormDataType, IndexItem, version } from "./index";
-import { startCase, flow, set, isNil, omitBy, get } from "lodash/fp";
-import { lowerCase } from "lodash";
+import { flow, get, isNil, lowerCase, omitBy, set, startCase } from "lodash/fp";
 import { HeadType } from "@atlaskit/dynamic-table/types";
+import { makeStyles } from "@material-ui/core";
 
 type FormData = {
   creator: {
@@ -24,34 +24,43 @@ const AJS = window.AJS ? window.AJS : undefined;
 // the default rendered page for paginated table
 const defaultPage: number = 1;
 
-const HeaderElement = ({ header, searchTerm, source, handleChange }: any) => (
-  <>
-    <div>{startCase(header)}</div>
-    {console.log(searchTerm, header)}
-    <Textfield
-      id={header}
-      value={get(source, searchTerm)}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
-        handleChange(source, e.target.value);
-      }}
-    />
-  </>
-);
+const useStyles = makeStyles(() => ({
+  root: {
+    margin: "1px!important",
+  },
+}));
+
+const HeaderElement = ({ header, searchTerm, source, handleChange }: any) => {
+  const classes = useStyles();
+
+  return (
+    <>
+      <div>{startCase(header)}</div>
+      <Textfield
+        id={header}
+        value={get(source, searchTerm)}
+        className={`${classes.root} sorter-false parser-false`}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          console.log(e.target.value);
+          handleChange(source, e.target.value);
+        }}
+      />
+    </>
+  );
+};
 
 const headers = (
   handleChange: (key: string, value: string) => void,
   searchTerm: { [p: string]: string | number } | undefined,
-  headers?: { key: string; source: string }[]
+  header?: { key: string; source: string }[]
 ): HeadType => {
   if (!headers) {
     return { cells: [] };
   }
   const headerCells: HeadType = {
-    cells: headers?.map(({ key: header, source }, index) => ({
+    // @ts-ignore
+    cells: header?.map(({ key: header, source }, index) => ({
       key: header,
-      isSortable: false,
-
       content: (
         <HeaderElement {...{ header, searchTerm, source, handleChange }} />
       ),
@@ -70,8 +79,6 @@ const OuterTable = () => {
   const rowsPerPage = 10;
 
   const [formData, setFormData] = useState<FormDataType>();
-
-  const [isLoading, setIsLoading] = useState(true);
 
   const [justPages, setJustPages] = useState<Array<FormData>>();
 
@@ -92,7 +99,6 @@ const OuterTable = () => {
         setFormData({
           indexSchema: JSON.parse(response.data.indexSchema),
         });
-        setIsLoading(false);
       });
   }, []);
 
@@ -107,17 +113,27 @@ const OuterTable = () => {
     }`,
   }));
 
-  const initSearchState = headersList?.reduce(
-    (pre, cur) => ({ ...pre, [cur.source]: "" }),
-    {}
-  );
-
-  const searchState = initSearchState ? initSearchState : {};
-
   // search term will be empty fields on initial render
   const [searchTerm, setSearchTerm] = useState<{
     [key: string]: string | number;
-  }>(searchState);
+  }>({
+    string0: "",
+    number0: "",
+    boolean0: "",
+    string1: "",
+    number1: "",
+    boolean1: "",
+    string2: "",
+    number2: "",
+    boolean2: "",
+    string3: "",
+    number3: "",
+    boolean3: "",
+    string4: "",
+    number4: "",
+    boolean4: "",
+    title: "",
+  });
 
   useEffect(() => {
     axios
@@ -126,7 +142,9 @@ const OuterTable = () => {
           searchTerm ? searchTerm : {}
         )}`
       )
-      .then((response) => setJustPages(response.data));
+      .then((response) => {
+        setJustPages(response.data);
+      });
   }, [searchTerm, contextPath]);
 
   const order: string[] | undefined = formData?.indexSchema?.index?.map(
@@ -155,18 +173,17 @@ const OuterTable = () => {
   const head = headers(handleChange, searchTerm, headersList);
 
   return (
-    <DynamicTable
-      isLoading={isLoading}
-      head={head}
-      rows={rows}
-      defaultSortKey={headersList[0].key}
-      isRankable={false}
-      emptyView={<>No records found</>}
-      rowsPerPage={rowsPerPage}
-      defaultPage={defaultPage}
-      loadingSpinnerSize="large"
-      defaultSortOrder="ASC"
-    />
+    <div>
+      <DynamicTable
+        head={head}
+        rows={rows}
+        rowsPerPage={rowsPerPage}
+        defaultPage={defaultPage}
+        loadingSpinnerSize="large"
+        isFixedSize
+        isLoading={false}
+      />
+    </div>
   );
 };
 
