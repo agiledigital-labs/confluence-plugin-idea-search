@@ -4,6 +4,7 @@ import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -11,17 +12,20 @@ import java.util.Map;
  */
 public class TemplateId implements Macro {
 
+  @Nonnull
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
     return "";
   }
 
+  @Nonnull
   @Override
   public BodyType getBodyType() {
     return BodyType.NONE;
   }
 
+  @Nonnull
   @Override
   public OutputType getOutputType() {
     return OutputType.BLOCK;

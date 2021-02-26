@@ -3,6 +3,7 @@ package au.com.agiledigital.structured_form.blueprints;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.AbstractBlueprintContextProvider;
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -17,8 +18,9 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
    * @param blueprintContext Context provided by Confluence
    * @return Update context
    */
+  @Nonnull
   @Override
-  protected BlueprintContext updateBlueprintContext(BlueprintContext blueprintContext) {
+  protected BlueprintContext updateBlueprintContext(@Nonnull BlueprintContext blueprintContext) {
     Map<String, Object> contextMap = blueprintContext.getMap();
 
     blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());

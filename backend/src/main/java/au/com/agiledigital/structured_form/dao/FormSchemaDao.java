@@ -8,12 +8,14 @@ import net.java.ao.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Fedex Idea Dao
+ * Form Schema Dao
  */
 @Component
 public class FormSchemaDao {
@@ -21,8 +23,8 @@ public class FormSchemaDao {
   @ComponentImport
   private final ActiveObjects ao;
 
-  private static final Class<AoFormBlueprint> AO_IDEA_BLUEPRINT_TYPE = AoFormBlueprint.class;
-  private static final Class<AoFormSchema> AO_IDEA_SCHEMA = AoFormSchema.class;
+  private static final Class<AoFormBlueprint> AO_FORM_DATA_BLUEPRINT_TYPE = AoFormBlueprint.class;
+  private static final Class<AoFormSchema> AO_FORM_DATA_SCHEMA = AoFormSchema.class;
 
   @Autowired
   public FormSchemaDao(ActiveObjects ao) {
@@ -34,8 +36,9 @@ public class FormSchemaDao {
    *
    * @return blueprintId or an empty string if none found
    */
+  @Nonnull
   public String getBlueprintId() {
-    AoFormBlueprint[] blueprints = this.ao.find(AO_IDEA_BLUEPRINT_TYPE, Query.select());
+    AoFormBlueprint[] blueprints = this.ao.find(AO_FORM_DATA_BLUEPRINT_TYPE, Query.select());
     return blueprints.length == 0 ? "" : blueprints[0].getBlueprintId();
   }
 
@@ -45,8 +48,9 @@ public class FormSchemaDao {
    * @param formSchema FormData model object
    * @return FormSchema object created in data store
    */
-  public FormSchema createSchema(FormSchema formSchema) {
-    AoFormSchema aoFormSchema = this.ao.create(AO_IDEA_SCHEMA);
+  @Nullable
+  public FormSchema createSchema(@Nonnull FormSchema formSchema) {
+    AoFormSchema aoFormSchema = this.ao.create(AO_FORM_DATA_SCHEMA);
 
     this.prepareAOSchema(aoFormSchema, formSchema);
 
@@ -62,8 +66,9 @@ public class FormSchemaDao {
    * @param id global id of the schema
    * @return FormSchema object
    */
+  @Nullable
   public FormSchema findOneSchema(long id) {
-    AoFormSchema aoFormSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).where("GLOBAL_ID = ?", id))[0];
+    AoFormSchema aoFormSchema = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select().limit(1).where("GLOBAL_ID = ?", id))[0];
 
     return this.asSchema(aoFormSchema);
   }
@@ -73,16 +78,17 @@ public class FormSchemaDao {
    *
    * @return FormSchema object
    */
+  @Nullable
   public FormSchema findCurrentSchema() {
-    AoFormSchema[] aoFormSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
+    AoFormSchema[] aoFormSchemas = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
 
     // create and return default schema if none is in the database
-    if (aoFormSchema.length == 0){
+    if (aoFormSchemas == null || aoFormSchemas.length == 0){
       return this.createSchema(new FormSchema.Builder().withSchema(DefaultSchema.SCHEMA).withUiSchema(
         DefaultSchema.UI_SCHEMA).withIndexSchema(DefaultSchema.INDEX_SCHEMA).build());
     }
 
-    return this.asSchema(aoFormSchema[0]);
+    return this.asSchema(aoFormSchemas[0]);
   }
 
   /**
@@ -91,29 +97,29 @@ public class FormSchemaDao {
    * @return List<FormSchema> every schema in the database.
    */
   public List<FormSchema> findAllSchema() {
-    AoFormSchema[] aoFormSchema = this.ao.find(AO_IDEA_SCHEMA, Query.select());
+    AoFormSchema[] aoFormSchema = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select());
 
-    return this.asListFedexSchema(aoFormSchema);
+    return this.asListFormSchema(aoFormSchema);
   }
 
   /**
    * Convert array of active objects to a list of model objects
    *
-   * @return List<FedexTechnology>
+   * @return List<FormSchema>
    */
-  private List<FormSchema> asListFedexSchema(AoFormSchema[] aoFormSchemas) {
+  private List<FormSchema> asListFormSchema(@Nonnull AoFormSchema[] aoFormSchemas) {
     return Arrays.stream(aoFormSchemas)
       .map(this::asSchema)
       .collect(Collectors.toList());
   }
 
   /**
-   * Prepare fedex active object with the data from a fedex idea
+   * Prepare form data active object with the data from a form data
    *
    * @param aoFormSchema    active object
    * @param formSchema with data to be added to the active object
    */
-  private void prepareAOSchema(AoFormSchema aoFormSchema, FormSchema formSchema) {
+  private void prepareAOSchema(@Nonnull AoFormSchema aoFormSchema, @Nonnull FormSchema formSchema) {
     aoFormSchema.setSchema(formSchema.getSchema());
     aoFormSchema.setUiSchema(formSchema.getUiSchema());
     aoFormSchema.setIndexSchema(formSchema.getIndexSchema());
@@ -123,12 +129,13 @@ public class FormSchemaDao {
   }
 
   /**
-   * Convert fedex idea active object to a fedex idea model object
+   * Convert form data active object to a form data model object
    *
    * @param aoFormSchema active object to be converted
    * @return FormSchema object
    */
-  private FormSchema asSchema(AoFormSchema aoFormSchema) {
+  @Nullable
+  private FormSchema asSchema(@Nullable AoFormSchema aoFormSchema) {
     return aoFormSchema == null
       ? null
       : (new FormSchema.Builder())

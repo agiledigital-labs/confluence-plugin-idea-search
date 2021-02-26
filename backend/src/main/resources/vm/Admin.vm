@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>$i18n.getText("idea.admin.label")</title>
+    <title>$i18n.getText("form.admin.label")</title>
     <meta name="decorator" content="atl.admin">
     <script>var exports = {};</script>
   </head>

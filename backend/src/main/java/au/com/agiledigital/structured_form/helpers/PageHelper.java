@@ -1,5 +1,7 @@
 package au.com.agiledigital.structured_form.helpers;
 
+import javax.annotation.Nonnull;
+
 public class PageHelper {
 
   private PageHelper() {throw new IllegalStateException("Page Helper class"); }
@@ -10,6 +12,7 @@ public class PageHelper {
    * @param body confluence storage format body
    * @return Wrapped body
    */
+  @Nonnull
   public static String wrapBody(String body) {
     return ("<!DOCTYPE html [ <!ENTITY nbsp \"&#160;\"> ]><ac:confluence>"
       + body

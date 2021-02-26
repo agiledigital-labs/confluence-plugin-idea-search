@@ -90,15 +90,17 @@ export const OuterAdminForm = () => {
 
   const [formData, setFormData] = useState<FormDataType>();
 
-  // populate form data with schema from the database
+  // populate form data with a schema from the database
   useEffect(() => {
-    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((response) =>
-      setFormData({
-        schema: response.data.schema,
-        uiSchema: response.data.uiSchema,
-        indexSchema: response.data.indexSchema,
-      })
-    );
+    axios
+      .get(`${contextPath}/rest/form-data/${version}/schema`)
+      .then((response) =>
+        setFormData({
+          schema: response.data.schema,
+          uiSchema: response.data.uiSchema,
+          indexSchema: response.data.indexSchema,
+        })
+      );
   }, []);
 
   const onFormChange = (event: IChangeEvent) => {
@@ -121,7 +123,7 @@ export const OuterAdminForm = () => {
 
   const updateSchema = (data: FormDataType | undefined) => {
     axios
-      .post(`${contextPath}/rest/idea/${version}/schema`, data)
+      .post(`${contextPath}/rest/form-data/${version}/schema`, data)
       .then(() =>
         setSubmissionFeedback({
           title: "Schemas saved Successfully",

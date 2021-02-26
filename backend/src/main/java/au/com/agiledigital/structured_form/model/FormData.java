@@ -6,11 +6,12 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 
 /**
- * Internal model of the idea
+ * Internal model of the form data
  */
 public class FormData {
 
@@ -39,28 +40,62 @@ public class FormData {
     this.indexData = indexData;
   }
 
+  /**
+   * Return global id of form data
+   *
+   * @return globalId
+   */
   public long getGlobalId() {
     return this.globalId;
   }
 
-
+  /**
+   * Return content id of form data
+   *
+   * @return contentId
+   */
   public ContentId getContentId() {
     return this.contentId;
   }
 
+  /**
+   * Get the creator of the form page
+   *
+   * @return ConfluenceUser
+   */
   public ConfluenceUser getCreator() {
     return this.creator;
   }
 
+  /**
+   * Get the title of the page containing the form
+   *
+   * @return string of the page title
+   */
   public String getTitle() {
     return this.title;
   }
 
+  /**
+   * Get the form data
+   *
+   * @return form data as a string
+   */
   public String getFormDataValue() {return this.formDataValue;}
 
+  /**
+   * Get the index data for this form
+   *
+   * @return set of the formIndex
+   */
   public  Set<FormIndex> getIndexData() {return this.indexData;}
 
-  public Object get(String key) {
+  /**
+   * Get static items of information from the form data
+   *
+   * @return object relating to the key
+   */
+  public Object get(@Nonnull String key) {
     switch(key.toLowerCase()){
       case "creator":
         return this.getCreator();
@@ -73,6 +108,12 @@ public class FormData {
     }
   }
 
+  /**
+   * Get the information in this object as a string
+   *
+   * @return String that contains all of the form data
+   */
+  @Nonnull
   public String toString() {
     return ("Idea [globalId="
       + this.globalId
@@ -87,6 +128,11 @@ public class FormData {
       + "]");
   }
 
+  /**
+   * Return global id of form data
+   *
+   * @return globalId
+   */
   public static class Builder {
 
     private long globalId;
@@ -99,7 +145,7 @@ public class FormData {
     public Builder() {
     }
 
-    public Builder(FormData formData) {
+    public Builder(@Nonnull FormData formData) {
       this.globalId = formData.globalId;
       this.contentId = formData.contentId;
       this.creator = formData.creator;
@@ -108,37 +154,44 @@ public class FormData {
       this.indexData = formData.indexData;
     }
 
+    @Nonnull
     public FormData.Builder withTitle(String title) {
       this.title = title;
       return this;
     }
 
+    @Nonnull
     public FormData.Builder withGlobalId(long globalId) {
       this.globalId = globalId;
       return this;
     }
 
+    @Nonnull
     public FormData.Builder withContentId(ContentId contentId) {
 
       this.contentId = contentId;
       return this;
     }
 
+    @Nonnull
     public FormData.Builder withCreator(ConfluenceUser creator) {
       this.creator = creator;
       return this;
     }
 
+    @Nonnull
     public FormData.Builder withFormData(String formData) {
       this.formData = formData;
       return this;
     }
 
-    public FormData.Builder withIndexData( Set<FormIndex> indexData) {
+    @Nonnull
+    public FormData.Builder withIndexData(Set<FormIndex> indexData) {
       this.indexData = indexData;
       return this;
     }
 
+    @Nonnull
     public FormData build() {
       return new FormData(
         this.globalId,

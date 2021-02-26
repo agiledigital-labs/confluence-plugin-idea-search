@@ -49,12 +49,13 @@ const InnerFrom = ({ schema, uiSchema, formData, onFormChange }: any) => {
           liveValidate: true,
         }}
       >
+        {/*This is to remove the submit button that is on the bottom of the form by default*/}
         <></>
       </Form>
     </div>
   );
 };
-const OuterIdea = ({
+const OuterForm = ({
   formData,
   setFormData,
 }: {
@@ -66,10 +67,12 @@ const OuterIdea = ({
   const contextPath = window.AJS ? window.AJS.contextPath() : "";
 
   useEffect(() => {
-    axios.get(`${contextPath}/rest/idea/${version}/schema`).then((data) => {
-      setRestSchema(JSON.parse(data.data.schema));
-      setUiSchema(JSON.parse(data.data.uiSchema));
-    });
+    axios
+      .get(`${contextPath}/rest/form-data/${version}/schema`)
+      .then((data) => {
+        setRestSchema(JSON.parse(data.data.schema));
+        setUiSchema(JSON.parse(data.data.uiSchema));
+      });
   }, []);
 
   const validateSchema = validate(restSchema, {});
@@ -106,4 +109,4 @@ const OuterIdea = ({
     />
   );
 };
-export default OuterIdea;
+export default OuterForm;

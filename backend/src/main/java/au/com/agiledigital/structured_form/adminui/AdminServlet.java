@@ -3,11 +3,12 @@ package au.com.agiledigital.structured_form.adminui;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
+import com.atlassian.templaterenderer.RenderingException;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,39 +43,39 @@ public class AdminServlet extends HttpServlet {
    * <p>
    * Will check that the requesting user has admin privileges/will redirect to login.
    *
-   * @param request to servlet
+   * @param request  to servlet
    * @param response from servlet as rendered html
-   * @throws IOException
-   * @throws ServletException
+   * @throws RenderingException exception
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+  public void doGet(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) throws  RenderingException {
     // require web resource to be able to use custom react
     pageBuilderService
       .assembler()
       .resources()
       .requireWebResource(
         "au.com.agiledigital.structured_form:entrypoint-adminPage");
-
-    // verify that admin user is requesting the page
-    if (!userManager.isSystemAdmin(Objects.requireNonNull(userManager.getRemoteUser(request)).getUserKey())) {
-      redirectToLogin(request, response);
-      return;
+    try {
+      // verify that admin user is requesting the page
+      if (!userManager.isSystemAdmin(Objects.requireNonNull(userManager.getRemoteUser(request)).getUserKey())) {
+        redirectToLogin(request, response);
+      } else {// render admin configuration ui page
+        response.setContentType("text/html;charset=utf-8");
+        renderer.render("vm/Admin.vm", response.getWriter());
+      }
+    } catch (@Nonnull IOException | RenderingException e) {
+      e.printStackTrace();
     }
-
-    // render admin configuration ui page
-    response.setContentType("text/html;charset=utf-8");
-    renderer.render("vm/Admin.vm", response.getWriter());
   }
 
   /**
    * Redirect user to the login page
    *
-   * @param request to servlet
+   * @param request  to servlet
    * @param response from servlet
-   * @throws IOException
+   * @throws IOException exception
    */
-  private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private void redirectToLogin(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) throws IOException {
     response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
   }
 
@@ -84,7 +85,8 @@ public class AdminServlet extends HttpServlet {
    * @param request to servlet
    * @return URI of the page making the request to view admin resources
    */
-  private URI getUri(HttpServletRequest request) {
+  @Nonnull
+  private URI getUri(@Nonnull HttpServletRequest request) {
     StringBuffer builder = request.getRequestURL();
     if (request.getQueryString() != null) {
       builder.append("?");

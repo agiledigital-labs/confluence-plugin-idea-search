@@ -19,7 +19,7 @@ const updateMacro = function (macroNode: any, newBody: any) {
   const macroRenderRequest = {
     contentId: AJS?.Confluence.Editor.getContentId(),
     macro: {
-      name: "idea-structured-data",
+      name: "form-structured-data",
       defaultParameterValue: "",
       body: newBody,
     },

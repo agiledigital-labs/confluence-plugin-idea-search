@@ -3,6 +3,8 @@ package au.com.agiledigital.structured_form.model;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import javax.annotation.Nonnull;
+
 /**
  * Internal model of the technology
  */
@@ -88,7 +90,7 @@ public class FormSchema {
     public Builder() {
     }
 
-    public Builder(FormSchema formSchema) {
+    public Builder(@Nonnull FormSchema formSchema) {
       this.name = formSchema.name;
       this.globalId = formSchema.globalId;
       this.schema = formSchema.schema;
@@ -98,41 +100,49 @@ public class FormSchema {
       this.description = formSchema.description;
     }
 
+    @Nonnull
     public FormSchema.Builder withName(String name) {
       this.name = name;
       return this;
     }
 
+    @Nonnull
     public FormSchema.Builder withVersion(Integer version) {
       this.version = version;
       return this;
     }
 
+    @Nonnull
     public FormSchema.Builder withUiSchema(String uiSchema) {
       this.uiSchema = uiSchema;
       return this;
     }
 
+    @Nonnull
     public FormSchema.Builder withSchema(String schema) {
       this.schema = schema;
       return this;
     }
 
+    @Nonnull
     public FormSchema.Builder withIndexSchema(String indexSchema) {
       this.indexSchema = indexSchema;
       return this;
     }
 
+    @Nonnull
     public FormSchema.Builder withDescription(String description) {
       this.description = description;
       return this;
     }
 
+    @Nonnull
     public FormSchema.Builder withGlobalId(long globalId) {
       this.globalId = globalId;
       return this;
     }
 
+    @Nonnull
     public FormSchema build() {
       return new FormSchema(
         this.globalId,
