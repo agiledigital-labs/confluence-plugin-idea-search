@@ -119,7 +119,7 @@ public class DefaultSchema {
     + "  \"index\": [\n"
     + "    {\n" // NOSONAR string schema declaration can contain duplicates
     + "      \"key\": \"status\",\n"
-    + "      \"index\": 1,\n"
+    + "      \"index\": 3,\n"
     + "      \"type\": \"string\"\n" // NOSONAR string schema declaration can contain duplicates
     + "    },\n"
     + "    {\n"
