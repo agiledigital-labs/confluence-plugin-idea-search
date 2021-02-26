@@ -80,7 +80,7 @@ public class FormSchemaDao {
    */
   @Nullable
   public FormSchema findCurrentSchema() {
-    AoFormSchema[] aoFormSchemas = this.ao.find(AO_IDEA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
+    AoFormSchema[] aoFormSchemas = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
 
     // create and return default schema if none is in the database
     if (aoFormSchemas == null || aoFormSchemas.length == 0){
