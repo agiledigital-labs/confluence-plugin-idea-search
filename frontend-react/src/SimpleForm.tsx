@@ -36,7 +36,6 @@ window.Confluence.Blueprint.setWizard(
     let data = {};
     const changeData = (newData: object) => {
       data = newData;
-      console.log("asdf");
       window.document
         .getElementById("vformdata")
         ?.setAttribute("value", JSON.stringify(data));

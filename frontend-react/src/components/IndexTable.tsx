@@ -41,7 +41,6 @@ const HeaderElement = ({ header, searchTerm, source, handleChange }: any) => {
         value={get(source, searchTerm)}
         className={`${classes.root} sorter-false parser-false`}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          console.log(e.target.value);
           handleChange(source, e.target.value);
         }}
       />
@@ -82,14 +81,12 @@ const OuterTable = () => {
 
   const [justPages, setJustPages] = useState<Array<FormData>>();
 
-  const handleChange = (term: string, value: string | number) => {
-    console.log(term);
-    return flow(
+  const handleChange = (term: string, value: string | number) =>
+    flow(
       set(term.toLowerCase(), value),
       omitBy(!isNil),
       setSearchTerm
     )(searchTerm);
-  };
 
   // populate form data with a schema from the database
   useEffect(() => {
