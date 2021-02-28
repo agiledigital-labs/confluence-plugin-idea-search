@@ -15,21 +15,22 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Set;
 
 import static au.com.agiledigital.structured_form.helpers.PageHelper.wrapBody;
 
 public class Utilities {
-  public  enum PossiblesIndexEnum {STRING, NUMBER, BOOLEAN, STATIC}
+  public enum PossiblesIndexEnum {STRING, NUMBER, BOOLEAN, STATIC}
 
   private static final Logger log = LoggerFactory.getLogger(Utilities.class);
   private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -68,9 +69,10 @@ public class Utilities {
    */
   private static Document parseXML(@Nonnull String xml)
     throws ParserConfigurationException, IOException, SAXException {
+    documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
+    documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // compliant
     DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-
-    return builder.parse(new ByteArrayInputStream(xml.getBytes()));
+    return builder.parse(new InputSource(xml));
   }
 
   /**
@@ -80,7 +82,7 @@ public class Utilities {
    * @return a FormData from the page data.
    */
   @Nonnull
-  public static FormData FormDataFromPage(@Nonnull AbstractPage page) {
+  public static FormData formDataFromPage(@Nonnull AbstractPage page) {
 
     BodyContent content = page.getBodyContent();
 
@@ -111,7 +113,7 @@ public class Utilities {
    * @return FormData object
    */
   @Nonnull
-  public static FormData asFormData(@Nonnull AoFormData aoFormData, @Nonnull PageService pageService, ConfluenceUser user ) {
+  public static FormData asFormData(@Nonnull AoFormData aoFormData, @Nonnull PageService pageService, ConfluenceUser user) {
     try {
       return new FormData.Builder()
         .withGlobalId(aoFormData.getGlobalId())
@@ -120,7 +122,7 @@ public class Utilities {
         .withCreator(user)
         .withFormData(aoFormData.getFormData())
         .build();
-    } catch (NullPointerException nullPointerException){
+    } catch (NullPointerException nullPointerException) {
       return new FormData.Builder().build();
     }
   }
@@ -132,7 +134,7 @@ public class Utilities {
    * @return FormData object
    */
   @Nonnull
-  public static FormData asFormData(@Nonnull AoFormData aoFormData, @Nonnull PageService pageService, ConfluenceUser user, Set<FormIndex> indexData ) {
+  public static FormData asFormData(@Nonnull AoFormData aoFormData, @Nonnull PageService pageService, ConfluenceUser user, Set<FormIndex> indexData) {
     try {
       return new FormData.Builder()
         .withGlobalId(aoFormData.getGlobalId())
@@ -142,7 +144,7 @@ public class Utilities {
         .withFormData(aoFormData.getFormData())
         .withIndexData(indexData)
         .build();
-    } catch (NullPointerException nullPointerException){
+    } catch (NullPointerException nullPointerException) {
       return new FormData.Builder().build();
     }
   }

@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import static au.com.agiledigital.structured_form.helpers.Utilities.FormDataFromPage;
+import static au.com.agiledigital.structured_form.helpers.Utilities.formDataFromPage;
 
 /**
  * Listens to confluence events Connects to event publisher, and sends filtered events to the data
@@ -120,20 +120,7 @@ public class FormDataEventListener implements InitializingBean, DisposableBean {
     if (
       content.getLabels().contains(new Label(FORM_DATA_BLUEPRINT_LABEL))
     ) {
-//      makeChildOfIndex(page);
-
-      this.defaultFormDataService.upsertFormData(FormDataFromPage(page), page.getId());
+      this.defaultFormDataService.upsertFormData(formDataFromPage(page), page.getId());
     }
   }
-
-//  /**
-//   * Puts the newly created page as a child of index page
-//   *
-//   * @param page the new page
-//   */
-//  private void makeChildOfIndex(@Nonnull Page page) {
-//    Page indexPage = this.indexPageManager.findIndexPage(this.contentBlueprint, page.getSpace());
-//
-//    indexPage.addChild(page);
-//  }
 }

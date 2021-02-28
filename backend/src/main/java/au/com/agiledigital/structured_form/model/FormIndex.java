@@ -1,7 +1,6 @@
 package au.com.agiledigital.structured_form.model;
 
 import au.com.agiledigital.structured_form.helpers.Utilities.PossiblesIndexEnum;
-import com.atlassian.fugue.Either;
 import com.google.gson.JsonElement;
 
 import javax.annotation.Nonnull;

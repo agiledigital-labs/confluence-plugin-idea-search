@@ -50,8 +50,8 @@ public class DefaultFormDataService implements FormDataService {
   @Nullable
   public FormSchema createSchema(@Nonnull FormSchema formSchema) {
     FormSchema test = this.formSchemaDao.createSchema(formSchema);
-    AoFormData[] formDataDao =this.formDataDao.findAll();
-    if (formDataDao.length>0) {
+    AoFormData[] formDataDaoAll =this.formDataDao.findAll();
+    if (formDataDaoAll.length>0) {
   this.updateIndex(formSchema);
 }
 
@@ -220,15 +220,15 @@ public class DefaultFormDataService implements FormDataService {
      String type = indexElement.getAsJsonObject().get("type").getAsString().toUpperCase();
      JsonElement index = indexElement.getAsJsonObject().get("index");
     LinkedHashMap<String, ?> jsonFromData = gson.fromJson(formData.getFormDataValue(), LinkedHashMap.class);
-     if (index != null && jsonFromData != null) {
-       return new FormIndex(jsonFromData.get(key), index, type, key);
-     }else if(jsonFromData.get(key) == null ){
-       return new FormIndex(formData.get(key), type, key);
-     }
-     else{
-       return new FormIndex(jsonFromData.get(key).toString(), type, key);
+    if(jsonFromData ==null || jsonFromData.get(key) == null ){
+      return new FormIndex(formData.get(key), type, key);
+    }
 
+     if (index != null) {
+       return new FormIndex(jsonFromData.get(key), index, type, key);
+     }else
+       return new FormIndex(jsonFromData.get(key).toString(), type, key);
      }
   }
 
-}
+
