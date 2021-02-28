@@ -1,7 +1,7 @@
-const WrmPlugin = require("atlassian-webresource-webpack-plugin");
 const path = require("path");
 
 module.exports = {
+  devtool: "source-map",
   module: {
     rules: [
       {
@@ -11,7 +11,6 @@ module.exports = {
       },
     ],
   },
-  // mode: "production",
   entry: {
     indexTable: "./src/IndexTable.tsx",
     adminPage: "./src/AdminPage.tsx",
@@ -21,27 +20,7 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  plugins: [
-    new WrmPlugin({
-      pluginKey: "au.com.agiledigital",
-      locationPrefix: "frontend/",
-      // watch : true,
-      resourceParamMap: {
-        svg: [
-          {
-            name: "content-type",
-            value: "image/svg+xml",
-          },
-        ],
-      },
-      xmlDescriptors: path.resolve(
-        "../backend/src/main/resources",
-        "META-INF",
-        "plugin-descriptors",
-        "wr-defs.xml"
-      ),
-    }),
-  ],
+  plugins: [],
   output: {
     filename: "bundled.[name].js",
     path: path.resolve("../backend/src/main/resources/frontend"),

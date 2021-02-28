@@ -189,4 +189,20 @@
       </parameter>
     </parameters>
   </xhtml-macro>
+
+  <web-resource key="entrypoint-indexTable">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>indexTable</context>
+    <resource type="download" name="bundled.indexTable.js" location="frontend/bundled.indexTable.js"/>
+  </web-resource>
+  <web-resource key="entrypoint-adminPage">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>adminPage</context>
+    <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+    <resource type="download" name="bundled.adminPage.js" location="frontend/bundled.adminPage.js"/>
+  </web-resource>
 </atlassian-plugin>
