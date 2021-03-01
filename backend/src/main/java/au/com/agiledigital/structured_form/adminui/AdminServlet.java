@@ -6,6 +6,8 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.RenderingException;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -29,6 +31,7 @@ public class AdminServlet extends HttpServlet {
   private final TemplateRenderer renderer;
   @ComponentImport
   private final PageBuilderService pageBuilderService;
+  private static final Logger log = LoggerFactory.getLogger(AdminServlet.class);
 
   @Inject
   public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, PageBuilderService pageBuilderService) {
@@ -64,7 +67,7 @@ public class AdminServlet extends HttpServlet {
         renderer.render("vm/Admin.vm", response.getWriter());
       }
     } catch (@Nonnull IOException | RenderingException e) {
-      e.printStackTrace();
+      log.warn(String.format("Failed to get admin servlet,[%s]", e.toString()));
     }
   }
 
