@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { Wizard } from "./components";
 
 const useStyles = makeStyles(() => ({
   scroll: {
@@ -11,7 +12,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Test = ({ data, changeData }: any) => {
+const SimpleForm = ({ data, changeData }: any) => {
   const classes = useStyles();
 
   return (
@@ -28,11 +29,9 @@ const Test = ({ data, changeData }: any) => {
   );
 };
 
-// @ts-ignore
-window.Confluence.Blueprint.setWizard(
+window.AJS.Confluence.Blueprint.setWizard(
   "au.com.agiledigital.structured_form:formDataSearch-page-blueprint-entry",
-  // @ts-ignore
-  function (wizard) {
+  (wizard: Wizard) => {
     let data = {};
     const changeData = (newData: object) => {
       data = newData;
@@ -42,9 +41,8 @@ window.Confluence.Blueprint.setWizard(
     };
     wizard.on("post-render.page2Id", () => {
       const wrapper = window.document.getElementById("form-container");
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      wrapper
-        ? ReactDOM.render(<Test {...{ data, changeData }} />, wrapper)
+      return wrapper
+        ? ReactDOM.render(<SimpleForm {...{ data, changeData }} />, wrapper)
         : false;
     });
   }

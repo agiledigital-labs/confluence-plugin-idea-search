@@ -96,7 +96,7 @@ public class Index {
   @Path("/form-data")
   @Produces({"application/json"})
   @GET
-  public String getIdeaPages(
+  public String getFormDataPages(
     @Nonnull @Context HttpServletRequest request,
     @Context HttpServletResponse response
   ) throws UnsupportedEncodingException {
@@ -111,16 +111,16 @@ public class Index {
       )
       .collect(Collectors.toList());
 
-    List<FormData> allIdeas = queries.isEmpty() ?  this.formDataService.queryAllFormData():this.formDataService.queryAllFormData(queries);
+    List<FormData> allFormData = queries.isEmpty() ?  this.formDataService.queryAllFormData():this.formDataService.queryAllFormData(queries);
 
-    List<?> preConvert = allIdeas.stream().map(formData -> {
-      Map<String, Object> preJsonIdea = new HashMap<>();
-      preJsonIdea.put("title", formData.getTitle());
-      preJsonIdea.put("url", getPageUrl(formData.getContentId()));
-      preJsonIdea.put("creator", formData.getCreator().getName());
-      preJsonIdea.put("indexData", formData.getIndexData().stream().map(FormIndex::getAsMap).toArray());
+    List<?> preConvert = allFormData.stream().map(formData -> {
+      Map<String, Object> preJsonFormData = new HashMap<>();
+      preJsonFormData.put("title", formData.getTitle());
+      preJsonFormData.put("url", getPageUrl(formData.getContentId()));
+      preJsonFormData.put("creator", formData.getCreator().getName());
+      preJsonFormData.put("indexData", formData.getIndexData().stream().map(FormIndex::getAsMap).toArray());
 
-      return preJsonIdea;
+      return preJsonFormData;
     }).collect(Collectors.toList());
 
     return this.gson.toJson(preConvert);

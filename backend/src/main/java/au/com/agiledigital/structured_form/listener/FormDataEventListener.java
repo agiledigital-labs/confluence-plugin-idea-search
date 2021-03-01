@@ -47,7 +47,7 @@ public class FormDataEventListener implements InitializingBean, DisposableBean {
    * Construct with connection to the event publisher and FormData service.
    *
    * @param eventPublisher   confluence event publisher
-   * @param defaultFormDataService form data Idea service
+   * @param defaultFormDataService form data service
    * @param indexPageManager class for the index page
    */
   @Inject

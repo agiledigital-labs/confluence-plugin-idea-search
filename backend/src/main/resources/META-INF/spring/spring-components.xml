@@ -16,7 +16,7 @@
   </beans:bean>
   <beans:bean id="formSchemaDao" class="au.com.agiledigital.structured_form.dao.FormSchemaDao">
   </beans:bean>
-  <osgi:service id="fedexIdeaService_osgiService" ref="formDataService">
+  <osgi:service id="FormDataService_osgiService" ref="formDataService">
         <osgi:interfaces>
             <beans:value
       >au.com.agiledigital.structured_form.service.FormDataService

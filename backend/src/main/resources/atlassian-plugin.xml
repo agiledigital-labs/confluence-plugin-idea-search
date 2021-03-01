@@ -83,7 +83,7 @@
       type="download"/>
   </content-template>
 
-  <rest key="rest" name="Idea Rest API" path="/form-data" version="1">
+  <rest key="rest" name="Form data Rest API" path="/form-data" version="1">
     <description>Provides a REST interface to expose and modify data.</description>
   </rest>
 
@@ -97,9 +97,9 @@
   </web-item>
 
   <web-item key="conf-menu-item" i18n-name-key="form.admin.label" section="system.admin/configuration" weight="10">
-    <description>Link to idea-admin page.</description>
+    <description>Link to form-schema-admin page.</description>
     <label key="form.admin.label" />
-    <link linkId="idea-admin-link">/plugins/servlet/form-data/admin</link>
+    <link linkId="form-schema-admin-link">/plugins/servlet/form-data/admin</link>
   </web-item>
 
   <servlet key="admin-servlet" class="au.com.agiledigital.structured_form.adminui.AdminServlet">
@@ -127,7 +127,7 @@
     <category name="hidden"/>
     <parameters/>
     <property-panel>
-      <button id="update" label="Update the idea in a modal"/>
+      <button id="update" label="Update the form data in a modal"/>
     </property-panel>
   </xhtml-macro>
 
@@ -166,7 +166,7 @@
 
   <!-- Index Table Macro -->
   <xhtml-macro
-    name="Ideas index table"
+    name="Form data from schema index table"
     class="au.com.agiledigital.structured_form.macros.IndexTable"
     key='formSchemaData-macro-indexTable'>
     <description key="formSchemaData.macro.indexTable.desc"/>

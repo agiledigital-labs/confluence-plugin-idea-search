@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * Context provider for Idea page blueprint
+ * Context provider for Form schema blueprint
  */
 public class BlueprintPageContextProvider extends AbstractBlueprintContextProvider {
 
@@ -23,7 +23,7 @@ public class BlueprintPageContextProvider extends AbstractBlueprintContextProvid
   protected BlueprintContext updateBlueprintContext(@Nonnull BlueprintContext blueprintContext) {
     Map<String, Object> contextMap = blueprintContext.getMap();
 
-    blueprintContext.setTitle(contextMap.get("vIdeaTitle").toString());
+    blueprintContext.setTitle(contextMap.get("vformdatatitle").toString());
 
 
     blueprintContext.put("blueprintId", blueprintContext.getBlueprintId());

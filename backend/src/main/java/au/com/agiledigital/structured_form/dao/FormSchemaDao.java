@@ -16,6 +16,12 @@ import java.util.stream.Collectors;
 
 /**
  * Form Schema Dao
+ *
+ * Used to interact with the Active Objects version of the form schema
+ *
+ * The latest schema is the one with the highest global id as it
+ * auto increments.
+ * Old versions of the schema are maintained in the database,
  */
 @Component
 public class FormSchemaDao {
@@ -80,7 +86,7 @@ public class FormSchemaDao {
    */
   @Nullable
   public FormSchema findCurrentSchema() {
-    AoFormSchema[] aoFormSchemas = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select().limit(1).order("GLOBAL_ID DESC"));
+    AoFormSchema[] aoFormSchemas = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select().order("GLOBAL_ID DESC"));
 
     // create and return default schema if none is in the database
     if (aoFormSchemas == null || aoFormSchemas.length == 0){
@@ -97,7 +103,7 @@ public class FormSchemaDao {
    * @return List<FormSchema> every schema in the database.
    */
   public List<FormSchema> findAllSchema() {
-    AoFormSchema[] aoFormSchema = this.ao.find(AO_FORM_DATA_SCHEMA, Query.select());
+    AoFormSchema[] aoFormSchema = this.ao.find(AO_FORM_DATA_SCHEMA);
 
     return this.asListFormSchema(aoFormSchema);
   }

@@ -1,5 +1,9 @@
 import { JSONSchema7 } from "json-schema";
 
+export interface Wizard {
+  on: (event: string, callback: () => void) => void;
+}
+
 declare global {
   interface Window {
     tinymce: {
@@ -7,7 +11,7 @@ declare global {
         MacroUtils: { insertMacro: (input: object) => void };
       };
     };
-    AJS?: {
+    AJS: {
       contextPath: () => string;
       dialog2: any;
       $: any;
@@ -16,6 +20,12 @@ declare global {
         BookmarkManager: { storeBookmark: () => void };
       };
       Confluence: {
+        Blueprint: {
+          setWizard: (
+            nameSpace: string,
+            wizard: (arg0: Wizard) => void
+          ) => void;
+        };
         Editor: { getContentId: () => string };
         PropertyPanel: {
           Macro: {

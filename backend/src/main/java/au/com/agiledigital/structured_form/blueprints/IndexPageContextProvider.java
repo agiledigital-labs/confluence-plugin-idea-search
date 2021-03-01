@@ -4,7 +4,7 @@ import com.atlassian.confluence.plugins.createcontent.api.contextproviders.Abstr
 import com.atlassian.confluence.plugins.createcontent.api.contextproviders.BlueprintContext;
 
 /**
- * Context provider for Idea index blueprint
+ * Context provider for Form schema index blueprint
  */
 public class IndexPageContextProvider extends AbstractBlueprintContextProvider {
 

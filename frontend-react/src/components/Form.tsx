@@ -5,7 +5,6 @@ import { Theme } from "@rjsf/fluent-ui";
 import { JSONSchema7, validate } from "json-schema";
 import axios from "axios";
 import UserSelection from "./UserSelection";
-import RestSelection from "./RestSelection";
 import { version } from "./index";
 import SectionMessage from "@atlaskit/section-message";
 
@@ -31,7 +30,6 @@ const useStyles = makeStyles(() => ({
 
 const widgets = {
   UserSelection: UserSelection,
-  RestSelection: RestSelection,
 };
 
 const InnerFrom = ({ schema, uiSchema, formData, onFormChange }: any) => {

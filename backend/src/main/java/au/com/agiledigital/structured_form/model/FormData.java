@@ -115,7 +115,7 @@ public class FormData {
    */
   @Nonnull
   public String toString() {
-    return ("Idea [globalId="
+    return ("FormData [globalId="
       + this.globalId
       + ", contentId="
       + this.contentId

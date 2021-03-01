@@ -13,10 +13,9 @@ import java.util.stream.Collectors;
 import static au.com.agiledigital.structured_form.helpers.Utilities.PossiblesIndexEnum.*;
 
 /**
- * Index query made down to the database
+ * Form query made down to the database using defined indices
  */
 public class FormIndexQuery {
-
 
   private final List<?> queries;
   @Nonnull

@@ -230,5 +230,3 @@ public class DefaultFormDataService implements FormDataService {
        return new FormIndex(jsonFromData.get(key).toString(), type, key);
      }
   }
-
-

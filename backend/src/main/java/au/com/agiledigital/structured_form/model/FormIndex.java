@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class FormIndex {
 
-  private Object value;
+  private final Object value;
   private final Integer indexNumber;
   @Nonnull
   private final PossiblesIndexEnum type;
@@ -55,7 +55,7 @@ public class FormIndex {
    *
    * @param value of the index item
    * @param type string, number, or boolean type of index
-   * @param key from the json schemaey
+   * @param key from the json schema
    */
   public FormIndex(Object value, @Nonnull String type, String key) {
     this.indexNumber = Integer.MIN_VALUE;
@@ -112,17 +112,17 @@ public class FormIndex {
    */
   @Nonnull
   public Map<String, Object> getAsMap() {
-    Map<String, Object> test = new HashMap<>();
+    Map<String, Object> indexHashMap = new HashMap<>();
 
-    test.put("index", this.indexNumber);
+    indexHashMap.put("index", this.indexNumber);
 
-    test.put("value", this.getValue());
+    indexHashMap.put("value", this.getValue());
 
-    test.put("type", this.type.toString().toLowerCase());
+    indexHashMap.put("type", this.type.toString().toLowerCase());
 
-    test.put("key", this.key);
+    indexHashMap.put("key", this.key);
 
-    return test;
+    return indexHashMap;
   }
 
   /**

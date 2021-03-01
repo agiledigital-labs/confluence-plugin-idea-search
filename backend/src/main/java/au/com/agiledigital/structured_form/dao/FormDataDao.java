@@ -1,6 +1,5 @@
 package au.com.agiledigital.structured_form.dao;
 
-import au.com.agiledigital.structured_form.helpers.Utilities;
 import au.com.agiledigital.structured_form.model.FormData;
 import au.com.agiledigital.structured_form.model.FormIndex;
 import au.com.agiledigital.structured_form.model.FormIndexQuery;
@@ -10,6 +9,8 @@ import com.atlassian.confluence.user.UserAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import net.java.ao.Query;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,6 @@ import static au.com.agiledigital.structured_form.helpers.Utilities.getUsername;
 
 /**
  * Form Data  Dao
- * <p>
  * Access methods for the data saved in the forms
  */
 @Component
@@ -40,6 +40,9 @@ public class FormDataDao {
 
   private static final Class<AoFormData> AO_FORM_TYPE = AoFormData.class;
   private static final Class<AoFormBlueprint> AO_FORM_BLUEPRINT_TYPE = AoFormBlueprint.class;
+
+  private static final Logger log = LoggerFactory.getLogger(FormDataDao.class);
+
 
   @ComponentImport
   private final UserAccessor userAccessor;
@@ -60,7 +63,7 @@ public class FormDataDao {
    * @param formData FormData model object
    * @return FormData object created in data store
    */
-  public FormData createIdea(@Nonnull FormData formData, @Nonnull Set<FormIndex> indices) {
+  public FormData createFormData(@Nonnull FormData formData, @Nonnull Set<FormIndex> indices) {
     AoFormData aoFormData = this.ao.create(AO_FORM_TYPE);
 
     this.prepareAOFormData(aoFormData, formData);
@@ -70,7 +73,7 @@ public class FormDataDao {
 
     aoFormData.save();
 
-    return Utilities.asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
+    return asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -130,22 +133,21 @@ public class FormDataDao {
         Query.select().where("CONTENT_ID = ?", contentId)
       );
 
-    boolean newIdea = aoFormDatas.length == 0;
+    boolean isNewData = aoFormDatas.length == 0;
 
     // If the title of the page already exists the create event fails and a page update event is fired on a successful save.
     // If this happens the aoFormData will not exist in the data store and will need to be created.
-    AoFormData aoFormData = newIdea
+    AoFormData aoFormData = isNewData
       ? this.ao.create(AO_FORM_TYPE)
       : aoFormDatas[0];
     this.prepareAOFormData(aoFormData, formData);
 
-    // extract the indexable data from the json payload and save it in the index fields
+    // extract the indelible data from the json payload and save it in the index fields
     setIndexValues(aoFormData, indices);
 
-//    save data
     aoFormData.save();
 
-    return Utilities.asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
+    return asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -158,7 +160,7 @@ public class FormDataDao {
     setIndexValues(aoFormData, indices);
 
     aoFormData.save();
-    Utilities.asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
+    asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor));
   }
 
   /**
@@ -186,7 +188,11 @@ public class FormDataDao {
       Query.select().where("CONTENT_ID = ?", contentId)
     )).collect(Collectors.toList());
 
-    return aoFormDataList.stream().map(aoIdea -> Utilities.asFormData(aoIdea, this.pageService, getUsername(aoIdea.getCreatorUserKey(), this.userAccessor))).collect(Collectors.toList()).get(0);
+    return aoFormDataList.stream()
+      .map(aoFormData ->
+        asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor)))
+      .collect(Collectors.toList())
+      .get(0);
   }
 
   /**
@@ -221,8 +227,8 @@ public class FormDataDao {
    *
    * @param search list of FormIndexQuery use in the search
    * @param offset for the sql query
-   * @param limit limit the number of results returned
-   * @return  an array of all available AoFormData
+   * @param limit  limit the number of results returned
+   * @return an array of all available AoFormData
    */
   public AoFormData[] find(@Nonnull List<FormIndexQuery> search, int offset, int limit) {
     String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), AND);
@@ -237,9 +243,9 @@ public class FormDataDao {
   /**
    * Filter FormIndexes and set the value in the AoFormData object
    *
-   * @param indices set to be added to the AoFormData
-   * @param aoFormData object to be modified
-   * @param filter method to filter the set of indexes
+   * @param indices       set to be added to the AoFormData
+   * @param aoFormData    object to be modified
+   * @param filter        method to filter the set of indexes
    * @param applyFunction function to apply the indexes to the ao object
    */
   public void setIndex(@Nonnull Set<FormIndex> indices, @Nonnull AoFormData aoFormData, Predicate<FormIndex> filter, Function<AoFormData, Consumer<FormIndex>> applyFunction) {
@@ -249,13 +255,13 @@ public class FormDataDao {
   /**
    * Helper function to construct the consumer to apply changes to the string indexes
    */
-  private final Function<AoFormData, Consumer<FormIndex>> setString = aoFormData -> formIndex -> this.setIndexString(aoFormData,formIndex);
+  private final Function<AoFormData, Consumer<FormIndex>> setString = aoFormData -> formIndex -> this.setIndexString(aoFormData, formIndex);
 
   /**
    * Sets the index value in the ao object
    *
    * @param aoFormData object to be modified
-   * @param formIndex object containing value
+   * @param formIndex  object containing value
    */
   private void setIndexString(@Nonnull AoFormData aoFormData, FormIndex formIndex) {
     switch (formIndex.getIndexNumber()) {
@@ -275,20 +281,27 @@ public class FormDataDao {
         aoFormData.setIndexString4(formIndex.getValue().toString());
         break;
       default:
+        logIndexOutOfBound(formIndex.getValue());
         break;
+    }
+  }
+
+  private void logIndexOutOfBound(Object value) {
+    if (log.isDebugEnabled()) {
+      log.debug(String.format("The searchable value of [%s] was not saved because it was assigned to a key not in the range 0-4", value));
     }
   }
 
   /**
    * Helper function to construct the consumer to apply changes to the boolean indexes
    */
-  private final Function<AoFormData, Consumer<FormIndex>> setBoolean = aoFormData -> formIndex -> this.setIndexBoolean(aoFormData,formIndex);
+  private final Function<AoFormData, Consumer<FormIndex>> setBoolean = aoFormData -> formIndex -> this.setIndexBoolean(aoFormData, formIndex);
 
   /**
    * Sets the index value in the ao object
    *
    * @param aoFormData object to be modified
-   * @param formIndex object containing value
+   * @param formIndex  object containing value
    */
   private void setIndexBoolean(@Nonnull AoFormData aoFormData, FormIndex formIndex) {
     switch (formIndex.getIndexNumber()) {
@@ -308,6 +321,7 @@ public class FormDataDao {
         aoFormData.setIndexBoolean4(((boolean) formIndex.getValue()));
         break;
       default:
+        logIndexOutOfBound(formIndex.getValue().toString());
         break;
     }
   }
@@ -315,13 +329,13 @@ public class FormDataDao {
   /**
    * Helper function to construct the consumer to apply changes to the number indexes
    */
-  private final Function<AoFormData, Consumer<FormIndex>> setNumber = aoFormData -> formIndex -> this.setIndexNumber(aoFormData,formIndex);
+  private final Function<AoFormData, Consumer<FormIndex>> setNumber = aoFormData -> formIndex -> this.setIndexNumber(aoFormData, formIndex);
 
   /**
    * Sets the index value in the ao object
    *
    * @param aoFormData object to be modified
-   * @param formIndex object containing value
+   * @param formIndex  object containing value
    */
   private void setIndexNumber(@Nonnull AoFormData aoFormData, FormIndex formIndex) {
     switch (formIndex.getIndexNumber()) {
@@ -341,6 +355,7 @@ public class FormDataDao {
         aoFormData.setIndexNumber4(((double) formIndex.getValue()));
         break;
       default:
+        logIndexOutOfBound(formIndex.getValue().toString());
         break;
     }
   }

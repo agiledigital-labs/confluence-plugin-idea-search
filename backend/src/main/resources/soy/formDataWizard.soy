@@ -1,26 +1,25 @@
 {namespace structured_form.blueprint.page.formData}
 
 /**
-*  A form that accepts the basic information for an idea
+*  A form that accepts the basic information for an form schema form
 */
 {template .page1Form}
-  <div id="things">
   <form action="#" method="post" class="aui">
     <fieldset>
       <div class="field-group">
-        <label for="videatitle">{getText('formSchemaData.blueprint.page.form.label.idea.title')}</label>
-        <input id="videatitle" class="text" type="text"
-               name="vIdeaTitle">
+        <label for="vformdatatitle">{getText('formSchemaData.blueprint.page.form.label.formData.title')}</label>
+        <input id="vformdatatitle" class="text" type="text"
+               name="vformdatatitle">
       </div>
     </fieldset>
   </form>
-  </div>
 {/template}
+
 /**
-*  A form that accepts the basic information for an idea
+*  Mounts the react json scema form based on the saved schema
 */
 {template .page2Form}
-  <div id="things">
+  <div>
     <div id="form-container"></div>
       <form action="#" method="post" class="aui">
         <fieldset>
