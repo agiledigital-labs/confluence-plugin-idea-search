@@ -66,8 +66,6 @@ export const UserSelection = (props: any) => {
   };
 
   const inputEl = useRef(null);
-  const test = "test";
-  test.search("::");
   return (
     <>
       <FormControl fullWidth={true} required={props.required} ref={inputEl}>
@@ -85,7 +83,7 @@ export const UserSelection = (props: any) => {
         />
       </FormControl>
       <Popover
-        id="simper-test"
+        id="user-popover"
         open={userList.length > 0}
         anchorEl={inputEl.current}
         className={classes.root}

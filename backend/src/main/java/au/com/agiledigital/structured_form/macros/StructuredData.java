@@ -80,7 +80,8 @@ public class StructuredData implements Macro {
         displayData.getAsJsonObject().entrySet()
           .stream()
           .map(element -> new AbstractMap.SimpleEntry<>(element.getKey(), handleComplexObject(element.getValue())))
-          .map(r -> r.getKey() + " -> " + r.getValue()).collect(Collectors.toList()), ", ");
+          .map(stringSimpleEntry -> stringSimpleEntry.getKey() + " -> " + stringSimpleEntry.getValue())
+          .collect(Collectors.toList()), ", ");
     } else {
       return "failed to load";
     }
@@ -88,7 +89,7 @@ public class StructuredData implements Macro {
 
   /**
    * @param heading string in camelCase to be converted to title case
-   * @return
+   * @return title case string
    */
   private String headingTransformation(String heading) {
     String[] headingList = StringUtils.splitByCharacterTypeCamelCase(heading);

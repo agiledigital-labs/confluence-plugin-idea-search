@@ -5,7 +5,7 @@ import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FormDataType, version } from "./index";
+import { SubmissionFeedback, FormDataType, version } from "./index";
 
 // minimum number of rows for TextArea
 const minRows: number = 12;
@@ -86,7 +86,7 @@ const validate = (formData: any, errors: any) => {
 export const OuterAdminForm = () => {
   // gets context path from atlassian
   // if not found, set to confluence as default
-  const contextPath = window.AJS ? window.AJS.contextPath() : "/confluence";
+  const contextPath = window.AJS ? window.AJS.contextPath() : "";
 
   const [formData, setFormData] = useState<FormDataType>();
 
@@ -108,18 +108,12 @@ export const OuterAdminForm = () => {
   };
 
   // submission feedback to be used to populate atlaskit's section message
-  const [submissionFeedback, setSubmissionFeedback] = useState<{
-    title?: string;
-    appearance?:
-      | "info"
-      | "warning"
-      | "error"
-      | "confirmation"
-      | "change"
-      | undefined;
-    message?: string;
-    hidden: boolean;
-  }>({ hidden: true });
+  const [
+    submissionFeedback,
+    setSubmissionFeedback,
+  ] = useState<SubmissionFeedback>({
+    hidden: true,
+  });
 
   const updateSchema = (data: FormDataType | undefined) => {
     axios

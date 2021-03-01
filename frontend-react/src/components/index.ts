@@ -59,3 +59,10 @@ export interface FormDataType {
   uiSchema?: JSONSchema7;
   indexSchema?: { index?: Array<Omit<IndexItem, "value">> };
 }
+
+export type SubmissionFeedback = {
+  title?: string;
+  appearance?: "info" | "warning" | "error" | "confirmation" | "change";
+  message?: string;
+  hidden: boolean;
+};

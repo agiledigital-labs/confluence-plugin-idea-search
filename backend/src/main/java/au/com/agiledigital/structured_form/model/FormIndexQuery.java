@@ -36,11 +36,13 @@ public class FormIndexQuery {
     switch (getPossibles(queryParam)) {
       case NUMBER:
         this.indexNumber = Integer.parseInt(StringUtils.substring(queryParam, queryParam.length() - 1), 10);
-        this.queries = (Arrays.stream(StringUtils.split(queries, ",")).map(Double::parseDouble).collect(Collectors.toList()));
+        this.queries = (Arrays.stream(StringUtils.split(queries, ","))
+          .map(Double::parseDouble).collect(Collectors.toList()));
         break;
       case BOOLEAN:
         this.indexNumber = Integer.parseInt(StringUtils.substring(queryParam, queryParam.length() - 1), 10);
-        this.queries = (Arrays.stream(StringUtils.split(queries, ",")).map(Boolean::parseBoolean).collect(Collectors.toList()));
+        this.queries = (Arrays.stream(StringUtils.split(queries, ","))
+          .map(Boolean::parseBoolean).collect(Collectors.toList()));
         break;
       case STATIC:
         this.indexNumber = Integer.MIN_VALUE;

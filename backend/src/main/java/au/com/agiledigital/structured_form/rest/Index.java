@@ -102,7 +102,8 @@ public class Index {
   ) throws UnsupportedEncodingException {
     this.applyNoCacheHeaders(response);
 
-
+    // Creates a new FormIndexQuery when there is content after the =. queries like `?string1=test` will be created
+    // where queries like ?number0=` will not.
     List<FormIndexQuery> queries = Arrays.stream(StringUtils.split(URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8.toString()), "&"))
       .map(queryStrings -> StringUtils.split(queryStrings, "="))
       .filter(queryStrings -> queryStrings.length > 1)
@@ -125,7 +126,6 @@ public class Index {
 
     return this.gson.toJson(preConvert);
   }
-
 
   @Nonnull
   private String getPageUrl(@Nonnull ContentId contentId) {

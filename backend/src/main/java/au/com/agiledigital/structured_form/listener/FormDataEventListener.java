@@ -94,7 +94,7 @@ public class FormDataEventListener implements InitializingBean, DisposableBean {
   /**
    * Listen for page creations events on pages with the correct label, updates the data store with
    * the new data
-   * <p>
+   *
    * If the title of the page is not unique, the blueprint create event is not used, the page create
    * event is.
    *

@@ -68,6 +68,18 @@ public interface FormDataService {
    */
   void setBlueprintId(String blueprintId);
 
+  /**
+   * Return every formData from the database
+   *
+   * @return List<FormData> with no filtering or selection
+   */
   List<FormData> queryAllFormData();
+  /**
+   * Search for formData that match a list of queries.
+   * Results limited to ten.
+   *
+   * @param search at FormIndexQuery to be passed is as a where clause to the db
+   * @return List of FormData rows that match the queries
+   */
   List<FormData> queryAllFormData(List<FormIndexQuery> search);
 }

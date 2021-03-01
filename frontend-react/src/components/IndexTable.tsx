@@ -5,7 +5,7 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { FormDataType, IndexItem, version } from "./index";
 import { flow, get, isNil, lowerCase, omitBy, set, startCase } from "lodash/fp";
-import { HeadType } from "@atlaskit/dynamic-table/types";
+import { HeadCellType, HeadType } from "@atlaskit/dynamic-table/types";
 import { makeStyles } from "@material-ui/core";
 
 type FormData = {
@@ -48,25 +48,25 @@ const HeaderElement = ({ header, searchTerm, source, handleChange }: any) => {
   );
 };
 
+// Construct the header elements for the table
 const headers = (
   handleChange: (key: string, value: string) => void,
-  searchTerm: { [p: string]: string | number } | undefined,
+  searchTerm: { [key: string]: string | number } | undefined,
   header?: { key: string; source: string }[]
 ): HeadType => {
-  if (!headers) {
+  if (!header) {
     return { cells: [] };
   }
-  const headerCells: HeadType = {
-    // @ts-ignore
-    cells: header?.map(({ key: header, source }, index) => ({
-      key: header,
-      content: (
-        <HeaderElement {...{ header, searchTerm, source, handleChange }} />
-      ),
-    })),
+  return {
+    cells: header?.map(
+      ({ key: header, source }, index): HeadCellType => ({
+        key: header,
+        content: (
+          <HeaderElement {...{ header, searchTerm, source, handleChange }} />
+        ),
+      })
+    ),
   };
-
-  return headerCells;
 };
 
 const OuterTable = () => {
@@ -144,13 +144,13 @@ const OuterTable = () => {
       });
   }, [searchTerm, contextPath]);
 
-  const order: string[] | undefined = formData?.indexSchema?.index?.map(
-    (item) => item.key
-  );
+  const definedColumnOrder:
+    | string[]
+    | undefined = formData?.indexSchema?.index?.map((item) => item.key);
 
   const content = (page: FormData) =>
-    order
-      ? order
+    definedColumnOrder
+      ? definedColumnOrder
           .map((itemKey) => page.indexData.find((inx) => inx.key === itemKey))
           .map((row, i) => ({
             key: row?.key,
@@ -164,7 +164,12 @@ const OuterTable = () => {
   }));
 
   if (!headersList || !headersList[0].source) {
-    return <div>loading...</div>;
+    return (
+      <div>
+        No index rows found in the configuration. These need to be set in the
+        admin section of Confluence
+      </div>
+    );
   }
 
   const head = headers(handleChange, searchTerm, headersList);

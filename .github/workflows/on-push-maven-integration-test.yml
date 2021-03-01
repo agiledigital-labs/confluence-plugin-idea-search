@@ -41,7 +41,7 @@ jobs:
       - name: Integration Test with Maven
         run: |
           mvn package com.atlassian.maven.plugins:confluence-maven-plugin:8.1.0:integration-test \
-          -gs ./settings.xml -Dhttp.port='1991' \
+          -gs settings.xml -Dhttp.port='1991' \
           -Dtest.integration.path=./src/test/resources/generated-test-resources.zip  --file ./pom.xml
         working-directory: ./backend
 

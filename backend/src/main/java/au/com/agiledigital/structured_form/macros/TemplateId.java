@@ -12,11 +12,12 @@ import java.util.Map;
  */
 public class TemplateId implements Macro {
 
+
   @Nonnull
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
-    return "";
+    return ""; // This macro should not effect the display of the page.
   }
 
   @Nonnull

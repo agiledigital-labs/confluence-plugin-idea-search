@@ -32,7 +32,6 @@ const OpenModal = (event: any, macroNode: any) => {
     macroNode.innerText.trim().length > 0
       ? JSON.parse(macroNode.innerText)
       : undefined;
-  AJS?.$("body").append(techInput);
   const wrapper = document.getElementById("edit-page-dialog-tech");
 
   const onClose = (newBody: string) => () => {
@@ -43,11 +42,6 @@ const OpenModal = (event: any, macroNode: any) => {
   };
   ReactDOM.render(<OuterModal {...{ onClose, initFormData }} />, wrapper);
 };
-
-const techInput = `
- <div id="edit-page-dialog-tech">
-</div>
-`;
 
 const attachUpdateButton = () => {
   if (

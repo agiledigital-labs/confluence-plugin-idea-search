@@ -1,6 +1,5 @@
 package au.com.agiledigital.structured_form.macros;
 
-
 import au.com.agiledigital.structured_form.macros.transport.BlueprintContainer;
 import au.com.agiledigital.structured_form.service.DefaultFormDataService;
 import com.atlassian.confluence.api.service.settings.SettingsService;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Macro for the Index Table. Fetches the pages with label "form-data" from the space
  * specified, pulls the structured field macro from each and processes the data. It constructs a

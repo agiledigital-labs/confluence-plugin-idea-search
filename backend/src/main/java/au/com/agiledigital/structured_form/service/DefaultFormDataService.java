@@ -49,21 +49,19 @@ public class DefaultFormDataService implements FormDataService {
    */
   @Nullable
   public FormSchema createSchema(@Nonnull FormSchema formSchema) {
-    FormSchema test = this.formSchemaDao.createSchema(formSchema);
-    AoFormData[] formDataDaoAll =this.formDataDao.findAll();
-    if (formDataDaoAll.length>0) {
-  this.updateIndex(formSchema);
-}
-
-    return test;
+    FormSchema schema = this.formSchemaDao.createSchema(formSchema);
+    AoFormData[] formDataDaoAll = this.formDataDao.findAll();
+    if (formDataDaoAll.length > 0) {
+      this.updateIndex(formSchema);
+    }
+    return schema;
   }
 
   private void updateIndex(@Nonnull FormSchema formSchema) throws NullPointerException {
-        AoFormData[] data = this.formDataDao.findAll();
-        Arrays.asList(data).forEach(ao ->
-          this.formDataDao.updateIndexValues(ao, this.getIndexData(ao, formSchema.getIndexSchema()))
-        );
-
+    AoFormData[] data = this.formDataDao.findAll();
+    Arrays.asList(data).forEach(ao ->
+      this.formDataDao.updateIndexValues(ao, this.getIndexData(ao, formSchema.getIndexSchema()))
+    );
   }
 
   /**
@@ -134,7 +132,6 @@ public class DefaultFormDataService implements FormDataService {
   public void upsertFormData(@Nonnull FormData formData, long contentId) {
     Set<FormIndex> indexes = getIndexData(formData);
 
-
     this.formDataDao.upsertByContentId(formData, contentId, indexes);
   }
 
@@ -148,6 +145,13 @@ public class DefaultFormDataService implements FormDataService {
     return asListFormData(formDataDao.find());
   }
 
+  /**
+   * Search for formData that match a list of queries.
+   * Results limited to ten.
+   *
+   * @param search at FormIndexQuery to be passed is as a where clause to the db
+   * @return List of FormData rows that match the queries
+   */
   public List<FormData> queryAllFormData(@Nonnull List<FormIndexQuery> search) {
 
     return asListFormData(formDataDao.find(search, 0, 10));
@@ -171,9 +175,6 @@ public class DefaultFormDataService implements FormDataService {
   }
 
 
-
-
-
   @Nonnull
   private Set<FormIndex> getIndexData(@Nonnull AoFormData aoFormData, String indexSchema) {
 
@@ -183,7 +184,7 @@ public class DefaultFormDataService implements FormDataService {
   @Nonnull
   private Set<FormIndex> getIndexData(@Nonnull AoFormData aoFormData) {
 
-    return  getFormIndices(asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor)));
+    return getFormIndices(asFormData(aoFormData, this.pageService, getUsername(aoFormData.getCreatorUserKey(), this.userAccessor)));
   }
 
   @Nonnull
@@ -197,6 +198,7 @@ public class DefaultFormDataService implements FormDataService {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
     return getFormIndices(formData, jsonIndexSchema);
   }
+
   @Nonnull
   private Set<FormIndex> getFormIndices(@Nonnull FormData formData, String indexSchema) {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(indexSchema, LinkedHashMap.class);
@@ -207,7 +209,6 @@ public class DefaultFormDataService implements FormDataService {
   @Nonnull
   private Set<FormIndex> getFormIndices(@Nonnull FormData formData, LinkedHashMap<String, String> jsonIndexSchema) {
 
-
     JsonElement jsonElementStringIndexSchema = gson.toJsonTree(jsonIndexSchema).getAsJsonObject().get("index");
     return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
       jsonElementStringIndexSchema.getAsJsonArray().iterator(), Spliterator.ORDERED), false).filter(Objects::nonNull)
@@ -216,17 +217,17 @@ public class DefaultFormDataService implements FormDataService {
 
   @Nonnull
   private FormIndex createIndex(@Nonnull JsonElement indexElement, @Nonnull FormData formData) {
-     String key = indexElement.getAsJsonObject().get("key").getAsString();
-     String type = indexElement.getAsJsonObject().get("type").getAsString().toUpperCase();
-     JsonElement index = indexElement.getAsJsonObject().get("index");
+    String key = indexElement.getAsJsonObject().get("key").getAsString();
+    String type = indexElement.getAsJsonObject().get("type").getAsString().toUpperCase();
+    JsonElement index = indexElement.getAsJsonObject().get("index");
     LinkedHashMap<String, ?> jsonFromData = gson.fromJson(formData.getFormDataValue(), LinkedHashMap.class);
-    if(jsonFromData ==null || jsonFromData.get(key) == null ){
+    if (jsonFromData == null || jsonFromData.get(key) == null) {
       return new FormIndex(formData.get(key), type, key);
     }
-
-     if (index != null) {
-       return new FormIndex(jsonFromData.get(key), index, type, key);
-     }else
-       return new FormIndex(jsonFromData.get(key).toString(), type, key);
-     }
+    if (index != null) {
+      return new FormIndex(jsonFromData.get(key), index, type, key);
+    } else {
+      return new FormIndex(jsonFromData.get(key).toString(), type, key);
+    }
   }
+}

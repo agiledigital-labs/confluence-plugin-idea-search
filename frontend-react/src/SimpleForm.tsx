@@ -16,16 +16,14 @@ const SimpleForm = ({ data, changeData }: any) => {
   const classes = useStyles();
 
   return (
-    <>
-      <Box overflow="scroll" className={classes.scroll}>
-        <Form
-          {...{
-            formData: data,
-            setFormData: changeData,
-          }}
-        />
-      </Box>
-    </>
+    <Box overflow="scroll" className={classes.scroll}>
+      <Form
+        {...{
+          formData: data,
+          setFormData: changeData,
+        }}
+      />
+    </Box>
   );
 };
 

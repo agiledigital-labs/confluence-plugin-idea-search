@@ -35,9 +35,7 @@ public class Utilities {
   private static final Logger log = LoggerFactory.getLogger(Utilities.class);
   private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
-  private Utilities() {
-    throw new IllegalStateException("Utility class");
-  }
+  private Utilities() {  }
 
   /**
    * Extract form data string from macro
