@@ -50,7 +50,8 @@ public class DefaultSchema {
     + "      \"title\": \"A list of decision drivers\",\n"
     + "      \"minItems\": 1,\n" // NOSONAR string schema declaration can contain duplicates
     + "      \"items\": {\n" // NOSONAR string schema declaration can contain duplicates
-    + "        \"type\": \"string\"\n" // NOSONAR string schema declaration can contain duplicates
+    + "        \"type\": \"string\",\n" // NOSONAR string schema declaration can contain duplicates
+    + "        \"default\":\"\"" // NOSONAR string schema declaration can contain duplicates
     + "      }\n" // NOSONAR string schema declaration can contain duplicates
     + "    },\n"
     + "    \"listOfConsideredOptions\": {\n"
@@ -58,7 +59,8 @@ public class DefaultSchema {
     + "      \"title\": \"A list of considered options\",\n"
     + "      \"minItems\": 1,\n"
     + "      \"items\": {\n"
-    + "        \"type\": \"string\"\n"
+    + "        \"type\": \"string\",\n"
+    + "        \"default\":\"\""
     + "      }\n"
     + "    },\n"
     + "    \"decisionOutcome\": {\n"
@@ -70,7 +72,8 @@ public class DefaultSchema {
     + "      \"title\": \"A list of consequences\",\n"
     + "      \"minItems\": 1,\n"
     + "      \"items\": {\n"
-    + "        \"type\": \"string\"\n"
+    + "        \"type\": \"string\",\n"
+    + "        \"default\":\"\""
     + "      }\n"
     + "    },\n"
     + "    \"listOfPros\": {\n"
@@ -78,7 +81,8 @@ public class DefaultSchema {
     + "      \"title\": \"A list of pros\",\n"
     + "      \"minItems\": 1,\n"
     + "      \"items\": {\n"
-    + "        \"type\": \"string\"\n"
+    + "        \"type\": \"string\",\n"
+    + "        \"default\":\"\""
     + "      }\n"
     + "    },\n"
     + "    \"listOfCons\": {\n"
@@ -86,7 +90,8 @@ public class DefaultSchema {
     + "      \"title\": \"A list of cons\",\n"
     + "      \"minItems\": 1,\n"
     + "      \"items\": {\n"
-    + "        \"type\": \"string\"\n"
+    + "        \"type\": \"string\",\n"
+    + "        \"default\":\"\""
     + "      }\n"
     + "    },\n"
     + "    \"listOfLinks\": {\n"
@@ -94,7 +99,8 @@ public class DefaultSchema {
     + "      \"title\": \"A list of links\",\n"
     + "      \"minItems\": 1,\n"
     + "      \"items\": {\n"
-    + "        \"type\": \"string\"\n"
+    + "        \"type\": \"string\",\n"
+    + "        \"default\":\"\""
     + "      }\n"
     + "    }\n"
     + "  }\n"

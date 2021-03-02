@@ -34,8 +34,8 @@
         title-key="formSchemaData.blueprint.page.wizard.page1.title"
       />
       <dialog-page
-        description-content-key="formSchemaData.blueprint.page.wizard.page2.desc.content"
-        description-header-key="formSchemaData.blueprint.page.wizard.page2.desc.header"
+        description-content-key="formSchemaData.blueprint.page.wizard.page1.desc.content"
+        description-header-key="formSchemaData.blueprint.page.wizard.page1.desc.header"
         id="page2Id"
         last="true"
         template-key="structured_form.blueprint.page.formData.page2Form"

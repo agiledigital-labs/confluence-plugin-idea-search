@@ -369,7 +369,7 @@ public class FormDataDao {
    */
   private void prepareAOFormData(@Nonnull AoFormData aoFormData, @Nonnull FormData formData) {
     aoFormData.setContentId(formData.getContentId().asLong());
-    aoFormData.setCreatorUserKey(formData.getCreator().getKey().toString());
+    aoFormData.setCreatorUserKey(formData.getCreatorKey());
     aoFormData.setTitle(formData.getTitle());
     aoFormData.setFormData(formData.getFormDataValue());
   }

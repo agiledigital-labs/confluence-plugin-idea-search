@@ -194,7 +194,7 @@ public class DefaultFormDataService implements FormDataService {
   }
 
   @Nonnull
-  private Set<FormIndex> getFormIndices(@Nonnull FormData formData) {
+  private Set<FormIndex> getFormIndices(@Nonnull FormData formData) throws NullPointerException {
     LinkedHashMap<String, String> jsonIndexSchema = gson.fromJson(this.formSchemaDao.findCurrentSchema().getIndexSchema(), LinkedHashMap.class);
     return getFormIndices(formData, jsonIndexSchema);
   }

@@ -25,6 +25,7 @@ const useStyles = makeStyles(() => ({
     margin: "1px",
   },
 }));
+const AJS = window.AJS ? window.AJS : undefined;
 
 export const UserSelection = (props: any) => {
   const classes = useStyles();
@@ -32,29 +33,28 @@ export const UserSelection = (props: any) => {
   const [userList, setUserList] = useState<
     Array<{ username: string; userKey: string; href: string }>
   >([]);
+  const contextPath = AJS?.contextPath() ? AJS.contextPath() : "";
   const userSearch = useCallback(
     debounce((userInput: string) => {
-      axios
-        .get(`${props.uiSchema.context}/${props.uiSchema.endpoint}${userInput}`)
-        .then((res) =>
-          setUserList(
-            res.data.result.map(
-              ({
-                username,
-                userKey,
-                thumbnailLink: { href },
-              }: {
-                username: string;
-                userKey: string;
-                thumbnailLink: {
-                  href: string;
-                  type: string;
-                  rel: string;
-                };
-              }) => ({ username, userKey, href })
-            )
+      axios.get(`${contextPath}/rest/api/search?cql=${userInput}`).then((res) =>
+        setUserList(
+          res.data.result.map(
+            ({
+              username,
+              userKey,
+              thumbnailLink: { href },
+            }: {
+              username: string;
+              userKey: string;
+              thumbnailLink: {
+                href: string;
+                type: string;
+                rel: string;
+              };
+            }) => ({ username, userKey, href })
           )
-        );
+        )
+      );
     }, 1000),
     []
   );

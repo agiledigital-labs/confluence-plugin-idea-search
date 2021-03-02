@@ -2,11 +2,13 @@ package au.com.agiledigital.structured_form.model;
 
 import com.atlassian.confluence.api.model.content.id.ContentId;
 import com.atlassian.confluence.user.ConfluenceUser;
+import com.atlassian.sal.api.user.UserKey;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Set;
 
 
@@ -63,8 +65,24 @@ public class FormData {
    *
    * @return ConfluenceUser
    */
-  public ConfluenceUser getCreator() {
-    return this.creator;
+  public String getCreator() {
+    if(this.creator != null){
+      return this.creator.getName();
+    } else {
+      return "";
+    }
+  }
+  /**
+   * Get the creator key of the form page
+   *
+   * @return ConfluenceUser
+   */
+  public String getCreatorKey() {
+    if(this.creator != null){
+      return this.creator.getKey().toString();
+    } else {
+      return "";
+    }
   }
 
   /**
@@ -88,7 +106,13 @@ public class FormData {
    *
    * @return set of the formIndex
    */
-  public  Set<FormIndex> getIndexData() {return this.indexData;}
+  public  Set<FormIndex> getIndexData() {
+    if (this.indexData != null){
+      return this.indexData;
+    }else{
+    return Collections.emptySet();
+    }
+  }
 
   /**
    * Get static items of information from the form data
@@ -103,8 +127,10 @@ public class FormData {
         return this.getGlobalId();
       case "contentid":
         return this.getContentId();
-      default :
+      case  "title":
         return this.getTitle();
+      default:
+        return "";
     }
   }
 

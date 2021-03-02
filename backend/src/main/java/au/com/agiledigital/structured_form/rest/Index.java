@@ -51,6 +51,20 @@ public class Index {
     this.pageService = pageService;
   }
 
+  // extracts body from request
+  @Nonnull
+  private static String extractPostRequestBody(@Nonnull HttpServletRequest request) throws IOException {
+    if ("POST".equalsIgnoreCase(request.getMethod())) {
+      try {
+        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+      } catch (IOException e) {
+        throw new IOException("Failed to parse request body.", e);
+      }
+    }
+    return "";
+  }
+
   /**
    * Gets latest schema
    *
@@ -112,14 +126,14 @@ public class Index {
       )
       .collect(Collectors.toList());
 
-    List<FormData> allFormData = queries.isEmpty() ?  this.formDataService.queryAllFormData():this.formDataService.queryAllFormData(queries);
+    List<FormData> allFormData = queries.isEmpty() ? this.formDataService.queryAllFormData() : this.formDataService.queryAllFormData(queries);
 
     List<?> preConvert = allFormData.stream().map(formData -> {
       Map<String, Object> preJsonFormData = new HashMap<>();
       preJsonFormData.put("title", formData.getTitle());
       preJsonFormData.put("url", getPageUrl(formData.getContentId()));
-      preJsonFormData.put("creator", formData.getCreator().getName());
-      preJsonFormData.put("indexData", formData.getIndexData().stream().map(FormIndex::getAsMap).toArray());
+      preJsonFormData.put("creator", formData.getCreator());
+      preJsonFormData.put("indexData", formData.getIndexData().stream().map(FormIndex::getAsMap).filter(r -> !r.isEmpty() && r != null).toArray());
 
       return preJsonFormData;
     }).collect(Collectors.toList());
@@ -135,20 +149,6 @@ public class Index {
     } catch (NullPointerException nullPointerException) {
       return this.settingsService.getGlobalSettings().getBaseUrl();
     }
-  }
-
-  // extracts body from request
-  @Nonnull
-  private static String extractPostRequestBody(@Nonnull HttpServletRequest request) throws IOException {
-    if ("POST".equalsIgnoreCase(request.getMethod())) {
-      try {
-        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-      } catch (IOException e) {
-        throw new IOException("Failed to parse request body.", e);
-      }
-    }
-    return "";
   }
 
   /**

@@ -21,14 +21,15 @@ public class FormIndex {
   /**
    * Construct index where type is passed in as a string
    *
-   * @param value of the index item
+   * @param value       of the index item
    * @param indexNumber assigned number of the index
-   * @param type string, number, or boolean type of index
-   * @param key from the json schema
+   * @param type        string, number, or boolean type of index
+   * @param key         from the json schema
    */
   public FormIndex(Object value, @Nonnull JsonElement indexNumber, @Nonnull String type, String key) {
     this.key = key;
-    this.value = value;
+    this.value = value != null ? value.toString() : null;
+
     switch (type) {
       case "NUMBER":
         this.type = PossiblesIndexEnum.NUMBER;
@@ -54,12 +55,12 @@ public class FormIndex {
    * Construct the index when no index number is known
    *
    * @param value of the index item
-   * @param type string, number, or boolean type of index
-   * @param key from the json schema
+   * @param type  string, number, or boolean type of index
+   * @param key   from the json schema
    */
   public FormIndex(Object value, @Nonnull String type, String key) {
     this.indexNumber = Integer.MIN_VALUE;
-    this.value = value;
+    this.value = value != null ? value.toString() : null;
     this.key = key;
 
     switch (type) {
@@ -91,6 +92,7 @@ public class FormIndex {
 
   /**
    * Check if value is a number
+   *
    * @return if the index is a number
    */
   public boolean isNumber() {
@@ -99,6 +101,7 @@ public class FormIndex {
 
   /**
    * Check if value is a boolean
+   *
    * @return if the index is a boolean
    */
   public boolean isBoolean() {
@@ -110,23 +113,27 @@ public class FormIndex {
    *
    * @return the index as a map
    */
-  @Nonnull
   public Map<String, Object> getAsMap() {
-    Map<String, Object> indexHashMap = new HashMap<>();
+    if (this.value != null) {
+      Map<String, Object> indexHashMap = new HashMap<>();
 
-    indexHashMap.put("index", this.indexNumber);
+      indexHashMap.put("index", this.indexNumber);
 
-    indexHashMap.put("value", this.getValue());
+      indexHashMap.put("value", this.getValue());
 
-    indexHashMap.put("type", this.type.toString().toLowerCase());
+      indexHashMap.put("type", this.type.toString().toLowerCase());
 
-    indexHashMap.put("key", this.key);
+      indexHashMap.put("key", this.key);
 
-    return indexHashMap;
+      return indexHashMap;
+    } else {
+      return null;
+    }
   }
 
   /**
    * Get the value of the index
+   *
    * @return the value in the type, ie string, nubmer, or boolean
    */
   public Object getValue() {
@@ -135,6 +142,7 @@ public class FormIndex {
 
   /**
    * Get the number of the indexes number ie, 0-4
+   *
    * @return int from 0 to 4
    */
   public Integer getIndexNumber() {

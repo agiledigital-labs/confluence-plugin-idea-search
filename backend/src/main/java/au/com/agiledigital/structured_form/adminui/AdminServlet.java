@@ -48,10 +48,9 @@ public class AdminServlet extends HttpServlet {
    *
    * @param request  to servlet
    * @param response from servlet as rendered html
-   * @throws RenderingException exception
    */
   @Override
-  public void doGet(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) throws  RenderingException {
+  public void doGet(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) {
     // require web resource to be able to use custom react
     pageBuilderService
       .assembler()

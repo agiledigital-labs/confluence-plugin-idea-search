@@ -26,12 +26,17 @@ const updateMacro = function (macroNode: any, newBody: any) {
   };
   tinymce?.confluence.MacroUtils.insertMacro(macroRenderRequest);
 };
+const techInput = `
+ <div id="edit-page-dialog-tech">
+</div>
+`;
 
 const OpenModal = (event: any, macroNode: any) => {
   const initFormData =
     macroNode.innerText.trim().length > 0
       ? JSON.parse(macroNode.innerText)
       : undefined;
+  AJS?.$("body").append(techInput);
   const wrapper = document.getElementById("edit-page-dialog-tech");
 
   const onClose = (newBody: string) => () => {

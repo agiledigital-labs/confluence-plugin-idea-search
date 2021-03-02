@@ -24,6 +24,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Set;
 
@@ -67,10 +68,9 @@ public class Utilities {
    */
   private static Document parseXML(@Nonnull String xml)
     throws ParserConfigurationException, IOException, SAXException {
-    documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
-    documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // compliant
     DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-    return builder.parse(new InputSource(xml));
+
+    return builder.parse(new ByteArrayInputStream(xml.getBytes()));
   }
 
   /**
