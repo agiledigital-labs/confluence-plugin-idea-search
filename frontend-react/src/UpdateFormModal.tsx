@@ -26,7 +26,7 @@ const updateMacro = function (macroNode: any, newBody: any) {
   };
   tinymce?.confluence.MacroUtils.insertMacro(macroRenderRequest);
 };
-const techInput = `
+const modalMountingPoint = `
  <div id="edit-page-dialog-tech">
 </div>
 `;
@@ -36,7 +36,7 @@ const OpenModal = (event: any, macroNode: any) => {
     macroNode.innerText.trim().length > 0
       ? JSON.parse(macroNode.innerText)
       : undefined;
-  AJS?.$("body").append(techInput);
+  AJS?.$("body").append(modalMountingPoint);
   const wrapper = document.getElementById("edit-page-dialog-tech");
 
   const onClose = (newBody: string) => () => {
@@ -53,13 +53,15 @@ const attachUpdateButton = () => {
     AJS?.Confluence.PropertyPanel.Macro !== undefined &&
     AJS?.Confluence.PropertyPanel.Macro.registerButtonHandler !== undefined
   ) {
+    console.log(1);
+    AJS?.$("body").append(modalMountingPoint);
     AJS.Confluence.PropertyPanel.Macro.registerButtonHandler(
-      "update",
+      "update-schema-form",
       OpenModal
     );
   } else {
     // Puts this at the end of the event loop, allows the Macro functions to be created
-    setTimeout(attachUpdateButton, 100);
+    setTimeout(attachUpdateButton, 500);
   }
 };
 

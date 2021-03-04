@@ -127,7 +127,7 @@
     <category name="hidden"/>
     <parameters/>
     <property-panel>
-      <button id="update" label="Update the form data in a modal"/>
+      <button id="update-schema-form" label="Update the form data in a modal"/>
     </property-panel>
   </xhtml-macro>
 

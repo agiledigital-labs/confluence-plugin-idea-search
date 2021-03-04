@@ -15,6 +15,25 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
+interface ConfluenceUser {
+  user: {
+    type: "known" | string;
+    username: string;
+    userKey: string;
+    profilePicture: {
+      path: string;
+      width: number;
+      height: number;
+    };
+    displayName: string;
+  };
+  title: string;
+  excerpt: string;
+  url: string;
+  entityType: "user" | string;
+  iconCssClass: string;
+}
+
 const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
@@ -36,25 +55,17 @@ export const UserSelection = (props: any) => {
   const contextPath = AJS?.contextPath() ? AJS.contextPath() : "";
   const userSearch = useCallback(
     debounce((userInput: string) => {
-      axios.get(`${contextPath}/rest/api/search?cql=${userInput}`).then((res) =>
-        setUserList(
-          res.data.result.map(
-            ({
-              username,
-              userKey,
-              thumbnailLink: { href },
-            }: {
-              username: string;
-              userKey: string;
-              thumbnailLink: {
-                href: string;
-                type: string;
-                rel: string;
-              };
-            }) => ({ username, userKey, href })
+      axios
+        .get(`${contextPath}/rest/api/search?cql=user~"${userInput}"`)
+        .then((res) =>
+          setUserList(
+            res.data.results.map(({ user: userOption }: ConfluenceUser) => ({
+              username: userOption.username,
+              userKey: userOption.userKey,
+              href: userOption.profilePicture.path,
+            }))
           )
-        )
-      );
+        );
     }, 1000),
     []
   );

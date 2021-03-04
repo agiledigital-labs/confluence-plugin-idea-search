@@ -50,7 +50,7 @@ public class DefaultFormDataService implements FormDataService {
   @Nullable
   public FormSchema createSchema(@Nonnull FormSchema formSchema) {
     FormSchema schema = this.formSchemaDao.createSchema(formSchema);
-    AoFormData[] formDataDaoAll = this.formDataDao.findAll();
+    AoFormData[] formDataDaoAll = this.formDataDao.find();
     if (formDataDaoAll.length > 0) {
       this.updateIndex(formSchema);
     }
@@ -58,7 +58,7 @@ public class DefaultFormDataService implements FormDataService {
   }
 
   private void updateIndex(@Nonnull FormSchema formSchema) throws NullPointerException {
-    AoFormData[] data = this.formDataDao.findAll();
+    AoFormData[] data = this.formDataDao.find();
     Arrays.asList(data).forEach(ao ->
       this.formDataDao.updateIndexValues(ao, this.getIndexData(ao, formSchema.getIndexSchema()))
     );
@@ -154,7 +154,7 @@ public class DefaultFormDataService implements FormDataService {
    */
   public List<FormData> queryAllFormData(@Nonnull List<FormIndexQuery> search) {
 
-    return asListFormData(formDataDao.find(search, 0, 10));
+    return asListFormData(formDataDao.find(search));
   }
 
   /**
@@ -230,4 +230,9 @@ public class DefaultFormDataService implements FormDataService {
       return new FormIndex(jsonFromData.get(key).toString(), type, key);
     }
   }
+
+  public void removeForm(@Nonnull FormData formData, long contentId) {
+    this.formDataDao.removeForm( formData, contentId);
+  }
+
 }

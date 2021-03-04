@@ -3,10 +3,10 @@ package au.com.agiledigital.structured_form.listener;
 import au.com.agiledigital.structured_form.service.DefaultFormDataService;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.event.events.content.page.PageCreateEvent;
+import com.atlassian.confluence.event.events.content.page.PageRemoveEvent;
 import com.atlassian.confluence.event.events.content.page.PageUpdateEvent;
 import com.atlassian.confluence.labels.Label;
 import com.atlassian.confluence.pages.Page;
-import com.atlassian.confluence.plugins.createcontent.actions.IndexPageManager;
 import com.atlassian.confluence.plugins.createcontent.api.events.BlueprintPageCreateEvent;
 import com.atlassian.confluence.plugins.createcontent.impl.ContentBlueprint;
 import com.atlassian.event.api.EventListener;
@@ -34,32 +34,25 @@ public class FormDataEventListener implements InitializingBean, DisposableBean {
 
   private final DefaultFormDataService defaultFormDataService;
 
-  @ConfluenceImport
-  private final IndexPageManager indexPageManager;
 
   private static final ModuleCompleteKey FORM_DATA_BLUEPRINT_KEY =
     new ModuleCompleteKey("au.com.agiledigital.structured_form", "form-data-blueprint");
   private static final String FORM_DATA_BLUEPRINT_LABEL = "form-data";
-  @Nonnull
-  private final ContentBlueprint contentBlueprint;
 
   /**
    * Construct with connection to the event publisher and FormData service.
    *
    * @param eventPublisher   confluence event publisher
    * @param defaultFormDataService form data service
-   * @param indexPageManager class for the index page
    */
   @Inject
   public FormDataEventListener(
     EventPublisher eventPublisher,
-    DefaultFormDataService defaultFormDataService,
-    IndexPageManager indexPageManager) {
+    DefaultFormDataService defaultFormDataService) {
     this.eventPublisher = eventPublisher;
     this.defaultFormDataService = defaultFormDataService;
-    this.indexPageManager = indexPageManager;
-    this.contentBlueprint = new ContentBlueprint();
-    this.contentBlueprint.setModuleCompleteKey(FORM_DATA_BLUEPRINT_KEY.toString());
+    ContentBlueprint contentBlueprint = new ContentBlueprint();
+    contentBlueprint.setModuleCompleteKey(FORM_DATA_BLUEPRINT_KEY.toString());
   }
 
   @Override
@@ -103,6 +96,24 @@ public class FormDataEventListener implements InitializingBean, DisposableBean {
   @EventListener
   public void pageCreated(@Nonnull PageCreateEvent event) {
     pageEventHandler(event.getContent(), event.getPage());
+  }
+
+  /**
+   * Listen for page deletion events on pages with the correct label, updates the data store with
+   * the deleted tag
+   *
+   * If the title of the page is not unique, the blueprint create event is not used, the page create
+   * event is.
+   *
+   * @param event produced when a page is updated
+   */
+  @EventListener
+  public void pageDelete(@Nonnull PageRemoveEvent event) {
+    if (
+      event.getContent().getLabels().contains(new Label(FORM_DATA_BLUEPRINT_LABEL))
+    ) {
+      this.defaultFormDataService.removeForm(formDataFromPage(event.getPage()), event.getPage().getId());
+    }
   }
 
   /**

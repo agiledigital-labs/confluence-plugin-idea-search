@@ -5,8 +5,6 @@ package au.com.agiledigital.structured_form.helpers;
  */
 public class DefaultSchema {
 
-  private DefaultSchema() { }
-
   /**
    * The default page schema, this will show up when trying to create a page
    * from this plugin without setting a custom schema.
@@ -105,7 +103,6 @@ public class DefaultSchema {
     + "    }\n"
     + "  }\n"
     + "}";
-
   /**
    * Default schema for ui styling.
    */
@@ -115,9 +112,10 @@ public class DefaultSchema {
     + "  },\n"
     + "  \"problemStatement\": {\n"
     + "    \"ui:widget\": \"textarea\"\n"
-    + "  }\n"
-    + "}";
-
+    + "  },\n"
+    + " \"deciders\": {\n"
+    + "  \"ui:widget\": \"UserSelection\" \n"
+    + "}}";
   /**
    * Default index fields for ADR schema.
    */
@@ -149,5 +147,8 @@ public class DefaultSchema {
     + "    }\n"
     + "  ]\n"
     + "}";
+
+  private DefaultSchema() {
+  }
 
 }

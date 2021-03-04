@@ -75,7 +75,7 @@ const OuterTable = () => {
   const contextPath = AJS?.contextPath() ? AJS.contextPath() : "";
 
   // rows to be shown on each page of the paginated table
-  const rowsPerPage = 10;
+  const rowsPerPage = 25;
 
   const [formData, setFormData] = useState<FormDataType>();
 

@@ -15,12 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,12 +27,13 @@ import java.io.IOException;
 import java.util.Set;
 
 import static au.com.agiledigital.structured_form.helpers.PageHelper.wrapBody;
+import static javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD;
+import static javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA;
 
 public class Utilities {
   public enum PossiblesIndexEnum {STRING, NUMBER, BOOLEAN, STATIC}
 
   private static final Logger log = LoggerFactory.getLogger(Utilities.class);
-  private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
   private Utilities() {  }
 
@@ -68,7 +67,13 @@ public class Utilities {
    */
   private static Document parseXML(@Nonnull String xml)
     throws ParserConfigurationException, IOException, SAXException {
-    DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+    // https://stackoverflow.com/questions/53299280/java-and-xerces-cant-find-property-xmlconstants-access-external-dtd
+    // The version of the implementation does not support these external access attributes,
+    // This uses the version in the jdk, which should support these attributes.
+    DocumentBuilderFactory df = DocumentBuilderFactory.newInstance("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl", null);
+    df.setAttribute(ACCESS_EXTERNAL_DTD, ""); // Compliant
+    df.setAttribute(ACCESS_EXTERNAL_SCHEMA, ""); // compliant
+    DocumentBuilder builder = df.newDocumentBuilder();
 
     return builder.parse(new ByteArrayInputStream(xml.getBytes()));
   }

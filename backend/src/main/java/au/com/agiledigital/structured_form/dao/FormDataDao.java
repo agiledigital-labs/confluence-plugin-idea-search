@@ -40,6 +40,8 @@ public class FormDataDao {
 
   private static final Class<AoFormData> AO_FORM_TYPE = AoFormData.class;
   private static final Class<AoFormBlueprint> AO_FORM_BLUEPRINT_TYPE = AoFormBlueprint.class;
+  private static final String CONTENT_ID_QUERY = "CONTENT_ID = ?";
+  private static final String REMOVED_STATUS_QUERY = "REMOVED_STATUS != ?";
 
   private static final Logger log = LoggerFactory.getLogger(FormDataDao.class);
 
@@ -130,7 +132,7 @@ public class FormDataDao {
     AoFormData[] aoFormDatas =
       this.ao.find(
         AO_FORM_TYPE,
-        Query.select().where("CONTENT_ID = ?", contentId)
+        Query.select().where(CONTENT_ID_QUERY, contentId)
       );
 
     boolean isNewData = aoFormDatas.length == 0;
@@ -185,7 +187,7 @@ public class FormDataDao {
 
     List<AoFormData> aoFormDataList = Arrays.stream(this.ao.find(
       AO_FORM_TYPE,
-      Query.select().where("CONTENT_ID = ?", contentId)
+      Query.select().where(CONTENT_ID_QUERY, contentId).where(REMOVED_STATUS_QUERY, "true")
     )).collect(Collectors.toList());
 
     return aoFormDataList.stream()
@@ -196,16 +198,16 @@ public class FormDataDao {
   }
 
   /**
-   * List all form datas in the data store
+   * Find all AoFormData that aren't soft deleted
    *
-   * @return a list of all available AoFormData
+   * @return an array of all available AoFormData
    */
-  public AoFormData[] findAll() {
+  public AoFormData[] find() {
+
     Query query = Query
-      .select();
+      .select().where(REMOVED_STATUS_QUERY, "true");
 
     return this.ao.find(AO_FORM_TYPE, query);
-
   }
 
   /**
@@ -213,14 +215,32 @@ public class FormDataDao {
    *
    * @return an array of all available AoFormData
    */
-  public AoFormData[] find() {
+  public AoFormData[] find(int limit, int offset) {
 
     Query query = Query
-      .select().limit(10).offset(0);
+      .select().limit(limit).offset(offset).where("REMOVED_STATUS NOT LIKE ?", "true");
 
     return this.ao.find(AO_FORM_TYPE, query);
   }
 
+  /**
+   * Search for AoFormData based on list of FormIndexQuery,
+   * Limit or offset the search for pagination
+   *
+   * @param search list of FormIndexQuery use in the search
+   * @return an array of all available AoFormData
+   */
+  public AoFormData[] find(@Nonnull List<FormIndexQuery> search) {
+    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery()
+      .getLeft()).collect(Collectors.toList()), AND);
+    Object[] whereParams = search.stream().map(r -> r.getQuery().getRight())
+      .flatMap(Collection::stream).toArray();
+
+    Query query = Query
+      .select().where(whereClues, whereParams).where(REMOVED_STATUS_QUERY, "true");
+
+    return this.ao.find(AO_FORM_TYPE, query);
+  }
   /**
    * Search for AoFormData based on list of FormIndexQuery,
    * Limit or offset the search for pagination
@@ -231,11 +251,13 @@ public class FormDataDao {
    * @return an array of all available AoFormData
    */
   public AoFormData[] find(@Nonnull List<FormIndexQuery> search, int offset, int limit) {
-    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery().getLeft()).collect(Collectors.toList()), AND);
-    Object[] whereParams = search.stream().map(r -> r.getQuery().getRight()).flatMap(Collection::stream).toArray();
+    String whereClues = StringUtils.join(search.stream().map(r -> r.getQuery()
+      .getLeft()).collect(Collectors.toList()), AND);
+    Object[] whereParams = search.stream().map(r -> r.getQuery().getRight())
+      .flatMap(Collection::stream).toArray();
 
     Query query = Query
-      .select().where(whereClues, whereParams).limit(limit).offset(offset);
+      .select().where(whereClues, whereParams).limit(limit).offset(offset).where(REMOVED_STATUS_QUERY, "true");
 
     return this.ao.find(AO_FORM_TYPE, query);
   }
@@ -372,7 +394,33 @@ public class FormDataDao {
     aoFormData.setCreatorUserKey(formData.getCreatorKey());
     aoFormData.setTitle(formData.getTitle());
     aoFormData.setFormData(formData.getFormDataValue());
+    aoFormData.setRemovedStatus("false");
   }
 
+  /**
+   * Update a FormData by the page content id
+   *
+   * @param formData  New FormData for data store
+   * @param contentId of the page containing the data
+   */
+  public void removeForm(@Nonnull FormData formData, long contentId) {
+    AoFormData[] aoFormDatas =
+      this.ao.find(
+        AO_FORM_TYPE,
+        Query.select().where(CONTENT_ID_QUERY, contentId)
+      );
 
+    if (aoFormDatas.length == 0) {
+      return;
+    }
+
+    // If the title of the page already exists the create event fails and a page update event is fired on a successful save.
+    // If this happens the aoFormData will not exist in the data store and will need to be created.
+    AoFormData aoFormData = aoFormDatas[0];
+    aoFormData.setRemovedStatus("true");
+
+    // extract the indelible data from the json payload and save it in the index fields
+
+    aoFormData.save();
+  }
 }

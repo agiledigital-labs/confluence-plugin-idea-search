@@ -2,10 +2,8 @@ package au.com.agiledigital.structured_form.model;
 
 import com.atlassian.confluence.api.model.content.id.ContentId;
 import com.atlassian.confluence.user.ConfluenceUser;
-import com.atlassian.sal.api.user.UserKey;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -32,7 +30,7 @@ public class FormData {
     @JsonProperty("creator") ConfluenceUser creator,
     @JsonProperty("title") String title,
     @JsonProperty("formData") String formData,
-    @JsonProperty("indexData")  Set<FormIndex> indexData
+    @JsonProperty("indexData") Set<FormIndex> indexData
   ) {
     this.globalId = globalId;
     this.contentId = contentId;
@@ -66,19 +64,20 @@ public class FormData {
    * @return ConfluenceUser
    */
   public String getCreator() {
-    if(this.creator != null){
+    if (this.creator != null) {
       return this.creator.getName();
     } else {
       return "";
     }
   }
+
   /**
    * Get the creator key of the form page
    *
    * @return ConfluenceUser
    */
   public String getCreatorKey() {
-    if(this.creator != null){
+    if (this.creator != null) {
       return this.creator.getKey().toString();
     } else {
       return "";
@@ -99,19 +98,17 @@ public class FormData {
    *
    * @return form data as a string
    */
-  public String getFormDataValue() {return this.formDataValue;}
+  public String getFormDataValue() {
+    return this.formDataValue;
+  }
 
   /**
    * Get the index data for this form
    *
    * @return set of the formIndex
    */
-  public  Set<FormIndex> getIndexData() {
-    if (this.indexData != null){
-      return this.indexData;
-    }else{
-    return Collections.emptySet();
-    }
+  public Set<FormIndex> getIndexData() {
+    return this.indexData != null ? this.indexData : Collections.emptySet();
   }
 
   /**
@@ -120,14 +117,14 @@ public class FormData {
    * @return object relating to the key
    */
   public Object get(@Nonnull String key) {
-    switch(key.toLowerCase()){
+    switch (key.toLowerCase()) {
       case "creator":
         return this.getCreator();
       case "globalid":
         return this.getGlobalId();
       case "contentid":
         return this.getContentId();
-      case  "title":
+      case "title":
         return this.getTitle();
       default:
         return "";
@@ -155,9 +152,7 @@ public class FormData {
   }
 
   /**
-   * Return global id of form data
-   *
-   * @return globalId
+   * Build a formData objet
    */
   public static class Builder {
 
@@ -166,7 +161,7 @@ public class FormData {
     private ConfluenceUser creator;
     private String title;
     private String formData;
-    private  Set<FormIndex> indexData;
+    private Set<FormIndex> indexData;
 
     public Builder() {
     }

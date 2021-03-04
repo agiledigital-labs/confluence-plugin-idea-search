@@ -63,44 +63,48 @@ public interface AoFormData extends RawEntity<Long> {
 
   @Nonnull
   @Indexed
-  String getIndexNumber0();
+  Double getIndexNumber0();
   void setIndexNumber0(double indexNumber0);
   @Nonnull
   @Indexed
-  String getIndexNumber1();
+  Double getIndexNumber1();
   void setIndexNumber1(double indexNumber1);
   @Nonnull
   @Indexed
-  String getIndexNumber2();
+  Double getIndexNumber2();
   void setIndexNumber2(double indexNumber2);
   @Nonnull
   @Indexed
-  String getIndexNumber3();
+  Double getIndexNumber3();
   void setIndexNumber3(double indexNumber3);
   @Nonnull
   @Indexed
-  String getIndexNumber4();
+  Double getIndexNumber4();
   void setIndexNumber4(double indexNumber4);
 
   @Nonnull
   @Indexed
-  String getIndexBoolean0();
+  Boolean getIndexBoolean0();
   void setIndexBoolean0(boolean indexBoolean0);
   @Nonnull
   @Indexed
-  String getIndexBoolean1();
+  Boolean getIndexBoolean1();
   void setIndexBoolean1(boolean indexBoolean1);
   @Nonnull
   @Indexed
-  String getIndexBoolean2();
+  Boolean getIndexBoolean2();
   void setIndexBoolean2(boolean indexBoolean2);
   @Nonnull
   @Indexed
-  String getIndexBoolean3();
+  Boolean getIndexBoolean3();
   void setIndexBoolean3(boolean indexBoolean3);
   @Nonnull
   @Indexed
-  String getIndexBoolean4();
+  Boolean getIndexBoolean4();
   void setIndexBoolean4(boolean indexBoolean4);
+
+  @Default("false")
+  String getRemovedStatus();
+  void setRemovedStatus(String removedStatus);
 
 }
