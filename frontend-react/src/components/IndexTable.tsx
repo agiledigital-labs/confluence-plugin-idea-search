@@ -3,8 +3,17 @@ import Textfield from "@atlaskit/textfield";
 import axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { FormDataType, IndexItem, version } from "./index";
-import { flow, get, isNil, lowerCase, omitBy, set, startCase } from "lodash/fp";
+import { FormSchemaType, IndexItem, version } from "./index";
+import {
+  contains,
+  flow,
+  get,
+  isNil,
+  lowerCase,
+  omitBy,
+  set,
+  startCase,
+} from "lodash/fp";
 import { HeadCellType, HeadType } from "@atlaskit/dynamic-table/types";
 import { makeStyles } from "@material-ui/core";
 
@@ -77,7 +86,7 @@ const OuterTable = () => {
   // rows to be shown on each page of the paginated table
   const rowsPerPage = 25;
 
-  const [formData, setFormData] = useState<FormDataType>();
+  const [formSchema, setFormSchema] = useState<FormSchemaType>();
 
   const [justPages, setJustPages] = useState<Array<FormData>>();
 
@@ -93,22 +102,26 @@ const OuterTable = () => {
     axios
       .get(`${contextPath}/rest/form-data/${version}/schema`)
       .then((response) => {
-        setFormData({
+        setFormSchema({
           indexSchema: JSON.parse(response.data.indexSchema),
         });
       });
   }, []);
 
-  const headersList = formData?.indexSchema?.index?.map((indexSchemaItem) => ({
-    key: indexSchemaItem.key,
-    source: `${
-      lowerCase(indexSchemaItem.type) !== "static"
-        ? indexSchemaItem.type
-        : indexSchemaItem.key
-    }${
-      lowerCase(indexSchemaItem.type) !== "static" ? indexSchemaItem.index : ""
-    }`,
-  }));
+  const headersList = formSchema?.indexSchema?.index?.map(
+    (indexSchemaItem) => ({
+      key: indexSchemaItem.key,
+      source: `${
+        lowerCase(indexSchemaItem.type) !== "static"
+          ? indexSchemaItem.type
+          : indexSchemaItem.key
+      }${
+        lowerCase(indexSchemaItem.type) !== "static"
+          ? indexSchemaItem.index
+          : ""
+      }`,
+    })
+  );
 
   // search term will be empty fields on initial render
   const [searchTerm, setSearchTerm] = useState<{
@@ -146,16 +159,42 @@ const OuterTable = () => {
 
   const definedColumnOrder:
     | string[]
-    | undefined = formData?.indexSchema?.index?.map((item) => item.key);
+    | undefined = formSchema?.indexSchema?.index?.map((item) => item.key);
+
+  const uiWidget = formSchema?.indexSchema?.index
+    ?.filter((item) => item["ui:widget"])
+    .map((item) => item.key);
 
   const content = (page: FormData) =>
     definedColumnOrder
       ? definedColumnOrder
           .map((itemKey) => page.indexData.find((inx) => inx.key === itemKey))
-          .map((row, i) => ({
-            key: row?.key,
-            content: i === 0 ? <a href={page.url}>{row?.value}</a> : row?.value,
-          }))
+          .map((row, i) => {
+            if (contains(row?.key)(uiWidget)) {
+              const information = row?.value
+                ? JSON.parse(row.value as string)
+                : {};
+              return {
+                key: row?.key,
+                content: information.url ? (
+                  <a href={`${contextPath}${information.url}`}>
+                    {" "}
+                    {information.username}
+                  </a>
+                ) : information.username ? (
+                  information.username
+                ) : (
+                  "not found"
+                ),
+              };
+            } else {
+              return {
+                key: row?.key,
+                content:
+                  i === 0 ? <a href={page.url}>{row?.value}</a> : row?.value,
+              };
+            }
+          })
       : [];
 
   const rows = justPages?.map((page: FormData) => ({

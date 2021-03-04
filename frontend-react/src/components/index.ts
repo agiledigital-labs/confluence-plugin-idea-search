@@ -52,9 +52,10 @@ export type IndexItem = {
   type: IndexType;
   index?: number;
   value: string | number | boolean;
+  "ui:widget"?: string;
 };
 
-export interface FormDataType {
+export interface FormSchemaType {
   schema?: JSONSchema7;
   uiSchema?: JSONSchema7;
   indexSchema?: { index?: Array<Omit<IndexItem, "value">> };

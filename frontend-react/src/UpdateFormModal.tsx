@@ -53,7 +53,6 @@ const attachUpdateButton = () => {
     AJS?.Confluence.PropertyPanel.Macro !== undefined &&
     AJS?.Confluence.PropertyPanel.Macro.registerButtonHandler !== undefined
   ) {
-    console.log(1);
     AJS?.$("body").append(modalMountingPoint);
     AJS.Confluence.PropertyPanel.Macro.registerButtonHandler(
       "update-schema-form",
