@@ -5,7 +5,7 @@ import Form, { IChangeEvent, WidgetProps } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { SubmissionFeedback, FormDataType, version } from "./index";
+import { SubmissionFeedback, FormSchemaType, version } from "./index";
 
 // minimum number of rows for TextArea
 const minRows: number = 12;
@@ -88,7 +88,7 @@ export const OuterAdminForm = () => {
   // if not found, set to confluence as default
   const contextPath = window.AJS ? window.AJS.contextPath() : "";
 
-  const [formData, setFormData] = useState<FormDataType>();
+  const [formData, setFormData] = useState<FormSchemaType>();
 
   // populate form data with a schema from the database
   useEffect(() => {
@@ -115,7 +115,7 @@ export const OuterAdminForm = () => {
     hidden: true,
   });
 
-  const updateSchema = (data: FormDataType | undefined) => {
+  const updateSchema = (data: FormSchemaType | undefined) => {
     axios
       .post(`${contextPath}/rest/form-data/${version}/schema`, data)
       .then(() =>

@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { isEmpty } from "lodash/fp";
 
 interface ConfluenceUser {
   user: {
@@ -37,6 +38,7 @@ interface ConfluenceUser {
 const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
+    zIndex: "3005!important" as any,
   },
   popover: {
     width: "100%",
@@ -48,31 +50,34 @@ const AJS = window.AJS ? window.AJS : undefined;
 
 export const UserSelection = (props: any) => {
   const classes = useStyles();
-  const [user, setUser] = useState<string>(props.value);
   const [userList, setUserList] = useState<
-    Array<{ username: string; userKey: string; href: string }>
+    Array<{ username: string; userKey: string; href: string; url: string }>
   >([]);
   const contextPath = AJS?.contextPath() ? AJS.contextPath() : "";
   const userSearch = useCallback(
     debounce((userInput: string) => {
-      axios
-        .get(`${contextPath}/rest/api/search?cql=user~"${userInput}"`)
-        .then((res) =>
-          setUserList(
-            res.data.results.map(({ user: userOption }: ConfluenceUser) => ({
-              username: userOption.username,
-              userKey: userOption.userKey,
-              href: userOption.profilePicture.path,
-            }))
-          )
-        );
-    }, 1000),
+      if (userInput) {
+        axios
+          .get(`${contextPath}/rest/api/search?cql=user~"${userInput}"`)
+          .then((res) =>
+            setUserList(
+              res.data.results.map(
+                ({ user: userOption, url }: ConfluenceUser) => ({
+                  username: userOption.username,
+                  userKey: userOption.userKey,
+                  href: userOption.profilePicture.path,
+                  url,
+                })
+              )
+            )
+          );
+      }
+    }, 650),
     []
   );
 
   const updateUser = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser(event.target.value);
-    props.onChange(event.target.value);
+    props.onChange(JSON.stringify({ username: event.target.value }));
     userSearch(event.target.value);
   };
 
@@ -89,7 +94,13 @@ export const UserSelection = (props: any) => {
           type="text"
           onChange={updateUser}
           className="autocomplete-multiuser MuiInputBase-input MuiInput-input"
-          value={user}
+          value={
+            props?.value &&
+            !isEmpty(props?.value) &&
+            JSON.parse(props?.value).username
+              ? JSON.parse(props?.value).username
+              : ""
+          }
           required={props.required}
         />
       </FormControl>
@@ -111,12 +122,13 @@ export const UserSelection = (props: any) => {
           <Typography>Select a user</Typography>
           <List component="nav" aria-labelledby="nested-list-subheader">
             {userList
-              ? userList.map(({ username, userKey, href }) => (
+              ? userList.map(({ username, userKey, href, url }) => (
                   <ListItem
                     button
                     onClick={() => {
-                      setUser(username);
-                      props.onChange(`${username}::${userKey}`);
+                      props.onChange(
+                        JSON.stringify({ username, userKey, url })
+                      );
                       setUserList([]);
                     }}
                   >
