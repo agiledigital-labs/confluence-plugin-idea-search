@@ -30,7 +30,7 @@ public class FormIndex {
     this.key = key;
     this.value = value != null ? value.toString() : null;
 
-    switch (type) {
+    switch (type ) {
       case "NUMBER":
         this.type = PossiblesIndexEnum.NUMBER;
         this.indexNumber = indexNumber.getAsInt();

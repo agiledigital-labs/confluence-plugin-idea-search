@@ -4,6 +4,8 @@ import com.atlassian.confluence.content.render.xhtml.ConversionContext;
 import com.atlassian.confluence.macro.Macro;
 import com.atlassian.confluence.macro.MacroExecutionException;
 import com.atlassian.confluence.util.velocity.VelocityUtils;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,10 +24,21 @@ import java.util.stream.StreamSupport;
  */
 public class StructuredData implements Macro {
   private final Gson gson = new Gson();
+  private final PageBuilderService pageBuilderService;
+
+  public StructuredData(@ComponentImport PageBuilderService pageBuilderService){
+    this.pageBuilderService = pageBuilderService;
+  }
 
   @Override
   public String execute(Map<String, String> map, String s, ConversionContext conversionContext)
     throws MacroExecutionException {
+    pageBuilderService
+      .assembler()
+      .resources()
+      .requireWebResource(
+        "au.com.agiledigital.structured_form:test-render");
+
     LinkedHashMap<String, String> jsonObject = gson.fromJson(Jsoup.parse(s).body().text(), LinkedHashMap.class);
     JsonElement jsonElement = gson.toJsonTree(jsonObject);
 
@@ -35,7 +48,8 @@ public class StructuredData implements Macro {
 
     Map<String, Object> context = new HashMap<>();
     context.put("data", renderedData);
-    return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
+    context.put("rawData", s);
+        return VelocityUtils.getRenderedTemplate("vm/StructuredData.vm", context);
   }
 
   /**

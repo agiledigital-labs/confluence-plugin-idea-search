@@ -1,0 +1,13 @@
+{namespace structured_form.macro.page.formData}
+
+
+
+
+{template .test}
+  {@param renderObject: map<String,Object> }
+    {for $item in $renderObject}
+      {$item}
+      {$item.getKey}
+      {$item.getValue.getClass}
+    {/for}
+{/template}

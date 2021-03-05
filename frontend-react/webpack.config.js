@@ -16,6 +16,7 @@ module.exports = {
     adminPage: "./src/AdminPage.tsx",
     editModal: "./src/UpdateFormModal.tsx",
     simpleForm: "./src/SimpleForm.tsx",
+    dataRenderer: "./src/dataRenderer.ts",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
