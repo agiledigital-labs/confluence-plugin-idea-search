@@ -86,6 +86,11 @@ const OuterTable = () => {
   // rows to be shown on each page of the paginated table
   const rowsPerPage = 25;
 
+  // On initial render, page would be set to the first one
+  const [page, setPage] = useState<number>(1);
+
+  const updatePage = (page: number) => setPage(page);
+
   const [formSchema, setFormSchema] = useState<FormSchemaType>();
 
   const [justPages, setJustPages] = useState<Array<FormData>>();
@@ -178,7 +183,6 @@ const OuterTable = () => {
                 key: row?.key,
                 content: information.url ? (
                   <a href={`${contextPath}${information.url}`}>
-                    {" "}
                     {information.username}
                   </a>
                 ) : information.username ? (
@@ -220,9 +224,11 @@ const OuterTable = () => {
         rows={rows}
         rowsPerPage={rowsPerPage}
         defaultPage={defaultPage}
+        page={page}
         loadingSpinnerSize="large"
         isFixedSize
         isLoading={false}
+        onSetPage={updatePage}
       />
     </div>
   );
