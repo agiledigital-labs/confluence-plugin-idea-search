@@ -45,14 +45,14 @@ public class IndexTable implements Macro {
     // passing in an empty context as index table will be constructed with react
     Map<String, Object> context = new HashMap<>();
     context.put(
-      "blueprint",
+      "blueprintFormData",
       new BlueprintContainer(
         conversionContext.getSpaceKey(),
         this.settingsService.getGlobalSettings().getBaseUrl(),
          this.formDataService.getBlueprintId()));
           // Set the blueprint id to be that of form data blueprint
 
-    return VelocityUtils.getRenderedTemplate("vm/IndexPage.vm", context);
+    return VelocityUtils.getRenderedTemplate("vm/IndexPageFormData.vm", context);
   }
 
   @Nonnull

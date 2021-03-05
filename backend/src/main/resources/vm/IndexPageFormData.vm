@@ -1,0 +1,15 @@
+#* @vtlvariable name="blueprintFormData" type="au.com.agiledigital.structured_form.macros.transport.BlueprintContainer" *#
+<p class="add-button">
+    #if($blueprintFormData.blueprintId != "")
+      <a class="aui-button create-from-template-button conf-macro output-inline"
+         data-space-key="$blueprintFormData.spaceKey"
+         href="$blueprintFormData.baseUrl?createDialogSpaceKey=$blueprintFormData.spaceKey&createDialogBlueprintId=$blueprintFormData.blueprintId"
+         data-content-blueprint-id="$blueprintFormData.blueprintId" data-hasbody="false"
+         data-macro-name="create-from-template">Add new form data page</a>
+    #end
+</p>
+
+  <div id="maincontainer">
+    <div id="index-container">
+    </div>
+  </div>
