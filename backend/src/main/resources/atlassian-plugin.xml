@@ -1,0 +1,208 @@
+<atlassian-plugin
+  key="${atlassian.plugin.key}"
+  name="${project.name}"
+  plugins-version="2"
+>
+  <plugin-info>
+    <description>${project.description}</description>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+    <vendor
+      name="${project.organization.name}"
+      url="${project.organization.url}"/>
+    <version>${project.version}</version>
+  </plugin-info>
+
+  <!-- Property Naming from form-schema-data.properties -->
+  <resource location="form-schema-data" name="i18n" type="i18n"/>
+
+  <!-- Page Blueprint -->
+  <blueprint
+    content-template-key="formSchemaData-page-template"
+    i18n-name-key="formSchemaData.blueprint.name"
+    index-key="form-data"
+    key="form-data-blueprint"
+    index-template-key="formSchemaData-index-template"
+    i18n-index-title-key="formSchemaData.blueprint.page.index-title">
+    <dialog-wizard key="formSchemaData-wizard">
+      <dialog-page
+        description-content-key="formSchemaData.blueprint.page.wizard.page1.desc.content"
+        description-header-key="formSchemaData.blueprint.page.wizard.page1.desc.header"
+        id="page1Id"
+        last="false"
+        template-key="structured_form.blueprint.page.formData.page1Form"
+        title-key="formSchemaData.blueprint.page.wizard.page1.title"
+      />
+      <dialog-page
+        description-content-key="formSchemaData.blueprint.page.wizard.page1.desc.content"
+        description-header-key="formSchemaData.blueprint.page.wizard.page1.desc.header"
+        id="page2Id"
+        last="true"
+        template-key="structured_form.blueprint.page.formData.page2Form"
+        title-key="formSchemaData.blueprint.page.wizard.page2.title"
+      />
+    </dialog-wizard>
+  </blueprint>
+
+  <web-resource
+    key="structured_form.blueprint.page.wizard"
+    name="Form schema blueprint wizard">
+    <context>create-content</context>
+    <dependency>
+      com.atlassian.confluence.plugins.confluence-create-content-plugin:resources
+    </dependency>
+    <resource
+      location="/frontend/bundled.simpleForm.js"
+      name="simpleForm.js"
+      type="download"/>
+    <resource
+      location="/soy/formDataWizard.soy"
+      name="formDataWizard.soy.js"
+      type="download"/>
+
+    <resource location="/images" name="images/" type="download"/>
+
+    <transformation extension="soy">
+      <transformer key="soyTransformer">
+        <functions>com.atlassian.confluence.plugins.soy:soy-core-functions
+        </functions>
+      </transformer>
+    </transformation>
+  </web-resource>
+
+
+
+  <content-template
+    i18n-name-key="formSchemaData.blueprint.page.title"
+    key="formSchemaData-page-template">
+    <context-provider
+      class="au.com.agiledigital.structured_form.blueprints.BlueprintPageContextProvider"/>
+    <resource
+      location="/templates/pageBlueprint.xml"
+      name="template"
+      type="download"/>
+  </content-template>
+
+  <rest key="rest" name="Form data Rest API" path="/form-data" version="1">
+    <description>Provides a REST interface to expose and modify data.</description>
+  </rest>
+
+  <web-item
+    i18n-name-key="formSchemaData.blueprint.page.create-link.title"
+    key="formDataSearch-page-blueprint-entry"
+    section="system.create.dialog/content">
+    <description key="formSchemaData.blueprint.page.create-link.description"/>
+    <param name="blueprintKey" value="form-data-blueprint"/>
+    <resource location="/images/myblueprint.png" name="icon" type="download"/>
+  </web-item>
+
+  <web-item key="conf-menu-item" i18n-name-key="form.admin.label" section="system.admin/configuration" weight="10">
+    <description>Link to form-schema-admin page.</description>
+    <label key="form.admin.label" />
+    <link linkId="form-schema-admin-link">/plugins/servlet/form-data/admin</link>
+  </web-item>
+
+  <servlet key="admin-servlet" class="au.com.agiledigital.structured_form.adminui.AdminServlet">
+    <url-pattern>/form-data/admin</url-pattern>
+  </servlet>
+
+  <!-- Index Blueprint -->
+  <content-template
+    key="formSchemaData-index-template"
+    i18n-name-key="formSchemaData.blueprint.index.name">
+    <resource
+      name="template"
+      type="download"
+      location="templates/indexBlueprint.xml"/>
+    <context-provider
+      class="au.com.agiledigital.structured_form.blueprints.IndexPageContextProvider"/>
+  </content-template>
+
+  <!-- Structured Macro -->
+  <xhtml-macro
+    name="form-structured-data"
+    class="au.com.agiledigital.structured_form.macros.StructuredData"
+    key='formSchemaData-macro-structuredData'>
+    <description key="formSchemaData.macro.structuredField.desc"/>
+    <category name="hidden"/>
+    <parameters/>
+    <property-panel>
+      <button id="update-schema-form" label="Update the form data in a modal"/>
+    </property-panel>
+  </xhtml-macro>
+
+  <web-resource name="Editor Modal" key="editor_modal">
+    <context>editor</context>
+    <resource
+      location="/frontend/bundled.editModal.js"
+      name="bundled.editModal.js"
+      type="download"/>
+    <dependency>com.atlassian.confluence.tinymceplugin:editor-resources</dependency>
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+  </web-resource>
+
+  <ao key="ao-module" namespace="form-data">
+    <description>The module configuring the active objects data storage service for this plugin</description>
+    <entity>au.com.agiledigital.structured_form.dao.AoFormData</entity>
+    <entity>au.com.agiledigital.structured_form.dao.AoFormBlueprint</entity>
+    <entity>au.com.agiledigital.structured_form.dao.AoFormSchema</entity>
+  </ao>
+
+  <component-import
+    key="eventPublisher"
+    name="Event Publisher components"
+    interface="com.atlassian.event.api.EventPublisher">
+    <description>Access to the Active Objects service</description>
+  </component-import>
+
+  <component
+    key="formDataService"
+    class="au.com.agiledigital.structured_form.service.DefaultFormDataService"/>
+  <component
+    key="formDataDao"
+    class="au.com.agiledigital.structured_form.dao.FormDataDao"/>
+
+  <!-- Index Table Macro -->
+  <xhtml-macro
+    name="Form data from schema index table"
+    class="au.com.agiledigital.structured_form.macros.IndexTable"
+    key='formSchemaData-macro-indexTable'>
+    <description key="formSchemaData.macro.indexTable.desc"/>
+    <category name="hidden"/>
+    <parameters/>
+  </xhtml-macro>
+
+  <!-- Blueprint ID Storage -->
+  <xhtml-macro
+    name="Blueprint Id Storage"
+    class="au.com.agiledigital.structured_form.macros.TemplateId"
+    key='formSchemaData-macro-templateId'
+  >
+    <description key="formSchemaData.macro.templateId.desc"/>
+    <category name="hidden"/>
+    <parameters>
+      <parameter name="blueprintId" type="string"/>
+      <parameter name="category" type="enum">
+        <value name="blueprintId"/>
+      </parameter>
+    </parameters>
+  </xhtml-macro>
+
+  <web-resource key="entrypoint-indexTable">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>indexTable</context>
+    <resource type="download" name="bundled.indexTable.js" location="frontend/bundled.indexTable.js"/>
+  </web-resource>
+  <web-resource key="entrypoint-adminPage">
+    <transformation extension="js">
+      <transformer key="jsI18n"/>
+    </transformation>
+    <context>adminPage</context>
+    <dependency>com.atlassian.plugins.atlassian-plugins-webresource-plugin:context-path</dependency>
+    <resource type="download" name="bundled.adminPage.js" location="frontend/bundled.adminPage.js"/>
+  </web-resource>
+</atlassian-plugin>

@@ -1,4 +1,0 @@
-#* @implicitly included *#
-
-#* @vtlvariable name="message" type="au.com.agiledigital.idea_search.blueprints.KeyProperty" *#
-#* @vtlvariable name="heading" type="java.lang.Boolean" *#

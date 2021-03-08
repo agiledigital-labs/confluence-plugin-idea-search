@@ -1,0 +1,70 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@atlaskit/avatar": "^17.1.11",
+    "@atlaskit/button": "^15.1.4",
+    "@atlaskit/dropdown-menu": "^9.0.6",
+    "@atlaskit/dynamic-table": "^14.1.5",
+    "@atlaskit/form": "^7.4.1",
+    "@atlaskit/modal-dialog": "^11.2.5",
+    "@atlaskit/section-message": "^5.0.9",
+    "@atlaskit/textarea": "^2.2.10",
+    "@atlaskit/textfield": "^3.1.13",
+    "@atlaskit/toggle": "^8.1.9",
+    "@atlassian/wrm-react-i18n": "^0.7.0",
+    "@fluentui/react": "^7.157.1",
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.2",
+    "@rjsf/bootstrap-4": "^2.4.1",
+    "@rjsf/core": "^2.4.1",
+    "@rjsf/fluent-ui": "^2.4.1",
+    "@rjsf/material-ui": "^2.4.1",
+    "@rjsf/semantic-ui": "^2.4.1",
+    "axios": "^0.21.1",
+    "lodash": "^4.17.20",
+    "query-string": "^6.14.0",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.4.3",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1",
+    "styled-components": "^5.2.1"
+  },
+  "scripts": {
+    "build": "webpack --production",
+    "start": "webpack --develop",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/lodash": "^4.14.168",
+    "@types/react-jsonschema-form": "^1.7.4",
+    "@types/semantic-ui": "^2.2.7",
+    "fibers": "^5.0.0",
+    "ts-loader": "^8.0.14",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
+}

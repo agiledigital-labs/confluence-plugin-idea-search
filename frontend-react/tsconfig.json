@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": ["es6", "dom"],
+    "module": "es6",
+    "moduleResolution": "node",
+    "outDir": ".build",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "sourceMap": false,
+    "strict": true,
+    "jsx": "react",
+    "inlineSources": true,
+    "inlineSourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "ES5",
+    "noImplicitAny": true,
+    "baseUrl": "src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

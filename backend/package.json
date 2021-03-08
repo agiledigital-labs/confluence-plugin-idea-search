@@ -1,0 +1,43 @@
+{
+  "dependencies": {
+    "@atlaskit/modal-dialog": "^11.2.5",
+    "@conveyal/maven-semantic-release": "^4.5.0",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/github": "^7.2.0",
+    "prettier": "^2.1.2",
+    "pretty-quick": "^3.1.0",
+    "semantic-release": "^17.2.1"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            "target/*.obr",
+            "target/*.jar"
+          ]
+        }
+      ],
+      "@conveyal/maven-semantic-release"
+    ]
+  },
+  "scripts": {
+    "prettier": "prettier --write . && yarn format",
+    "lint": "mvn -s settings.xml spotless:check",
+    "format": "mvn -s settings.xml spotless:apply"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged && yarn lint"
+    }
+  },
+  "devDependencies": {
+    "husky": "^4.3.0"
+  }
+}

@@ -1,0 +1,18 @@
+
+<ac:structured-macro ac:name="form-structured-data">
+  <ac:rich-text-body><at:var at:name="vFormData" at:rawxhtml="true"/></ac:rich-text-body>
+</ac:structured-macro>
+
+<h2>Links to other resources</h2>
+<ac:placeholder>Link to external websites</ac:placeholder>
+
+<h2>Links to issues or tickets associated</h2>
+<ac:placeholder>Please provide the links</ac:placeholder>
+
+<h2>Presentations</h2>
+<ac:placeholder>Upload them here</ac:placeholder>
+
+<ac:structured-macro ac:name="Blueprint Id Storage">
+  <ac:parameter ac:name="blueprintId"><at:var at:name="blueprintId"/></ac:parameter>
+  <ac:parameter ac:name="category">blueprintId</ac:parameter>
+</ac:structured-macro>
