@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Internal model of the technology
@@ -17,6 +18,8 @@ public class FormSchema {
   private String indexSchema;
   private final String description;
   private final Integer version;
+  private final List<FormData> formDataList;
+  private final boolean isDufault;
 
   @JsonCreator
   public FormSchema(
@@ -26,7 +29,9 @@ public class FormSchema {
     @JsonProperty("schema") String schema,
     @JsonProperty("indexSchema") String indexSchema,
     @JsonProperty("version") Integer version,
-    @JsonProperty("description") String description
+    @JsonProperty("description") String description,
+    @JsonProperty("formDataList") List<FormData> formDataList,
+    @JsonProperty("isDefault") boolean isDufault
   ) {
     this.globalId = globalId;
     this.name = name;
@@ -35,6 +40,8 @@ public class FormSchema {
     this.indexSchema = indexSchema;
     this.version = version;
     this.description = description;
+    this.formDataList = formDataList;
+    this.isDufault = isDufault;
   }
 
   public long getGlobalId() {
@@ -53,17 +60,11 @@ public class FormSchema {
     return this.indexSchema;
   }
 
-  public void setIndexSchema(String indexSchema) {
-    this.indexSchema = indexSchema;
-  }
 
   public String getSchema() {
     return this.schema;
   }
 
-  public void setSchema(String schema) {
-    this.schema = schema;
-  }
 
   public Integer getVersion() {
     return this.version;
@@ -73,9 +74,9 @@ public class FormSchema {
     return this.uiSchema;
   }
 
-  public void setUiSchema(String uiSchema) {
-    this.uiSchema = uiSchema;
-  }
+  public boolean getIsDefault() {return this.isDufault;}
+
+  public List<FormData> getChildForms() { return  this.formDataList;}
 
   public static class Builder {
 
@@ -86,6 +87,8 @@ public class FormSchema {
     private String schema;
     private String indexSchema;
     private String description;
+    private List<FormData> formDataList;
+    private boolean isDefault;
 
     public Builder() {
     }
@@ -98,6 +101,8 @@ public class FormSchema {
       this.indexSchema = formSchema.indexSchema;
       this.version = formSchema.version;
       this.description = formSchema.description;
+      this.formDataList = formSchema.formDataList;
+      this.isDefault = formSchema.isDufault;
     }
 
     @Nonnull
@@ -142,6 +147,16 @@ public class FormSchema {
       return this;
     }
 
+    public FormSchema.Builder withFormDataList(List<FormData> formDataList) {
+      this.formDataList = formDataList;
+      return this;
+    }
+
+    public FormSchema.Builder withIsDefault(boolean isDefault){
+      this.isDefault = isDefault;
+      return this;
+    }
+
     @Nonnull
     public FormSchema build() {
       return new FormSchema(
@@ -151,7 +166,9 @@ public class FormSchema {
         this.schema,
         this.indexSchema,
         this.version,
-        this.description);
+        this.description,
+        this.formDataList,
+        this.isDefault);
     }
   }
 }

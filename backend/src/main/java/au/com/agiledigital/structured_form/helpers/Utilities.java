@@ -2,8 +2,10 @@ package au.com.agiledigital.structured_form.helpers;
 
 
 import au.com.agiledigital.structured_form.dao.AoFormData;
+import au.com.agiledigital.structured_form.dao.AoFormSchema;
 import au.com.agiledigital.structured_form.model.FormData;
 import au.com.agiledigital.structured_form.model.FormIndex;
+import au.com.agiledigital.structured_form.model.FormSchema;
 import com.atlassian.confluence.content.service.PageService;
 import com.atlassian.confluence.core.BodyContent;
 import com.atlassian.confluence.pages.AbstractPage;
@@ -31,11 +33,10 @@ import static javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD;
 import static javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA;
 
 public class Utilities {
-  public enum PossiblesIndexEnum {STRING, NUMBER, BOOLEAN, STATIC}
-
   private static final Logger log = LoggerFactory.getLogger(Utilities.class);
 
-  private Utilities() {  }
+  private Utilities() {
+  }
 
   /**
    * Extract form data string from macro
@@ -56,7 +57,6 @@ public class Utilities {
 
     return null;
   }
-
 
   /**
    * Parses XML to Java Dom objects
@@ -112,6 +112,32 @@ public class Utilities {
   /**
    * Convert form data active object to a form data model object
    *
+   * @param aoFormSchema active object to be converted
+   * @return FormSchema object
+   */
+  @Nonnull
+  public static FormSchema asSchema(@Nullable AoFormSchema aoFormSchema) {
+    try {
+      return aoFormSchema != null ?
+        (new FormSchema.Builder())
+          .withGlobalId(aoFormSchema.getGlobalId())
+          .withSchema(aoFormSchema.getSchema())
+          .withUiSchema(aoFormSchema.getUiSchema())
+          .withIndexSchema(aoFormSchema.getIndexSchema())
+          .withName(aoFormSchema.getName())
+          .withDescription(aoFormSchema.getDescription())
+          .withVersion(aoFormSchema.getVersion())
+          .withIsDefault(aoFormSchema.getIsDefault())
+          .build() : new FormSchema.Builder().build();
+    } catch (NullPointerException nullPointerException) {
+      return new FormSchema.Builder().build();
+    }
+
+  }
+
+  /**
+   * Convert form data active object to a form data model object
+   *
    * @param aoFormData active object to be converted
    * @return FormData object
    */
@@ -124,6 +150,7 @@ public class Utilities {
         .withContentId(pageService.getIdPageLocator(aoFormData.getContentId()).getPage().getContentId())
         .withCreator(user)
         .withFormData(aoFormData.getFormData())
+        .withFormSchema(asSchema(aoFormData.getFormSchema()))
         .build();
     } catch (NullPointerException nullPointerException) {
       return new FormData.Builder().build();
@@ -146,6 +173,7 @@ public class Utilities {
         .withCreator(user)
         .withFormData(aoFormData.getFormData())
         .withIndexData(indexData)
+        .withFormSchema(asSchema(aoFormData.getFormSchema()))
         .build();
     } catch (NullPointerException nullPointerException) {
       return new FormData.Builder().build();
@@ -166,6 +194,8 @@ public class Utilities {
 
     return null;
   }
+
+  public enum PossiblesIndexEnum {STRING, NUMBER, BOOLEAN, STATIC}
 
 
 }
