@@ -1,5 +1,6 @@
 package au.com.agiledigital.structured_form.dao;
 
+import net.java.ao.OneToMany;
 import net.java.ao.RawEntity;
 import net.java.ao.schema.*;
 
@@ -106,5 +107,8 @@ public interface AoFormData extends RawEntity<Long> {
   @Default("false")
   String getRemovedStatus();
   void setRemovedStatus(String removedStatus);
+
+  AoFormSchema getFormSchema();
+  void setFormSchema(AoFormSchema aoFormSchema );
 
 }

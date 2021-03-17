@@ -1,10 +1,8 @@
 package au.com.agiledigital.structured_form.dao;
 
+import net.java.ao.OneToMany;
 import net.java.ao.RawEntity;
-import net.java.ao.schema.AutoIncrement;
-import net.java.ao.schema.NotNull;
-import net.java.ao.schema.PrimaryKey;
-import net.java.ao.schema.StringLength;
+import net.java.ao.schema.*;
 
 import javax.annotation.Nonnull;
 
@@ -26,18 +24,15 @@ public interface AoFormSchema extends RawEntity<Long> {
   @Nonnull
   @StringLength(-1)
   String getDescription();
-
   void setDescription(String team);
 
   @Nonnull
   @StringLength(100)
   String getName();
-
   void setName(String name);
 
   @Nonnull
   Integer getVersion();
-
   void setVersion(Integer version);
 
   @Nonnull
@@ -57,5 +52,11 @@ public interface AoFormSchema extends RawEntity<Long> {
   String getSchema();
 
   void setSchema(String schema);
+
+  @OneToMany(reverse = "getFormSchema")
+  AoFormData[] getFormData();
+
+  boolean getIsDefault();
+  void setIsDefault(boolean isDefault);
 
 }

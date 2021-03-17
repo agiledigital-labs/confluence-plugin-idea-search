@@ -40,6 +40,7 @@ public class FormDataDao {
 
   private static final Class<AoFormData> AO_FORM_TYPE = AoFormData.class;
   private static final Class<AoFormBlueprint> AO_FORM_BLUEPRINT_TYPE = AoFormBlueprint.class;
+  private static final Class<AoFormSchema> AO_FORM_DATA_SCHEMA = AoFormSchema.class;
   private static final String CONTENT_ID_QUERY = "CONTENT_ID = ?";
   private static final String REMOVED_STATUS_QUERY = "REMOVED_STATUS != ?";
 
@@ -390,11 +391,13 @@ public class FormDataDao {
    * @param formData   with data to be added to the active object
    */
   private void prepareAOFormData(@Nonnull AoFormData aoFormData, @Nonnull FormData formData) {
+    AoFormSchema aoFormSchema= this.ao.find(AO_FORM_DATA_SCHEMA, Query.select().where("GLOBAL_ID = ?", formData.getFormSchema().getGlobalId()))[0];
     aoFormData.setContentId(formData.getContentId().asLong());
     aoFormData.setCreatorUserKey(formData.getCreatorKey());
     aoFormData.setTitle(formData.getTitle());
     aoFormData.setFormData(formData.getFormDataValue());
     aoFormData.setRemovedStatus("false");
+    aoFormData.setFormSchema(aoFormSchema);
   }
 
   /**

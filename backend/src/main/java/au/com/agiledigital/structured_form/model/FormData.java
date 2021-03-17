@@ -21,7 +21,7 @@ public class FormData {
   private final String title;
   private final String formDataValue;
   private final Set<FormIndex> indexData;
-
+  private final FormSchema formSchema;
 
   @JsonCreator
   private FormData(
@@ -30,7 +30,8 @@ public class FormData {
     @JsonProperty("creator") ConfluenceUser creator,
     @JsonProperty("title") String title,
     @JsonProperty("formData") String formData,
-    @JsonProperty("indexData") Set<FormIndex> indexData
+    @JsonProperty("indexData") Set<FormIndex> indexData,
+    @JsonProperty("formSchema") FormSchema formSchema
   ) {
     this.globalId = globalId;
     this.contentId = contentId;
@@ -38,6 +39,7 @@ public class FormData {
     this.title = title;
     this.formDataValue = formData;
     this.indexData = indexData;
+    this.formSchema = formSchema;
   }
 
   /**
@@ -111,6 +113,8 @@ public class FormData {
     return this.indexData != null ? this.indexData : Collections.emptySet();
   }
 
+  public FormSchema getFormSchema() {return this.formSchema;}
+
   /**
    * Get static items of information from the form data
    *
@@ -162,6 +166,7 @@ public class FormData {
     private String title;
     private String formData;
     private Set<FormIndex> indexData;
+    private FormSchema formSchema;
 
     public Builder() {
     }
@@ -173,6 +178,7 @@ public class FormData {
       this.title = formData.title;
       this.formData = formData.formDataValue;
       this.indexData = formData.indexData;
+      this.formSchema = formData.formSchema;
     }
 
     @Nonnull
@@ -212,6 +218,11 @@ public class FormData {
       return this;
     }
 
+    public FormData.Builder withFormSchema(FormSchema formSchema){
+      this.formSchema = formSchema;
+      return this;
+    }
+
     @Nonnull
     public FormData build() {
       return new FormData(
@@ -220,7 +231,8 @@ public class FormData {
         this.creator,
         this.title,
         this.formData,
-        this.indexData);
+        this.indexData,
+        this.formSchema);
     }
   }
 }
